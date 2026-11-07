@@ -9,86 +9,90 @@ const _el = {},
   R = (a, b) => a + Math.random() * (b - a),
   T = THREE;
 
-// ===================== CURVAS EN LAS AUTOPISTAS =====================
-// La lógica del juego usa una carretera recta (eje Z). Para que haya curvas, el dibujo se "dobla":
-// cada vértice se desplaza en X según una función de Z (en la GPU), igual para objetos, sombras y recorte.
-// Además el bus se desvía hacia afuera en las curvas, así que hay que girar para seguir el carril.
-// Para cambiar las curvas: editá CURVAS. [zona]: [ángulo máximo en radianes, número de curvas por km]
-// Zonas: 1 Autopista · 4 Peaje Quick Pass · 9 Circunvalación × Ruta 27 (ver la lista ZN más abajo).
-const CURVAS = { 1: [0.28, 2], 4: [0.22, 2], 9: [0.2, 3] };
-const curvaZona = (u) => {
+// ===================== PENDIENTES Y BAJADAS =====================
+// La lógica del juego usa una carretera plana. Para que haya cuestas, el dibujo se "dobla" en la GPU:
+// cada vértice sube o baja según una función de Z, igual para objetos, sombras y recorte.
+// El bus se inclina con la pendiente, pierde velocidad al subir y agarra impulso al bajar.
+// Para cambiarlas: editá RELIEVE. [zona]: [altura máxima en metros, cantidad de lomas por km]
+// Cada zona sube y baja (subida, bajada, valle…) y termina a nivel, así que no afecta túneles, puentes ni rotondas.
+// Zonas: 1 Autopista · 3 Ruta del bosque · 9 Circunvalación · 13 Cruce Río Frío (ver la lista ZN más abajo).
+const RELIEVE = { 1: [9, 2], 3: [7, 3], 9: [8, 2], 13: [9, 2] };
+const relieveZona = (u) => {
   const k = Math.floor(u / 1000),
-    c = CURVAS[((k % 19) + 19) % 19];
+    c = RELIEVE[((k % 19) + 19) % 19];
   return c ? [c[0], c[1], u - k * 1000] : null;
 };
-// ángulo de la carretera (θ) y desplazamiento lateral (Y) a una distancia u = -z
-const curvaTheta = (u) => {
-  const c = curvaZona(u);
-  return c ? c[0] * Math.sin((6.2831853 * c[1] * c[2]) / 1000) : 0;
+// altura del terreno a una distancia u = -z:  H = A·sin(2πn·s/1000)·sin(π·s/1000)  (0 y plano en los bordes)
+const relieveH = (u) => {
+  const c = relieveZona(u);
+  return c ? c[0] * Math.sin((6.2831853 * c[1] * c[2]) / 1000) * Math.sin((3.1415927 * c[2]) / 1000) : 0;
 };
-const curvaY = (u) => {
-  const c = curvaZona(u);
-  return c ? ((c[0] * 1000) / (6.2831853 * c[1])) * (1 - Math.cos((6.2831853 * c[1] * c[2]) / 1000)) : 0;
-};
-// referencia = posición del jugador; se actualiza cada cuadro. Se comparte (sin clonar) con todos los materiales.
+// pendiente (subida > 0 al avanzar)
+const relieveP = (u) => (relieveH(u + 1) - relieveH(u - 1)) / 2;
+// referencia = posición del jugador (BEND.y = altura bajo el bus). Se comparte (sin clonar) con todos los materiales.
 const BEND = { x: 0, y: 0, z: 0, w: 1 };
-const bendX = (z) => {
-  if (!BEND.w) return 0;
-  const u = -z;
-  return curvaY(u) - BEND.y - BEND.z * (u - BEND.x);
-};
+const bendY = (z) => (BEND.w ? relieveH(-z) - BEND.y : 0);
 (function () {
-  const glslZona = Object.entries(CURVAS)
-    .map(([z, [a, n]]) => `if(abs(zn-${z}.)<.5){A=${a.toFixed(4)};n=${n.toFixed(1)};}`)
+  const glslZona = Object.entries(RELIEVE)
+    .map(([z, [a, n]]) => `if(abs(zn-${z}.)<.5){A=${a.toFixed(3)};n=${n.toFixed(1)};}`)
     .join("else ");
+  // el guard evita declarar dos veces (three.js incluye "common" dos veces en algunos shaders y
+  // los drivers estrictos —Vulkan, Windows/D3D— rechazan el shader y la pantalla queda en blanco)
   T.ShaderChunk.common += `
+#ifndef BEND_RELIEVE
+#define BEND_RELIEVE
 uniform vec4 bendR;
-float bendX(float z){
+float bendY(float z){
   if(bendR.w<.5)return 0.;
   float u=-z,k=floor(u/1000.),zn=mod(k,19.),s=u-k*1000.,A=0.,n=1.;
   ${glslZona}
-  float Y=A*1000./(6.2831853*n)*(1.-cos(6.2831853*n*s/1000.));
-  return Y-bendR.y-bendR.z*(u-bendR.x);
-}`;
+  return A*sin(6.2831853*n*s/1000.)*sin(3.1415927*s/1000.)-bendR.y;
+}
+#endif`;
   T.ShaderChunk.project_vertex = T.ShaderChunk.project_vertex.replace(
     "mvPosition = modelViewMatrix * mvPosition;",
-    "mvPosition = modelMatrix * mvPosition; mvPosition.x += bendX(mvPosition.z); mvPosition = viewMatrix * mvPosition;",
+    "mvPosition = modelMatrix * mvPosition; mvPosition.y += bendY(mvPosition.z); mvPosition = viewMatrix * mvPosition;",
   );
   T.ShaderChunk.worldpos_vertex = T.ShaderChunk.worldpos_vertex.replace(
     "worldPosition = modelMatrix * worldPosition;",
-    "worldPosition = modelMatrix * worldPosition; worldPosition.x += bendX(worldPosition.z);",
+    "worldPosition = modelMatrix * worldPosition; worldPosition.y += bendY(worldPosition.z);",
   );
   const spr = (s) =>
     s.replace(
       "vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );",
-      "vec4 mvPosition = modelMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ); mvPosition.x += bendX(mvPosition.z); mvPosition = viewMatrix * mvPosition;",
+      "vec4 mvPosition = modelMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ); mvPosition.y += bendY(mvPosition.z); mvPosition = viewMatrix * mvPosition;",
     );
   T.ShaderChunk.sprite_vert = spr(T.ShaderChunk.sprite_vert);
   T.ShaderLib.sprite.vertexShader = spr(T.ShaderLib.sprite.vertexShader);
+  // three r128 solo sube el uniform "viewMatrix" para algunos materiales (Standard, Basic, Lambert…).
+  // Sprites, líneas y el material de sombras lo dejaban en cero: en tarjetas NVIDIA los brillos
+  // tapaban toda la pantalla (pantalla blanca). Con skinning=true también lo sube; en objetos que no
+  // son SkinnedMesh no tiene otro efecto (maxBones = 0).
+  Object.defineProperty(T.Material.prototype, "skinning", { get: () => true, set() {}, configurable: true });
   // UniformsUtils.clone copia por referencia los objetos que no son Vector4 → todos comparten BEND
   for (const k in T.ShaderLib) if (T.ShaderLib[k].uniforms) T.ShaderLib[k].uniforms.bendR = { value: BEND };
-  // el recorte por cámara (frustum culling) también usa la posición doblada
+  // el recorte por cámara (frustum culling) también usa la altura doblada
   const sp = new T.Sphere();
   T.Frustum.prototype.intersectsObject = function (o) {
     const g = o.geometry;
     if (g.boundingSphere === null) g.computeBoundingSphere();
     sp.copy(g.boundingSphere).applyMatrix4(o.matrixWorld);
-    sp.center.x += bendX(sp.center.z);
-    sp.radius *= 1.15;
+    sp.center.y += bendY(sp.center.z);
+    sp.radius *= 1.1;
     return this.intersectsSphere(sp);
   };
   T.Frustum.prototype.intersectsSprite = function (s) {
     sp.center.set(0, 0, 0);
     sp.radius = 0.75;
     sp.applyMatrix4(s.matrixWorld);
-    sp.center.x += bendX(sp.center.z);
+    sp.center.y += bendY(sp.center.z);
     return this.intersectsSphere(sp);
   };
 })();
-// Las piezas largas (carretera, barandas, calles) necesitan más vértices para doblarse suave.
+// Las piezas largas (carretera, barandas, calles, terreno) necesitan más vértices para seguir las lomas.
 function subdividirLargos(root) {
   const cache = new Map(),
-    seg = (d) => Math.min(64, Math.ceil(d / 8));
+    seg = (d) => Math.min(256, Math.ceil(d / 8));
   root.traverse((o) => {
     if (!o.isMesh || o.isInstancedMesh || !o.geometry || !o.geometry.parameters) return;
     const g = o.geometry,
@@ -96,10 +100,15 @@ function subdividirLargos(root) {
     let n = cache.get(g);
     if (n === undefined) {
       n = null;
-      if (g.type === "BoxGeometry" && (p.depth > 24 || p.width > 24) && p.depthSegments === 1)
-        n = new T.BoxGeometry(p.width, p.height, p.depth, seg(p.width), 1, seg(p.depth));
+      if (g.type === "BoxGeometry" && p.depth > 24 && p.depthSegments === 1)
+        n = new T.BoxGeometry(p.width, p.height, p.depth, 1, 1, seg(p.depth));
       else if (g.type === "PlaneGeometry" && (p.height > 24 || p.width > 24) && p.heightSegments === 1)
-        n = new T.PlaneGeometry(p.width, p.height, seg(p.width), seg(p.height));
+        n = new T.PlaneGeometry(
+          p.width,
+          p.height,
+          Math.abs(o.rotation.z) > 0.1 ? seg(p.width) : 1,
+          seg(p.height),
+        );
       cache.set(g, n);
     }
     if (n) o.geometry = n;
@@ -159,41 +168,13 @@ if (!TACTIL)
     es.add(new T.Mesh(sky.geometry, sky.material));
     ENV = new T.PMREMGenerator(rd).fromScene(es, 0, 1, 2000).texture;
   } catch (e) {}
-// prueba: si el driver genera reflejos negros (algunos móviles/GPU), se desactivan para que nada se vea negro
-if (ENV) {
-  try {
-    const rt = new T.WebGLRenderTarget(4, 4),
-      ts = new T.Scene(),
-      tc = new T.OrthographicCamera(-1, 1, 1, -1, 0.1, 10),
-      px = new Uint8Array(64);
-    tc.position.z = 5;
-    ts.add(
-      new T.Mesh(
-        new T.PlaneGeometry(2, 2),
-        new T.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.4, envMap: ENV }),
-      ),
-    );
-    const tm0 = rd.toneMapping;
-    rd.toneMapping = T.NoToneMapping;
-    rd.setRenderTarget(rt);
-    rd.render(ts, tc);
-    rd.readRenderTargetPixels(rt, 0, 0, 4, 4, px);
-    rd.setRenderTarget(null);
-    rd.toneMapping = tm0;
-    rt.dispose();
-    let r = 0,
-      g = 0,
-      b = 0;
-    for (let i = 0; i < 64; i += 4) {
-      r += px[i];
-      g += px[i + 1];
-      b += px[i + 2];
-    }
-    if (r + g + b < 16 * 60 || b < r * 0.7 || g < r * 0.6) ENV = null;
-  } catch (e) {
-    ENV = null;
-  }
-}
+// Renderizadores por software (sin tarjeta gráfica real) dibujan los reflejos en negro: se desactivan ahí.
+try {
+  const g = rd.getContext(),
+    ext = g.getExtension("WEBGL_debug_renderer_info"),
+    nombre = ext ? String(g.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : "";
+  if (/swiftshader|llvmpipe|software|basic render/i.test(nombre)) ENV = null;
+} catch (e) {}
 const sunM = new T.Mesh(
   new T.SphereGeometry(35, 16, 12),
   new T.MeshBasicMaterial({ color: 0xfff4c8, fog: false }),
@@ -5574,8 +5555,7 @@ function upd(dt) {
 // ===== mejoras gráficas por cuadro (no tocan la jugabilidad) =====
 const trEl = $("tr");
 let lastS = -1,
-  curvaPrevTh = 0,
-  curvaPrevZ = 0;
+  _qCam = new T.Quaternion();
 subdividirLargos(sc);
 
 // ===================== OPTIMIZACIÓN =====================
@@ -5620,19 +5600,15 @@ function congelar(root, animados) {
 }
 congelar(wo, new Set([...crs, ...arms, ...amu.cabs, amu.fw, amu.cr, amu.cart, trA, trC]));
 congelar(rb, new Set());
-function curvasTick() {
-  const u = -B.z,
-    th = curvaTheta(u);
-  // en una curva la carretera gira; si no girás el volante, el bus sigue recto y se sale hacia afuera
-  if (state == "play" && Math.abs(B.z - curvaPrevZ) < 60) B.h += th - curvaPrevTh;
-  curvaPrevTh = th;
-  curvaPrevZ = B.z;
+function relieveTick(dt) {
+  const u = -B.z;
   BEND.x = u;
-  BEND.y = curvaY(u);
-  BEND.z = th;
+  BEND.y = relieveH(u); // el terreno se dibuja relativo a la altura bajo el bus
+  // gravedad: al subir se pierde velocidad, al bajar se gana
+  if (state == "play" && !B.fl && !B.bal && B.y < 1) B.v -= 9.8 * 0.55 * relieveP(u) * Math.cos(B.h) * dt;
 }
 function gfxTick(dt) {
-  curvasTick();
+  relieveTick(dt);
   // luces de las ambulancias (en el tráfico y en los accidentes)
   const wa = Math.floor(performance.now() / 140) % 2;
   for (const c of cars) {
@@ -5892,7 +5868,16 @@ function loop(n) {
     console.error(e);
   }
   try {
+    const py = cam.position.y;
+    _qCam.copy(cam.quaternion);
+    cam.position.y += bendY(cam.position.z);
+    if (cm_ == 0) {
+      const tz = B.z - Math.cos(B.h) * 22;
+      cam.lookAt(B.x - Math.sin(B.h) * 22, 2.6 + B.y + bendY(tz), tz);
+    }
     rd.render(sc, cam);
+    cam.position.y = py;
+    cam.quaternion.copy(_qCam);
   } catch (e) {
     console.error(e);
   }

@@ -33,7 +33,7 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 
 | Busca | Para cambiar |
 |---|---|
-| `CURVAS EN LAS AUTOPISTAS` | En qué zonas hay curvas y qué tan cerradas son (`CURVAS`) |
+| `PENDIENTES Y BAJADAS` | En qué zonas hay lomas, qué tan altas son y cuántas por km (`RELIEVE`) |
 | `MULTAS Y POLICÍA` | Límite de velocidad, monto de las multas, velocidad de la patrulla |
 | `AMBULANCIA` | El modelo de la ambulancia y sus luces |
 | `// cielo` | El cielo, el sol y las estrellas |

@@ -8,7 +8,7 @@ El juego original lo creó mi sobrino 🧒. Esta versión conserva toda su jugab
 
 **¿Quieres ayudar a mejorarlo?** Cualquier persona puede proponer cambios. Lee la [guía para colaborar](CONTRIBUTING.md).
 
-![Autopista con curvas](docs/curvas.png)
+![Autopista con pendientes](docs/pendientes.png)
 
 | Desde la cabina | Ambulancia en un accidente |
 |---|---|
@@ -37,7 +37,7 @@ En celulares y tablets aparecen botones en la pantalla.
 
 - **21 vehículos:** 4 buses (ATD, Mercedes-Benz CAIO, Busscar Porvenir…), jeep, tanque, F1, un ultraligero que vuela, aerodeslizador, cohete y más
 - **19 zonas:** centro urbano, autopista, puente atirantado, Túnel Zurquí, puente de madera, Rotonda del Walmart con cruce de tren, rotondas del Bicentenario y de la Bandera (de noche), pista de agua, de carreras y de prueba
-- **Autopistas con curvas** (Autopista, Peaje y Circunvalación): si no giras, el bus se sale hacia afuera
+- **Pendientes y bajadas** en la Autopista, la Ruta del bosque, la Circunvalación y el Cruce Río Frío: el bus se inclina, pierde velocidad al subir y agarra impulso al bajar
 - **Multas y policía:** te multan por exceso de velocidad (70 km/h en ciudad, 100 en autopista), por chocar y por pasarte la parada. Con 3 multas te persigue una patrulla con sirena; si te alcanza, pagas ₡5000. Si le sacas más de 320 m, te escapas.
 - **Ambulancias** en el tráfico (más rápidas, con luces) y atendiendo los accidentes
 - **Parabrisas real:** desde la cámara del conductor se ve la carretera, con limpiaparabrisas, tablero y retrovisor
