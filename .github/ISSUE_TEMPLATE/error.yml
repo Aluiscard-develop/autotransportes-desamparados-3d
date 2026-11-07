@@ -1,0 +1,20 @@
+name: 🐞 Error
+description: Algo no funciona o se ve mal
+labels: [error]
+body:
+  - type: textarea
+    id: que
+    attributes:
+      label: ¿Qué pasó?
+      placeholder: "Ejemplo: en la tablet la carretera se ve negra"
+    validations:
+      required: true
+  - type: input
+    id: donde
+    attributes:
+      label: ¿En qué zona y con qué vehículo?
+  - type: input
+    id: dispositivo
+    attributes:
+      label: ¿En qué dispositivo y navegador?
+      placeholder: "Ejemplo: tablet Samsung, Chrome"

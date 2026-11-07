@@ -1,0 +1,15 @@
+name: 💡 Idea
+description: Proponer algo nuevo para el juego
+labels: [idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: ¿Qué te gustaría agregar o cambiar?
+      placeholder: "Ejemplo: que haya un puente nuevo en la zona de Cartago"
+    validations:
+      required: true
+  - type: textarea
+    id: porque
+    attributes:
+      label: ¿Por qué haría mejor el juego?
