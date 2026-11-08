@@ -14,9 +14,13 @@ El juego original lo creó mi sobrino 🧒. Esta versión conserva toda su jugab
 |---|---|
 | ![Cabina](docs/cabina.png) | ![Ambulancia](docs/ambulancia.png) |
 
-| Carretera a Vara Blanca (presa y derrumbe) | |
+| Puente del Río Caliente (km 44) | Precipicios en la Ruta de montaña |
 |---|---|
-| ![Vara Blanca](docs/vara-blanca.png) | |
+| ![Puente](docs/puente-rio-caliente.png) | ![Precipicio](docs/precipicio.png) |
+
+| Carretera a Vara Blanca (presa y derrumbe) | 🐲 Oruga turbo todoterreno |
+|---|---|
+| ![Vara Blanca](docs/vara-blanca.png) | ![Oruga turbo](docs/oruga-turbo.png) |
 
 | Ciudad | Pista de agua |
 |---|---|
@@ -39,10 +43,12 @@ En celulares y tablets aparecen botones en la pantalla.
 
 ## Qué tiene
 
-- **21 vehículos:** 4 buses (ATD, Mercedes-Benz CAIO, Busscar Porvenir…), jeep, tanque, F1, un ultraligero que vuela, aerodeslizador, cohete y más
+- **22 vehículos:** 4 buses (ATD, Mercedes-Benz CAIO, Busscar Porvenir…), jeep, tanque, F1, un ultraligero que vuela, aerodeslizador, cohete y el nuevo **🐲 Oruga turbo**: todoterreno de orugas con alerón trasero y motor súper rápido (hasta ~245 km/h, casi no pierde velocidad fuera de la carretera)
 - **19 zonas:** centro urbano, autopista, puente atirantado, Túnel Zurquí, puente de madera, Rotonda del Walmart con cruce de tren, rotondas del Bicentenario y de la Bandera (de noche), pista de agua, de carreras y de prueba
 - **Pendientes y bajadas** en la Autopista, la Ruta del bosque, la Circunvalación y el Cruce Río Frío: el bus se inclina, pierde velocidad al subir y agarra impulso al bajar
 - **Carretera a Vara Blanca:** en San José · Estadio Nacional hay una salida a la derecha ("SALIDA · CARRETERA VARA BLANCA — CUIDADO DERRUMBES Y PRESA") que lleva a una carretera de montaña de 2 carriles. Sube con curvas hasta un paso de 24 m, tiene barandas, un derrumbe que tapa un carril, una presa de carros con las intermitentes y una piedra que rueda cerro abajo; hay que adelantar por el otro carril. Vuelve a la autopista antes del túnel.
+- **Ruta de montaña a Vara Blanca (150 km):** se entra pasando la presa de la carretera a Vara Blanca, o desde el menú ("Inicio: Ruta de montaña"). Tiene curvas y muchísimas subidas y bajadas, paredes de roca y **precipicios** (algunos sin baranda: si te salís, caés), bosques de parques nacionales (Braulio Carrillo, Volcán Poás, Tapantí, Volcán Irazú, Juan Castro Blanco y Volcán Arenal), miradores con **volcanes** (Poás con su laguna, Barva, Irazú, Turrialba y Arenal echando humo), bombas de gasolina cada 10 km y rótulos de kilómetro. Al llegar al km 150 ganás ₡50 000 y bajás de vuelta a la autopista.
+- **Km 44 · Puente del Río Caliente:** puente colgante de madera, angosto, sin barandas sólidas, con tablas que faltan y que se mece. Hay que pasar despacio (máx. 20 km/h) y por el centro: si vas rápido cruje y te daña, a más de 75 km/h se quiebran las tablas y si te salís del borde caés al río (que echa vapor).
 - **Multas y policía:** te multan por exceso de velocidad (70 km/h en ciudad, 100 en autopista), por chocar y por pasarte la parada. Con 3 multas te persigue una patrulla con sirena; si te alcanza, pagas ₡5000. Si le sacas más de 320 m, te escapas.
 - **Ambulancias** en el tráfico (más rápidas, con luces) y atendiendo los accidentes
 - **Parabrisas real:** desde la cámara del conductor se ve la carretera, con limpiaparabrisas, tablero y retrovisor

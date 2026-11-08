@@ -35,6 +35,8 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 |---|---|
 | `PENDIENTES Y BAJADAS` | En qué zonas hay lomas, qué tan altas son y cuántas por km (`RELIEVE`) |
 | `CARRETERA A VARA BLANCA` | La salida de montaña: forma del camino (`VB`), altura del paso (`VB_ALTURA`), derrumbe y presa |
+| `RUTA DE MONTAÑA A VARA BLANCA` | Los 150 km: curvas y alturas del camino, precipicios (`mK`), barandas, bombas (`M_BOMBAS`), parques (`M_PARQUES`), volcanes (`M_VOLCANES`) y el puente del km 44 (`PUENTE`) |
+| `Oruga turbo` | El vehículo de orugas con alerón (modelo; su manejo está al final de `const PVS`) |
 | `MULTAS Y POLICÍA` | Límite de velocidad, monto de las multas, velocidad de la patrulla |
 | `AMBULANCIA` | El modelo de la ambulancia y sus luces |
 | `// cielo` | El cielo, el sol y las estrellas |
