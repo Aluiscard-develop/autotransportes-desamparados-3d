@@ -45,8 +45,26 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `// autobus` y `Carrocería` | El bus, su parabrisas y su interior |
 | `const PVS` | Velocidad, aceleración y manejo de cada vehículo |
 | `const PARTS` | Las piezas de tuning del garaje |
-| `const ZN` | Los nombres de las 19 zonas |
+| `const ZN` | Los nombres de las zonas (las 5 nuevas se agregan en `js/mundo.js`) |
+| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (24) |
+| `const JAM` | Dónde hay presas |
 | `OPTIMIZACIÓN` | Liberar memoria y congelar el escenario estático |
+
+## Dónde está cada cosa en `js/mundo.js`
+
+| Busca | Para cambiar |
+|---|---|
+| `NEGOCIOS` | Cómo se ven KFC, McDonald's, Dunkin', Burger King, bomberos, hospital, oficinas y fábricas |
+| `LOTES POR TODO EL JUEGO` | En qué zonas aparecen los negocios (`ZONAS_LOTE`) y cuáles salen (`elegirNegocio`) |
+| `VEHÍCULOS NUEVOS` | Camión de bomberos, tráiler, buses (`BUSES`) y taxis; qué sale en cada zona (`vehNuevo`) |
+| `ZONA 19 · NUEVA YORK` | Rascacielos, calles, metro, terminal, Estatua de la Libertad |
+| `ZONA 20 · PARQUE INDUSTRIAL` | Campus de Intel, AMD, Microsoft y Windows, contenedores, tren de carga |
+| `ZONA 21 · FRONTERA` | Migración, aduana, banderas (`BANDERAS`) |
+| `ZONA 22 · AUTOPISTA NUEVA` | La autopista alterna sin presa |
+| `ZONA 23 · NACIONES` | La Rotonda de las Naciones |
+| `SAN JOSÉ · BOMBEROS Y HOSPITAL` | Dónde están la estación y el hospital (`Z_ESTACION`, `Z_HOSPITAL`) |
+| `EMERGENCIAS` | Ambulancia y camión de bomberos para manejar, el incendio (`INC`: dónde está y cuánto mide), la presa de 5 km (`INC.presa`), el carril de emergencia (`cocheTick`), el agua y los heridos |
+| `CUADRO A CUADRO` | Los trenes que se mueven y el sello de Migración |
 
 ## Reglas sencillas
 

@@ -26,6 +26,7 @@
     <div class="p" id="stop"></div>
     <div class="p" id="msg"></div>
     <div class="t" data-k="TN" style="right: 178px; background: #ff8a0055">🔥</div>
+    <div class="t" data-k="TF" id="agua" style="right: 260px; background: #2f8fff55; display: none">💧</div>
     <div class="t" data-k="TL" style="left: 14px">◀</div>
     <div class="t" data-k="TR" style="left: 96px">▶</div>
     <div class="t" data-k="TB" style="right: 96px; background: #e0343a55">■</div>
@@ -71,7 +72,9 @@
           <option value="18">🚀 The Beast (cohete)</option>
           <option value="19">💖 Convertible retro</option>
           <option value="20">🔷 Moto de nieve PRO X</option>
-          <option value="21">🐲 Oruga turbo todoterreno (orugas + alerón)</option></select
+          <option value="21">🐲 Oruga turbo todoterreno (orugas + alerón)</option>
+          <option value="22">🚑 Ambulancia</option>
+          <option value="23">🚒 Camión de bomberos</option></select
         ><br />🛣
         <select id="zs">
           <option value="0">Inicio: Centro urbano + Rotonda Y Griega</option>
@@ -82,8 +85,8 @@
           <option value="5">Inicio: Túnel Zurquí</option>
           <option value="6">Inicio: Ruta de la montaña (puente de madera)</option>
           <option value="7">Inicio: Rotonda del Walmart (cruce ferroviario)</option>
-          <option value="8">Inicio: San José · Estadio Nacional</option>
-          <option value="9">Inicio: Circunvalación × Ruta 27</option>
+          <option value="8">Inicio: San José · Estadio Nacional (bomberos y hospital)</option>
+          <option value="9">Inicio: 🔥 Autopista Circunvalación (incendio)</option>
           <option value="10">Inicio: Rotonda Rancho de Guanacaste</option>
           <option value="11">Inicio: Rotonda del Bicentenario</option>
           <option value="12">Inicio: Rotonda de la Bandera (noche)</option>
@@ -93,7 +96,12 @@
           <option value="16">Inicio: 🌊 Pista de agua</option>
           <option value="17">Inicio: 🏁 Pista de carreras</option>
           <option value="18">Inicio: 🧪 Pista de prueba (sin carros)</option>
-          <option value="19">Inicio: ⛰ Ruta de montaña a Vara Blanca (150 km)</option>
+          <option value="19">Inicio: 🗽 Nueva York</option>
+          <option value="20">Inicio: 🏭 Parque industrial · Intel · AMD · Microsoft</option>
+          <option value="21">Inicio: 🛂 Frontera · Migración</option>
+          <option value="22">Inicio: 🛣 Autopista nueva · alterna sin presa</option>
+          <option value="23">Inicio: 🌎 Rotonda de las Naciones</option>
+          <option value="99">Inicio: ⛰ Ruta de montaña a Vara Blanca (150 km)</option>
         </select>
       </p>
       <p>
@@ -118,5 +126,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="js/juego.js"></script>
+    <script src="js/mundo.js"></script>
   </body>
 </html>

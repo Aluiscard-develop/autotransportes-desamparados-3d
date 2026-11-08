@@ -8,6 +8,10 @@ const _el = {},
   },
   R = (a, b) => a + Math.random() * (b - a),
   T = THREE;
+// Cantidad de zonas de 1 km que tiene el recorrido antes de repetirse (las nuevas están en js/mundo.js).
+const NZ = 24,
+  CICLO = NZ * 1000,
+  INICIO_MONTANA = 99; // valor del menú "Inicio: Ruta de montaña"
 
 // ===================== PENDIENTES Y BAJADAS =====================
 // La lógica del juego usa una carretera plana. Para que haya cuestas, el dibujo se "dobla" en la GPU:
@@ -19,7 +23,7 @@ const _el = {},
 const RELIEVE = { 1: [9, 2], 3: [7, 3], 9: [8, 2], 13: [9, 2] };
 const relieveZona = (u) => {
   const k = Math.floor(u / 1000),
-    c = RELIEVE[((k % 19) + 19) % 19];
+    c = RELIEVE[((k % NZ) + NZ) % NZ];
   return c ? [c[0], c[1], u - k * 1000] : null;
 };
 // altura del terreno a una distancia u = -z:  H = A·sin(2πn·s/1000)·sin(π·s/1000)  (0 y plano en los bordes)
@@ -368,6 +372,7 @@ let RZ = -250,
   R2 = -7250,
   R3 = -11250,
   R4 = -12250,
+  R5 = -23250, // Rotonda de las Naciones (zona 23)
   tbT = 0,
   tbDone = 0,
   nt = 0,
@@ -428,11 +433,14 @@ const JAM = [
     [-13050, -13900],
     [-10050, -10950],
     [-14050, -14950],
+    [-19150, -19850],
+    [-21000, -21235],
+    [-22050, -22950],
   ],
   inJam = (z) => JAM.some((r) => z - CZ < r[0] && z - CZ > r[1]);
 const RC = (z) => {
   let b = RZ;
-  for (const c of [R2, R3, R4]) if (Math.abs(z - c) < Math.abs(z - b)) b = c;
+  for (const c of [R2, R3, R4, R5]) if (Math.abs(z - c) < Math.abs(z - b)) b = c;
   return b;
 };
 const pn = (w, d, c, x, y, z, ry = 0) => {
@@ -922,7 +930,7 @@ for (let i = 0; i < N; i++) {
   chunks.push({ g, k: i, pr });
 }
 function scatter(c) {
-  const zn = Math.floor((c.k * CH + CH / 2) / 1000) % 19,
+  const zn = Math.floor((c.k * CH + CH / 2) / 1000) % NZ,
     Z = (...a) => a.includes(zn);
   c.pr.forEach((p) => {
     const s = Math.random() < 0.5 ? -1 : 1,
@@ -939,6 +947,7 @@ function scatter(c) {
         if (Math.abs(o.position.x + 30) < 10) o.position.x = -42 - R(0, 8);
       },
       zc = -c.k * CH - CH / 2 - CZ;
+    if (p.f) return p.f(c, p, zn, { s, nb, hz, rt, w }); // lotes de js/mundo.js
     if (t == 11) {
       o.visible = !Z(16);
       return;
@@ -957,11 +966,11 @@ function scatter(c) {
     }
     if (t == 9) {
       o.position.set(s * R(12, 18), 0, -R(10, CH - 10));
-      o.visible = Z(0, 1, 3, 4, 7, 8, 9, 11, 13, 14, 15) && !hz() && !rt() && !nb();
+      o.visible = Z(0, 1, 3, 4, 7, 8, 9, 11, 13, 14, 15, 19, 20, 21, 23) && !hz() && !rt() && !nb();
       return;
     }
     if (t == 3) {
-      o.visible = !w() && !nb() && Z(0, 3, 4, 7, 9, 11, 13, 14, 15) && !hz() && !rt();
+      o.visible = !w() && !nb() && Z(0, 3, 4, 7, 9, 11, 13, 14, 15, 21, 23) && !hz() && !rt();
       return;
     }
     if (t == 4) {
@@ -991,13 +1000,13 @@ function scatter(c) {
       o.position.set(s * (Z(1) ? R(15, 45) : f ? R(9, 36) : R(11, 48)), 0, -R(0, CH));
       o.scale.setScalar(f ? R(1.3, 2.6) : R(0.8, 1.5));
       lf();
-      o.visible = !Z(2, 8, 16, 18) && !nb() && !hz() && !rt();
+      o.visible = !Z(2, 8, 16, 18, 19, 20) && !nb() && !hz() && !rt();
       if (w()) o.position.x = s * R(90, 120);
     } else if (t == 1) {
       o.position.set(s * R(13, 32), 0, -R(0, CH));
       o.rotation.y = s > 0 ? -Math.PI / 2 : Math.PI / 2;
       lf();
-      o.visible = Z(0, 4, 7, 13) && !nb() && !hz() && !rt();
+      o.visible = Z(0, 4, 7, 13, 21, 23) && !nb() && !hz() && !rt();
       if (w()) o.position.x = s * R(90, 120);
     } else {
       // montañas: el borde de la base queda siempre lejos de la carretera y de las calles laterales
@@ -2902,7 +2911,9 @@ function mkAmbulancia() {
   g.userData.hl = 2.7;
   return sh(g);
 }
-function mkVeh() {
+function mkVeh(zz) {
+  const nv = typeof vehNuevo == "function" && vehNuevo(zz); // js/mundo.js
+  if (nv) return nv;
   const r = Math.random();
   if (r > 0.96) return mkAmbulancia();
   if (r < 0.3) {
@@ -3038,7 +3049,7 @@ function spawn(z) {
     cars.push({ o, x, x0: x, hl: 4.6, z, vz: 0, v0: 0, jv: 0, vx: 0, hit: 0, stat: 1 });
     return;
   }
-  const o = wt ? mkBoat() : mkVeh();
+  const o = wt ? mkBoat() : mkVeh(zz);
   o.position.set(x, 0, z);
   o.rotation.y = on ? Math.PI : 0;
   sc.add(o);
@@ -3113,7 +3124,7 @@ function mkStop(i) {
   sh(s);
   {
     const q = zoneAt(z);
-    if (q == 2 || q == 5 || q == 16 || Math.abs((-z % 19000) - 6500) < 135) s.visible = false;
+    if (q == 2 || q == 5 || q == 16 || Math.abs((-z % CICLO) - 6500) < 135) s.visible = false;
   }
   g.add(s);
   sc.add(g);
@@ -3246,7 +3257,7 @@ const ZN = [
     "Pista de carreras",
     "Pista de prueba (sin carros)",
   ],
-  zoneAt = (z) => Math.floor(Math.max(0, -z) / 1000) % 19;
+  zoneAt = (z) => Math.floor(Math.max(0, -z) / 1000) % NZ;
 const wo = new T.Group();
 sc.add(wo);
 let cyc = 0,
@@ -3797,7 +3808,7 @@ function rnd(z, k) {
       new T.PlaneGeometry(6, 0.9),
       new T.MeshBasicMaterial({
         map: S(
-          k == "b" ? "ROTONDA DEL BICENTENARIO" : "ROTONDA DE LA BANDERA",
+          k == "b" ? "ROTONDA DEL BICENTENARIO" : k == "n" ? "ROTONDA DE LAS NACIONES" : "ROTONDA DE LA BANDERA",
           512,
           77,
           "#f5f5f5",
@@ -4594,6 +4605,7 @@ function start() {
     skin = +q.value;
     sz = +$("zs").value;
   }
+  const zi = sz == INICIO_MONTANA ? 0 : sz; // zona donde aparece el bus
   audio();
   applyGfx();
   if (AC && AC.state == "suspended") AC.resume();
@@ -4605,9 +4617,9 @@ function start() {
   hst = 0;
   onFire = false;
   raceOn = 0;
-  st0 = 2 * sz;
-  Object.assign(B, { y: 0, vy: 0, fl: 0, tk: 0, lv: 0, x: 5.25, z: -1000 * sz, h: 0, v: 0, st: 0 });
-  RZ = sz ? -19250 : -250;
+  st0 = 2 * zi;
+  Object.assign(B, { y: 0, vy: 0, fl: 0, tk: 0, lv: 0, x: 5.25, z: -1000 * zi, h: 0, v: 0, st: 0 });
+  RZ = zi ? -CICLO - 250 : -250;
   rbMsg = 0;
   rb.position.z = RZ;
   rb.updateMatrix();
@@ -4618,6 +4630,7 @@ function start() {
   R2 = -7250;
   R3 = -11250;
   R4 = -12250;
+  R5 = -23250;
   tbDone = 0;
   mlDone = 0;
   BN.forEach((b) => (b.d = 0));
@@ -4644,7 +4657,7 @@ function start() {
   $("rs").style.display = "none";
   $("ovr").innerHTML = "";
   $("ov").style.display = "none";
-  cam.position.set(3.5, 6, 15 - 1000 * sz);
+  cam.position.set(3.5, 6, 15 - 1000 * zi);
 }
 function over(t) {
   state = "over";
@@ -5120,7 +5133,7 @@ function upd(dt) {
     } else c.g.position.z = -c.k * CH;
   });
   if (B.z < RZ - 220) {
-    RZ -= 19000;
+    RZ -= CICLO;
     rb.position.z = RZ;
     rb.updateMatrix();
     rbMsg = 0;
@@ -5132,10 +5145,10 @@ function upd(dt) {
     rbMsg = 1;
     msg("🔄 Rotonda de La Y Griega: rodeá la isla con ella a tu izquierda", 3500);
   }
-  const cy = Math.floor((-B.z + 100) / 19000);
+  const cy = Math.floor((-B.z + 100) / CICLO);
   if (cy != cyc) {
     cyc = cy;
-    wo.position.z = -19000 * cy;
+    wo.position.z = -CICLO * cy;
     wo.updateMatrix();
     tolled = 0;
     tbDone = 0;
@@ -5145,6 +5158,7 @@ function upd(dt) {
     R2 = wo.position.z - 7250;
     R3 = wo.position.z - 11250;
     R4 = wo.position.z - 12250;
+    R5 = wo.position.z - 23250;
     BZ = wo.position.z - 6500;
     chunks.forEach(scatter);
   }
@@ -5393,13 +5407,7 @@ function upd(dt) {
   cm.color.setScalar((1 - 0.85 * nt) * (1 - 0.35 * rnv));
   rd.toneMappingExposure = 1 + 0.35 * nt;
   if (play) {
-    fuel = Math.max(0, fuel - (Math.abs(B.v) * 0.018 + 0.02) * dt * PV.fc * (MONT.on ? 0.3 : 1)); // en la montaña rinde más
-    if (fuel <= 0) B.v = Math.max(Math.min(B.v, 4), -4);
-    if (fuel < 15 && !fuW) {
-      fuW = 1;
-      msg("⛽ Combustible bajo: buscá una gasolinera", 3000);
-    }
-    if (fuel > 20) fuW = 0;
+    fuel = 100; // ⛽ gasolina infinita en todos los vehículos
   }
   const gzn = GZ.map((z) => z + CZ).find((z) => Math.abs(B.z - z) < 14);
   if (play && !MONT.on && gzn != null && B.x > 12 && B.x < 44 && Math.abs(B.v) < 1.5 && fuel < 99) {
@@ -5498,10 +5506,10 @@ function upd(dt) {
       (MONT.on || zoneAt(B.z - 250) == 18
         ? 0
         : inJam(B.z - 250)
-          ? 55
+          ? 62
           : [16, 17].includes(zoneAt(B.z - 250))
             ? 14
-            : 38);
+            : 48);
     n++
   )
     spawn(B.z - R(120, 650));
@@ -5520,15 +5528,18 @@ function upd(dt) {
         c.x = Math.sign(c.x0) * (Math.abs(c.x0) + (17 - Math.abs(c.x0)) * q);
       } else c.x = c.x0;
     }
+    // js/mundo.js: darle campo a las emergencias (c.cede, c.libre) y frenar antes del incendio (c.tope)
+    if (!c.hit && typeof cocheTick == "function") cocheTick(c, dt);
     if (!c.stat && !c.hit) {
-      let tv = inJam(c.z) ? Math.sign(c.v0) * c.jv : c.v0;
+      let tv = inJam(c.z) && !c.libre ? Math.sign(c.v0) * c.jv : c.v0;
       const d = Math.sign(c.v0);
       for (const o of cars) {
-        if (o === c || o.hit || o.x0 !== c.x0) continue;
+        if (o === c || o.hit || o.x0 !== c.x0 || (c.libre && o.cede)) continue;
         const gp = (o.z - c.z) * d;
         if (gp > 0 && gp < c.hl + o.hl + 10)
           tv = d * Math.min(Math.abs(tv), gp < c.hl + o.hl + 4 ? 0 : Math.abs(o.vz));
       }
+      if (c.tope != null) tv = d * Math.min(Math.abs(tv), c.tope);
       c.vz += (tv - c.vz) * Math.min(1, dt * 2);
     }
     c.z += c.vz * (c.hit ? 0.4 : lvl > 1.6 ? 1.15 : 1) * dt;
@@ -5669,7 +5680,7 @@ function upd(dt) {
   if ($("dm").style.width != dmw) $("dm").style.width = dmw;
   setH(
     "tl",
-    `⏱ Tiempo infinito ∞<br>📍 ${MONT.on ? MONT.lugar : ZN[zoneAt(B.z)]}<br>₡ ${cash.toLocaleString("es-CR")}<br>👥 ${pas} / 40<br>⛽ ${fuel | 0}%${PV.nit ? "<br>🔥 " + Math.round((nit / PV.nit) * 100) + "%" : ""}<br>🌡 ${heat | 0}%${onFire ? " 🔥" : ""}${hudExtra}`,
+    `⏱ Tiempo infinito ∞<br>📍 ${MONT.on ? MONT.lugar : ZN[zoneAt(B.z)]}<br>₡ ${cash.toLocaleString("es-CR")}<br>👥 ${pas} / 40<br>⛽ ∞${PV.nit ? "<br>🔥 " + Math.round((nit / PV.nit) * 100) + "%" : ""}<br>🌡 ${heat | 0}%${onFire ? " 🔥" : ""}${hudExtra}`,
   );
   eng(G, play, dt);
   if (PV.air && Br && Math.abs(B.v) > 6 && performance.now() - (B.ah || 0) > 1100) {
@@ -5786,8 +5797,9 @@ let multas = 0,
   sir = null;
 const limiteVel = (z) => {
   const zn = zoneAt(z);
+  if (PV && PV.emerg) return 0; // ambulancia y bomberos: sin límite de velocidad
   if (zn == 16 || zn == 17 || zn == 18) return 0; // pistas: sin límite
-  return zn == 1 || zn == 4 || zn == 9 ? 100 : 70;
+  return zn == 1 || zn == 4 || zn == 9 || zn == 22 ? 100 : 70;
 };
 function multa(razon, monto) {
   if (state != "play") return;
@@ -7210,7 +7222,7 @@ const _startOriginal = start;
 start = function () {
   montSalir(false);
   _startOriginal();
-  if (sz == 19) montEntrar(60);
+  if (sz == INICIO_MONTANA) montEntrar(60);
 };
 $("go").onclick = start;
 let mAvisoBomba = 0;
@@ -7439,6 +7451,7 @@ function loop(n) {
       policiaTick(dt);
       varaBlancaTick(dt);
       montTick(dt);
+      if (typeof mundoTick == "function") mundoTick(dt);
     } else sirena(false);
   } catch (e) {
     console.error(e);
