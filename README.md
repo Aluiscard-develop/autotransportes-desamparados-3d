@@ -34,6 +34,7 @@ El juego original lo creó mi sobrino 🧒. Esta versión conserva toda su jugab
 | Espacio | Freno de mano |
 | F | Echar agua (camión de bomberos) |
 | C | Cámara (exterior, conductor, pasillo, asiento) |
+| V (mantener) / 👀 | Mirar hacia atrás |
 | H | Bocina |
 | Shift / N | Nitro |
 | R | Reiniciar |
@@ -45,6 +46,13 @@ En celulares y tablets aparecen botones en la pantalla.
 ## Qué tiene
 
 - **🆕 Lo más nuevo:**
+  - **🏔 Avalancha gigantesca por todo el juego:** apenas empezás en cualquier zona te avisa que viene una avalancha 400 m detrás de vos, con nieve, carros, rocas, árboles y troncos. Te persigue siempre (arriba de la pantalla dice a cuántos metros está). Si te alcanza te daña mucho y vuelve a quedar 400 m atrás.
+  - **👀 Mirar hacia atrás:** mantené **V** (o el botón 👀) y la cámara mira hacia atrás.
+  - **🏔 Montañas nevadas (zona 43):** nieve que cae, pinos nevados, lago congelado con patinadores, telesilla, cabañas y muñecos de nieve. Fuera de la carretera la nieve frena a todos, menos a las motos de nieve.
+  - **🏂 Motonieve Ultra 4x4:** cuatro orugas, jaula, barra de luces y escape doble; en la nieve no se atasca.
+  - **▦ Mundo de Bloques (zona 44)**, **🧱 Ciudad de Juguete (zona 45)** y **🏁 Pista de Karts (zona 46)**, con flechas TURBO y cronómetro de SALIDA a META (entre más rápido, más plata). Son zonas originales, no copias de otros juegos.
+  - **🏜 Desierto (zona 47):** dunas, mesetas rojas, cactus, oasis con camellos, plantas rodadoras, paneles solares y la última gasolinera.
+  - **⛈ Supertormenta (zona 48), la más difícil:** lluvia fuerte y oscuridad, ráfagas de viento que te empujan, rayos (a veces te caen encima), un tornado que levanta carros y te tira por los aires, y casas en llamas. Si salís entero: +₡25 000.
   - **⛏ Autopista a Saratalán (zona 35):** a la orilla se construye la Carretera de las Minas (tierra, lastre, asfalto nuevo, pavimentadora, aplanadoras, planta de asfalto y pilas de un puente). Al final, el **Túnel Saratalán** atraviesa la cordillera.
   - **☠ Minas de Saratalán (zona 36):** cañón de roca roja, bocas de minas, rieles, camiones mineros gigantes y explosiones en la cantera. **Caen piedras que cruzan la carretera** y te dañan. Si salís vivo: +₡10 000.
   - **⛴ Ferry a Isla Bonita (zona 37):** subí el vehículo al ferry y frená: zarpa y te lleva con todo y vehículo a la isla (+₡3000). Si te metés al mar sin el ferry, volvés al muelle.
@@ -105,6 +113,8 @@ En celulares y tablets los reflejos se apagan solos. Así la carretera y el bus 
 | [index.html](index.html) | Pantallas y botones (menú, panel, controles táctiles) |
 | [css/estilos.css](css/estilos.css) | Colores y estilos de la interfaz |
 | [js/juego.js](js/juego.js) | El juego (mundo 3D, vehículos, tráfico, física, sonido, multas) |
+| [js/avalancha.js](js/avalancha.js) | La avalancha que te persigue (`AVALANCHA`: distancia, velocidad) |
+| [js/mundo5.js](js/mundo5.js) | Las zonas 43 a 48 (montañas nevadas, Mundo de Bloques, Ciudad de Juguete, Pista de Karts, desierto y Supertormenta) y la Motonieve Ultra 4x4 |
 | [js/mundo4.js](js/mundo4.js) | Las zonas 35 a 42 (Carretera de las Minas, Túnel y Minas de Saratalán, ferry, Isla Bonita, Ciudad Esmeralda, cordillera, autopistas y playas), las obras en carretera, el ICE, kölbi y los carros nuevos |
 | [js/mundo3.js](js/mundo3.js) | Las zonas 32 a 34 (Terminal Lumaca y Países unidos), la Rotonda de La Y Griega en obras con sus carriles externos, Walmart, Carl's Jr., las motos y los buses nuevos |
 | [js/mundo2.js](js/mundo2.js) | Las zonas 24 a 31 (Ruta de la Muerte, RECOPE, Puntarenas, volcanes, Chicago, Minnesota, Nueva Jersey, Panamá), el Super Diesel y más tráfico |

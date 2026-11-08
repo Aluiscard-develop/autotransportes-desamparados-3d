@@ -1,4 +1,6 @@
 let hudExtra = ""; // líneas extra del panel (límite de velocidad y multas)
+// Mirar hacia atrás: mantené V (o el botón 👀). MIRA = 1 mira adelante, -1 mira atrás.
+let MIRA = 1;
 const _el = {},
   $ = (id) => _el[id] || (_el[id] = document.getElementById(id)),
   _hud = {},
@@ -10,7 +12,7 @@ const _el = {},
   T = THREE;
 // Cantidad de zonas de 1 km que tiene el recorrido antes de repetirse (las nuevas están en js/mundo.js,
 // js/mundo2.js y js/mundo3.js).
-const NZ = 43,
+const NZ = 49,
   CICLO = NZ * 1000,
   INICIO_MONTANA = 99; // valor del menú "Inicio: Ruta de montaña"
 
@@ -4005,6 +4007,8 @@ const LZ = [0, 1, 3, 4, 7, 8, 9, 13, 14, 15],
 // Pistas extra donde se puede manejar sin salirse (js/mundo3.js agrega los carriles externos de la
 // Rotonda de La Y Griega y el patio de la Terminal Lumaca). Cada una es una función (x, z) => true/false.
 const PISTAS_EXTRA = [];
+// Clima por zona (js/mundo5.js): { suelo: color del zacate, niebla: [cerca, lejos], oscuro: 0 a 1, lluvia: 1 }
+const CLIMA = {};
 const onXs = (x, z) => Math.abs(x) > 5 && XS.some((q) => sd(x, z - CZ, q[0], q[1], q[2], q[3]) < q[4]);
 (function () {
   const g = new T.Group(),
@@ -5238,9 +5242,12 @@ function upd(dt) {
   water.visible = br;
   wy += ((zb == 16 ? -0.15 : -3) - wy) * Math.min(1, dt * 3);
   water.position.set(B.x, wy, B.z);
-  ground.material.color.setHex(zl == 24 ? 0xa8a27a : zl == 3 || zl == 5 || zl == 6 || zl == 27 ? 0x8fb080 : 0xffffff);
-  const fn = (zl == 24 ? 6 : zl == 3 || zl == 5 || zl == 6 ? 40 : 90) * (1 - 0.3 * rnv),
-    ff = (zl == 24 ? 150 : zl == 3 || zl == 5 || zl == 6 ? 330 : 560) * (1 - 0.4 * rnv);
+  const clz = CLIMA[zl] || {};
+  ground.material.color.setHex(
+    clz.suelo != null ? clz.suelo : zl == 24 ? 0xa8a27a : zl == 3 || zl == 5 || zl == 6 || zl == 27 ? 0x8fb080 : 0xffffff,
+  );
+  const fn = (clz.niebla ? clz.niebla[0] : zl == 24 ? 6 : zl == 3 || zl == 5 || zl == 6 ? 40 : 90) * (1 - 0.3 * rnv),
+    ff = (clz.niebla ? clz.niebla[1] : zl == 24 ? 150 : zl == 3 || zl == 5 || zl == 6 ? 330 : 560) * (1 - 0.4 * rnv);
   sc.fog.near += (fn - sc.fog.near) * Math.min(1, dt);
   sc.fog.far += (ff - sc.fog.far) * Math.min(1, dt);
   const tz = wo.position.z - 4250;
@@ -5441,8 +5448,8 @@ function upd(dt) {
       }
     } else b.t = 0;
   });
-  nt += ((zl == 12 ? 1 : 0) - nt) * Math.min(1, dt * 0.8);
-  rnv += ((RAIN ? 1 : 0) - rnv) * Math.min(1, dt * 0.7);
+  nt += ((zl == 12 ? 1 : clz.oscuro || 0) - nt) * Math.min(1, dt * 0.8);
+  rnv += ((RAIN || clz.lluvia ? 1 : 0) - rnv) * Math.min(1, dt * 0.7);
   sky.material.uniforms.nt.value = Math.min(1, nt + 0.3 * rnv);
   sc.fog.color.setRGB(
     (0.74 - 0.71 * nt) * (1 - 0.3 * rnv),
@@ -5692,12 +5699,16 @@ function upd(dt) {
   // cámara
   const sk = shake * (Math.random() - 0.5);
   shake = Math.max(0, shake - dt * 1.5);
-  if (cm_ == 0) {
-    const tg = _v1.set(B.x - fx * PV.cd, PV.ch + B.y, B.z - fz * PV.cd);
-    cam.position.lerp(tg, 1 - Math.exp(-dt * 4));
+  const miraAntes = MIRA;
+  MIRA = keys.KeyV || keys.TV ? -1 : 1;
+  if (cm_ == 0 || MIRA < 0) {
+    // mirando atrás, la cámara se pone adelante del vehículo y mira hacia atrás
+    const tg = _v1.set(B.x - fx * PV.cd * MIRA, PV.ch + B.y, B.z - fz * PV.cd * MIRA);
+    if (MIRA != miraAntes) cam.position.copy(tg);
+    else cam.position.lerp(tg, 1 - Math.exp(-dt * 4));
     cam.position.x += sk;
     cam.position.y += sk * 0.6;
-    cam.lookAt(B.x + fx * 22, 2.6 + B.y, B.z + fz * 22);
+    cam.lookAt(B.x + fx * 22 * MIRA, 2.6 + B.y, B.z + fz * 22 * MIRA);
   } else {
     bus.updateMatrixWorld();
     const V = (
@@ -7506,9 +7517,9 @@ function loop(n) {
     const py = cam.position.y;
     _qCam.copy(cam.quaternion);
     cam.position.y += bendY(cam.position.z);
-    if (cm_ == 0) {
-      const tz = B.z - Math.cos(B.h) * 22;
-      cam.lookAt(B.x - Math.sin(B.h) * 22, 2.6 + B.y + bendY(tz), tz);
+    if (cm_ == 0 || MIRA < 0) {
+      const tz = B.z - Math.cos(B.h) * 22 * MIRA;
+      cam.lookAt(B.x - Math.sin(B.h) * 22 * MIRA, 2.6 + B.y + bendY(tz), tz);
     }
     rd.render(sc, cam);
     cam.position.y = py;

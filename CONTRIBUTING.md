@@ -46,7 +46,7 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `const PVS` | Velocidad, aceleración y manejo de cada vehículo |
 | `const PARTS` | Las piezas de tuning del garaje |
 | `const ZN` | Los nombres de las zonas (las 5 nuevas se agregan en `js/mundo.js`) |
-| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (43) |
+| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (49) |
 | `function multa` | Lo que hace la policía (ahora regala plata) |
 | `function end` | Qué pasa cuando el vehículo se destroza (ahora queda como nuevo) |
 | `const JAM` | Dónde hay presas |
@@ -103,6 +103,23 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `ZONA 36` | Las Minas de Saratalán, las piedras que caen y las explosiones (`MINAS`) |
 | `ZONA 37 · FERRY` | Los muelles (`MUELLE_A`, `MUELLE_B`) y el ferry (`FER`; su viaje está en CUADRO A CUADRO) |
 | `ZONA 38` a `ZONA 42` | La isla, la ciudad, la cordillera, las autopistas (`AUTOP`) y las playas |
+
+## Dónde está cada cosa en `js/mundo5.js`
+
+| Busca | Para cambiar |
+|---|---|
+| `CLIMA` | Color del suelo, neblina, oscuridad y lluvia de cada zona |
+| `ZONA 43` | Las montañas nevadas (la nieve que frena está en CUADRO A CUADRO) |
+| `MOTONIEVE ULTRA 4X4` | El modelo y el manejo del vehículo 31 |
+| `ZONA 44` · `ZONA 45` | Mundo de Bloques y Ciudad de Juguete |
+| `ZONA 46` | La pista de karts, las flechas turbo (`KART.turbos`) y el premio de la meta |
+| `ZONA 47` | El desierto y las plantas rodadoras |
+| `ZONA 48` | La Supertormenta: viento, rayos, tornado, incendios y el premio (`TORM`) |
+
+## La avalancha (`js/avalancha.js`) y la cámara de atrás
+
+- `AV.dist` (a cuántos metros empieza), `AV.vel` (qué tan rápido avanza) y `AV.max` (nunca se queda más lejos) están al inicio de `js/avalancha.js`.
+- La cámara que mira hacia atrás está en `js/juego.js`: busca `MIRA`.
 
 ## Reglas sencillas
 
