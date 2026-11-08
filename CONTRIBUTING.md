@@ -46,7 +46,7 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `const PVS` | Velocidad, aceleración y manejo de cada vehículo |
 | `const PARTS` | Las piezas de tuning del garaje |
 | `const ZN` | Los nombres de las zonas (las 5 nuevas se agregan en `js/mundo.js`) |
-| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (35) |
+| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (43) |
 | `function multa` | Lo que hace la policía (ahora regala plata) |
 | `function end` | Qué pasa cuando el vehículo se destroza (ahora queda como nuevo) |
 | `const JAM` | Dónde hay presas |
@@ -91,6 +91,18 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `ZONA 32 · TERMINAL LUMACA` | La terminal, sus andenes y el premio del ANDÉN 1 (`TERM`) |
 | `PAÍSES UNIDOS` | Los países (`PAISES_UNIDOS`) y sus monumentos |
 | `MOTOS Y BUSES PARA MANEJAR` | Las motos (vehículos 25 y 26) y los buses 27 a 30 (pintura en `SK`) |
+
+## Dónde está cada cosa en `js/mundo4.js`
+
+| Busca | Para cambiar |
+|---|---|
+| `OBRAS EN CARRETERA` | Cómo se ven las obras y qué tan seguido salen (`PROB_OBRA`, `SIN_OBRAS`) |
+| `ICE Y KÖLBI` | Las oficinas del ICE y las tiendas kölbi |
+| `CARROS NUEVOS` | SUV, deportivos, vans y camiones; qué tan seguido salen (`vehNuevo`) |
+| `ZONA 35` | La construcción de la Carretera de las Minas y el túnel (`TUNEL`) |
+| `ZONA 36` | Las Minas de Saratalán, las piedras que caen y las explosiones (`MINAS`) |
+| `ZONA 37 · FERRY` | Los muelles (`MUELLE_A`, `MUELLE_B`) y el ferry (`FER`; su viaje está en CUADRO A CUADRO) |
+| `ZONA 38` a `ZONA 42` | La isla, la ciudad, la cordillera, las autopistas (`AUTOP`) y las playas |
 
 ## Reglas sencillas
 

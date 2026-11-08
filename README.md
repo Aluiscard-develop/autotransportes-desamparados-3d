@@ -45,6 +45,13 @@ En celulares y tablets aparecen botones en la pantalla.
 ## Qué tiene
 
 - **🆕 Lo más nuevo:**
+  - **⛏ Autopista a Saratalán (zona 35):** a la orilla se construye la Carretera de las Minas (tierra, lastre, asfalto nuevo, pavimentadora, aplanadoras, planta de asfalto y pilas de un puente). Al final, el **Túnel Saratalán** atraviesa la cordillera.
+  - **☠ Minas de Saratalán (zona 36):** cañón de roca roja, bocas de minas, rieles, camiones mineros gigantes y explosiones en la cantera. **Caen piedras que cruzan la carretera** y te dañan. Si salís vivo: +₡10 000.
+  - **⛴ Ferry a Isla Bonita (zona 37):** subí el vehículo al ferry y frená: zarpa y te lleva con todo y vehículo a la isla (+₡3000). Si te metés al mar sin el ferry, volvés al muelle.
+  - **🏝 Isla Bonita (zona 38):** playas a los dos lados, palmeras, sombrillas, hoteles, faro y un puente de regreso a tierra firme.
+  - **🏙 Ciudad Esmeralda (zona 39), 🏔 Cordillera y valle (zona 40), 🛣 Autopistas del Pacífico (zona 41, con dos autopistas laterales que también se manejan y un paso elevado) y 🏖 Playas de Guanacaste (zona 42).**
+  - **🚧 Obras en carretera por todo el juego:** conos, barreras, excavadoras, aplanadoras, mezcladoras, bandereros y trabajadores a la orilla.
+  - **⚡ Oficinas del ICE y 📶 tiendas kölbi** por todo el juego, y **más carros** en el tráfico (SUV, deportivos, vans, camiones del ICE y de kölbi).
   - **🚧 Rotonda de La Y Griega en obras:** grúa torre que gira, excavadora, volqueta, conos y barreras en un carril de la rotonda, andamios junto a la Y y trabajadores. Por fuera hay **carriles externos** (uno por lado) para pasar directo sin dar la vuelta.
   - **🚏 Paradas remodeladas:** todas las paradas tienen caseta de vidrio, techo verde, pantalla con el próximo bus, banca y mapa de rutas. En la rotonda hay dos **estaciones remodeladas**: pará el bus en la franja verde del carril externo de la derecha (+₡2500).
   - **🚌 Terminal Autotransportes Lumaca (zona 32):** patio donde se puede entrar manejando, andenes techados con buses de Lumaca, boletería, pantalla de salidas y torre del reloj. Pará en el ANDÉN 1 (+₡8000).
@@ -98,6 +105,7 @@ En celulares y tablets los reflejos se apagan solos. Así la carretera y el bus 
 | [index.html](index.html) | Pantallas y botones (menú, panel, controles táctiles) |
 | [css/estilos.css](css/estilos.css) | Colores y estilos de la interfaz |
 | [js/juego.js](js/juego.js) | El juego (mundo 3D, vehículos, tráfico, física, sonido, multas) |
+| [js/mundo4.js](js/mundo4.js) | Las zonas 35 a 42 (Carretera de las Minas, Túnel y Minas de Saratalán, ferry, Isla Bonita, Ciudad Esmeralda, cordillera, autopistas y playas), las obras en carretera, el ICE, kölbi y los carros nuevos |
 | [js/mundo3.js](js/mundo3.js) | Las zonas 32 a 34 (Terminal Lumaca y Países unidos), la Rotonda de La Y Griega en obras con sus carriles externos, Walmart, Carl's Jr., las motos y los buses nuevos |
 | [js/mundo2.js](js/mundo2.js) | Las zonas 24 a 31 (Ruta de la Muerte, RECOPE, Puntarenas, volcanes, Chicago, Minnesota, Nueva Jersey, Panamá), el Super Diesel y más tráfico |
 | [js/mundo.js](js/mundo.js) | Las zonas 19 a 23, los negocios de la orilla (restaurantes, bomberos, hospitales, oficinas) y los vehículos nuevos |

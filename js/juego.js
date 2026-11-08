@@ -10,7 +10,7 @@ const _el = {},
   T = THREE;
 // Cantidad de zonas de 1 km que tiene el recorrido antes de repetirse (las nuevas están en js/mundo.js,
 // js/mundo2.js y js/mundo3.js).
-const NZ = 35,
+const NZ = 43,
   CICLO = NZ * 1000,
   INICIO_MONTANA = 99; // valor del menú "Inicio: Ruta de montaña"
 
@@ -21,7 +21,7 @@ const NZ = 35,
 // Para cambiarlas: editá RELIEVE. [zona]: [altura máxima en metros, cantidad de lomas por km]
 // Cada zona sube y baja (subida, bajada, valle…) y termina a nivel, así que no afecta túneles, puentes ni rotondas.
 // Zonas: 1 Autopista · 3 Ruta del bosque · 9 Circunvalación · 13 Cruce Río Frío (ver la lista ZN más abajo).
-const RELIEVE = { 1: [9, 2], 3: [7, 3], 9: [8, 2], 13: [9, 2], 24: [13, 2] }; // 24: Ruta de la Muerte
+const RELIEVE = { 1: [9, 2], 3: [7, 3], 9: [8, 2], 13: [9, 2], 24: [13, 2], 40: [14, 2] }; // 24: Ruta de la Muerte · 40: Cordillera y valle
 const relieveZona = (u) => {
   const k = Math.floor(u / 1000),
     c = RELIEVE[((k % NZ) + NZ) % NZ];
@@ -975,11 +975,11 @@ function scatter(c) {
       return;
     }
     if (t == 4) {
-      o.visible = Z(1, 9, 25, 30);
+      o.visible = Z(1, 9, 25, 30, 35, 41);
       return;
     }
     if (t == 5) {
-      o.visible = Z(1, 4, 9, 25, 30);
+      o.visible = Z(1, 4, 9, 25, 30, 35, 41);
       return;
     }
     if (t == 6) {
@@ -3029,6 +3029,7 @@ function mkBoat() {
 }
 function spawn(z) {
   if (zoneAt(z - CZ) == 18) return;
+  if (typeof sinTrafico == "function" && sinTrafico(z - CZ)) return; // js/mundo3.js: el mar del ferry
   const lz =
       LZ.includes(zoneAt(z - CZ)) &&
       !HB.some((r) => z - CZ < r[0] + 60 && z - CZ > r[1] - 60) &&
@@ -5095,7 +5096,7 @@ function upd(dt) {
         [-8800, 123],
       ].some((a) => Math.abs(B.z - (wo.position.z + a[0])) < a[1]);
     let wh = 0;
-    if ((zw == 1 || zw == 4 || zw == 9 || zw == 25 || zw == 30) && Math.abs(B.x) < 0.55 + PV.hw) {
+    if ((zw == 1 || zw == 4 || zw == 9 || zw == 25 || zw == 30 || zw == 35 || zw == 41) && Math.abs(B.x) < 0.55 + PV.hw) {
       B.x = B.x < 0 ? -0.55 - PV.hw : 0.55 + PV.hw;
       wh = 1;
     }
@@ -5555,7 +5556,7 @@ function upd(dt) {
           ? 62
           : [16, 17].includes(zoneAt(B.z - 250))
             ? 14
-            : 48);
+            : 60);
     n++
   )
     spawn(B.z - R(120, 650));

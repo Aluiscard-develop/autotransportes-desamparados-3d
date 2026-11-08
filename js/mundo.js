@@ -480,6 +480,9 @@
     const r0 = Math.random();
     if (r0 < 0.1 && NEGOCIOS.walmart) return "walmart";
     if (r0 < 0.22 && NEGOCIOS.carlsjr) return "carlsjr";
+    // oficinas del ICE y tiendas kölbi (js/mundo3.js), también por todo el juego
+    if (r0 < 0.3 && NEGOCIOS.ice) return "ice";
+    if (r0 < 0.38 && NEGOCIOS.kolbi) return "kolbi";
     const r = Math.random();
     if (zn == 20) return r < 0.72 ? pk_(TECNO) : r < 0.86 ? "fabrica" : pk_(COMIDA);
     if (r < 0.55) return pk_(COMIDA);
