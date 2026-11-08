@@ -125,7 +125,8 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 
 - `FASES`: cuántos segundos dura la calma, el caos y la Tormenta Morada.
 - `VEL_CARROS`: cuántas veces más rápido van los carros en cada fase.
-- `N_TORNADOS`: cuántos tornados puede haber a la vez.
+- `N_TORNADOS`: cuántos tornados cercanos puede haber a la vez.
+- En `js/apocalipsis2.js`: `N_HOR` (tornados del horizonte), `N_GENTE` (personas corriendo) y `N_AV` (avalanchas). Si el juego se pone lento en una computadora, bajá esos números.
 
 ## Reglas sencillas
 

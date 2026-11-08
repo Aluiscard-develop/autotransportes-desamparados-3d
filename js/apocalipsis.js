@@ -3,15 +3,16 @@
 //   1. CALMA      · un rato tranquilo (al empezar y entre apocalipsis)
 //   2. CAOS       · los carros van rapidísimo, tornados gigantes por todas partes con carros volando,
 //                   clima pésimo, explosiones y gente corriendo y gritando
-//   3. MORADA     · la Tormenta Morada: cielo morado, rayos morados, tornados morados y bolas de fuego
-// y vuelve a empezar. Se apaga desde el menú ("🌪 Apocalipsis: No").
+//   3. MORADA     · la Tormenta Morada: cielo morado, rayos morados, tornados morados y bolas de fuego.
+//                   ¡NUNCA PARA! Cada minuto sube de nivel (más peligrosa) y te da ₡5000 por aguantar.
+// El desastre total (tornados en el horizonte, multitudes, derrumbes, inundaciones…) está en js/apocalipsis2.js. Se apaga desde el menú ("🌪 Apocalipsis: No").
 // Para cambiar cuánto dura cada fase: FASES. Qué tan rápido van los carros: VEL_CARROS.
 // =====================================================================
 (function () {
   const { compartir, mat, humoTex, llamaTex } = MUNDO;
-  const FASES = { primeraCalma: 25, calma: 120, caos: 75, morada: 60 };
+  const FASES = { primeraCalma: 25, calma: 120, caos: 40, morada: 60 }; // morada = cada cuánto sube de nivel
   const VEL_CARROS = { caos: 3, morada: 4 }; // veces más rápido que lo normal
-  const AP = { fase: "calma", t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0 };
+  const AP = { fase: "calma", nivel: 0, t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0 };
   window.APOCALIPSIS = AP; // para revisar desde la consola
 
   // ----- opción del menú -----
@@ -19,7 +20,7 @@
   const activo = () => !sel || sel.value == "1";
 
   // ----- tornados (se mueven por el mundo alrededor del jugador) -----
-  const N_TORNADOS = 8;
+  const N_TORNADOS = 14;
   const tornados = [];
   for (let i = 0; i < N_TORNADOS; i++) {
     const g = new T.Group(),
@@ -38,7 +39,7 @@
     }
     g.visible = false;
     sc.add(g);
-    tornados.push({ g, humo, autos, x: 0, z: 0, vx: 0, vz: 0, alto: R(80, 130), activo: false });
+    tornados.push({ g, humo, autos, x: 0, z: 0, vx: 0, vz: 0, alto: R(150, 260), activo: false });
   }
   const ponerTornado = (t, cerca) => {
     t.x = R(-110, 110);
@@ -238,6 +239,7 @@
     if (!activo() || MONT.on) {
       if (AP.fase != "calma") {
         AP.fase = "calma";
+        AP.nivel = 0;
         AP.t = FASES.calma;
       }
       ocultarTodo();
@@ -246,6 +248,7 @@
     // al empezar de nuevo (inicio o reinicio) vuelve la calma
     if (zAnt != null && Math.abs(B.z - zAnt) > 30 && state == "play") {
       AP.fase = "calma";
+      AP.nivel = 0;
       AP.t = FASES.primeraCalma;
       ocultarTodo();
     }
@@ -263,8 +266,15 @@
       return;
     }
     if (AP.t <= 0) {
-      cambiarFase(AP.fase == "caos" ? "morada" : "calma");
-      if (AP.fase == "calma") return;
+      if (AP.fase == "caos") cambiarFase("morada");
+      else {
+        // la Tormenta Morada nunca para: sube de nivel
+        AP.t = FASES.morada;
+        AP.nivel++;
+        cash += 5000;
+        msg(`🟣⛈ La Tormenta Morada NO PARA · nivel ${AP.nivel + 1} · aguantaste un minuto más +₡5000`, 3500);
+        trueno(1);
+      }
     }
     const moradaK = AP.fase == "morada" ? 1 : 0;
 
@@ -290,7 +300,7 @@
       }
 
     // ----- tornados -----
-    const nActivos = moradaK ? N_TORNADOS : 5;
+    const nActivos = moradaK ? Math.min(N_TORNADOS, 8 + AP.nivel * 2) : 5;
     tornados.forEach((tr, i) => {
       if (i >= nActivos) {
         tr.g.visible = false;
@@ -306,9 +316,9 @@
       tr.humo.forEach((sp, j) => {
         const q = sp.userData.k,
           a = t * 3.2 + j * 1.7,
-          r = 2.5 + q * 20;
+          r = 4 + q * 36;
         sp.position.set(Math.cos(a) * r * 0.5, q * tr.alto, Math.sin(a) * r * 0.5);
-        sp.scale.setScalar(7 + q * 30);
+        sp.scale.setScalar(10 + q * 50);
         sp.material.color.setHex(col);
       });
       tr.autos.forEach((v, j) => {
@@ -319,10 +329,10 @@
       });
       // jala al jugador y lo levanta
       const d = Math.hypot(B.x - tr.x, B.z - tr.z);
-      if (play() && d < 30 && !B.fl) {
+      if (play() && d < 45 && !B.fl) {
         B.x += ((tr.x - B.x) / (d || 1)) * 7 * dt;
         shake = Math.max(shake, 0.6);
-        if (d < 15 && !B.bal && AP.golpeT <= 0) {
+        if (d < 22 && !B.bal && AP.golpeT <= 0) {
           AP.golpeT = 2.5;
           B.bal = 1;
           B.vy = 14;
@@ -336,7 +346,7 @@
       }
       // carros del tráfico: ¡a volar!
       for (const c of cars)
-        if (!c.vy && Math.abs(c.x - tr.x) < 20 && Math.abs(c.z - tr.z) < 20) {
+        if (!c.vy && Math.abs(c.x - tr.x) < 30 && Math.abs(c.z - tr.z) < 30) {
           c.vy = R(14, 24);
           c.vx = R(-10, 10);
           c.hit = 1;
