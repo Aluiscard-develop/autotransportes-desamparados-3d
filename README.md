@@ -46,6 +46,7 @@ En celulares y tablets aparecen botones en la pantalla.
 ## Qué tiene
 
 - **🆕 Lo más nuevo:**
+  - **🌪 Apocalipsis en todo el juego** (se apaga en el menú: "🌪 Apocalipsis: No"): después de un rato de calma, **los carros empiezan a ir rapidísimo**, salen **tornados gigantes por todas partes** con carros volando, el clima se pone pésimo, hay explosiones y **gente corriendo y gritando**. Después llega la **🟣 Tormenta Morada**: cielo morado, rayos morados, tornados morados y bolas de fuego. Si sobrevivís: +₡15 000, y al rato vuelve a empezar.
   - **🏔 Avalancha gigantesca por todo el juego:** apenas empezás en cualquier zona te avisa que viene una avalancha 400 m detrás de vos, con nieve, carros, rocas, árboles y troncos. Te persigue siempre (arriba de la pantalla dice a cuántos metros está). Si te alcanza te daña mucho y vuelve a quedar 400 m atrás.
   - **👀 Mirar hacia atrás:** mantené **V** (o el botón 👀) y la cámara mira hacia atrás.
   - **🏔 Montañas nevadas (zona 43):** nieve que cae, pinos nevados, lago congelado con patinadores, telesilla, cabañas y muñecos de nieve. Fuera de la carretera la nieve frena a todos, menos a las motos de nieve.
@@ -113,6 +114,7 @@ En celulares y tablets los reflejos se apagan solos. Así la carretera y el bus 
 | [index.html](index.html) | Pantallas y botones (menú, panel, controles táctiles) |
 | [css/estilos.css](css/estilos.css) | Colores y estilos de la interfaz |
 | [js/juego.js](js/juego.js) | El juego (mundo 3D, vehículos, tráfico, física, sonido, multas) |
+| [js/apocalipsis.js](js/apocalipsis.js) | El apocalipsis: tornados, carros rapidísimos, gente corriendo y la Tormenta Morada (`FASES`, `VEL_CARROS`) |
 | [js/avalancha.js](js/avalancha.js) | La avalancha que te persigue (`AVALANCHA`: distancia, velocidad) |
 | [js/mundo5.js](js/mundo5.js) | Las zonas 43 a 48 (montañas nevadas, Mundo de Bloques, Ciudad de Juguete, Pista de Karts, desierto y Supertormenta) y la Motonieve Ultra 4x4 |
 | [js/mundo4.js](js/mundo4.js) | Las zonas 35 a 42 (Carretera de las Minas, Túnel y Minas de Saratalán, ferry, Isla Bonita, Ciudad Esmeralda, cordillera, autopistas y playas), las obras en carretera, el ICE, kölbi y los carros nuevos |

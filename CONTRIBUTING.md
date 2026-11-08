@@ -121,6 +121,12 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 - `AV.dist` (a cuántos metros empieza), `AV.vel` (qué tan rápido avanza) y `AV.max` (nunca se queda más lejos) están al inicio de `js/avalancha.js`.
 - La cámara que mira hacia atrás está en `js/juego.js`: busca `MIRA`.
 
+## El apocalipsis (`js/apocalipsis.js`)
+
+- `FASES`: cuántos segundos dura la calma, el caos y la Tormenta Morada.
+- `VEL_CARROS`: cuántas veces más rápido van los carros en cada fase.
+- `N_TORNADOS`: cuántos tornados puede haber a la vez.
+
 ## Reglas sencillas
 
 - Prueba tu cambio abriendo `index.html` antes de enviarlo.
