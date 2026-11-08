@@ -34,6 +34,7 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | Busca | Para cambiar |
 |---|---|
 | `PENDIENTES Y BAJADAS` | En qué zonas hay lomas, qué tan altas son y cuántas por km (`RELIEVE`) |
+| `CARRETERA A VARA BLANCA` | La salida de montaña: forma del camino (`VB`), altura del paso (`VB_ALTURA`), derrumbe y presa |
 | `MULTAS Y POLICÍA` | Límite de velocidad, monto de las multas, velocidad de la patrulla |
 | `AMBULANCIA` | El modelo de la ambulancia y sus luces |
 | `// cielo` | El cielo, el sol y las estrellas |

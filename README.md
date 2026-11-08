@@ -14,6 +14,10 @@ El juego original lo creó mi sobrino 🧒. Esta versión conserva toda su jugab
 |---|---|
 | ![Cabina](docs/cabina.png) | ![Ambulancia](docs/ambulancia.png) |
 
+| Carretera a Vara Blanca (presa y derrumbe) | |
+|---|---|
+| ![Vara Blanca](docs/vara-blanca.png) | |
+
 | Ciudad | Pista de agua |
 |---|---|
 | ![Ciudad](docs/ciudad.png) | ![Agua](docs/agua.png) |
@@ -38,6 +42,7 @@ En celulares y tablets aparecen botones en la pantalla.
 - **21 vehículos:** 4 buses (ATD, Mercedes-Benz CAIO, Busscar Porvenir…), jeep, tanque, F1, un ultraligero que vuela, aerodeslizador, cohete y más
 - **19 zonas:** centro urbano, autopista, puente atirantado, Túnel Zurquí, puente de madera, Rotonda del Walmart con cruce de tren, rotondas del Bicentenario y de la Bandera (de noche), pista de agua, de carreras y de prueba
 - **Pendientes y bajadas** en la Autopista, la Ruta del bosque, la Circunvalación y el Cruce Río Frío: el bus se inclina, pierde velocidad al subir y agarra impulso al bajar
+- **Carretera a Vara Blanca:** en San José · Estadio Nacional hay una salida a la derecha ("SALIDA · CARRETERA VARA BLANCA — CUIDADO DERRUMBES Y PRESA") que lleva a una carretera de montaña de 2 carriles. Sube con curvas hasta un paso de 24 m, tiene barandas, un derrumbe que tapa un carril, una presa de carros con las intermitentes y una piedra que rueda cerro abajo; hay que adelantar por el otro carril. Vuelve a la autopista antes del túnel.
 - **Multas y policía:** te multan por exceso de velocidad (70 km/h en ciudad, 100 en autopista), por chocar y por pasarte la parada. Con 3 multas te persigue una patrulla con sirena; si te alcanza, pagas ₡5000. Si le sacas más de 320 m, te escapas.
 - **Ambulancias** en el tráfico (más rápidas, con luces) y atendiendo los accidentes
 - **Parabrisas real:** desde la cámara del conductor se ve la carretera, con limpiaparabrisas, tablero y retrovisor
