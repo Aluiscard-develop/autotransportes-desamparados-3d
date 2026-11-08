@@ -44,16 +44,33 @@ En celulares y tablets aparecen botones en la pantalla.
 
 ## Qué tiene
 
-- **24 vehículos:** 🚑 ambulancia y 🚒 camión de bomberos (con sirena, luces y sin límite de velocidad), 4 buses (ATD, Mercedes-Benz CAIO, Busscar Porvenir…), jeep, tanque, F1, un ultraligero que vuela, aerodeslizador, cohete y el nuevo **🐲 Oruga turbo**: todoterreno de orugas con alerón trasero y motor súper rápido (hasta ~245 km/h, casi no pierde velocidad fuera de la carretera)
-- **24 zonas:** centro urbano, autopista, puente atirantado, Túnel Zurquí, puente de madera, Rotonda del Walmart con cruce de tren, rotondas del Bicentenario y de la Bandera (de noche), pista de agua, de carreras y de prueba, y las nuevas:
+- **🆕 Lo más nuevo:**
+  - **🚧 Rotonda de La Y Griega en obras:** grúa torre que gira, excavadora, volqueta, conos y barreras en un carril de la rotonda, andamios junto a la Y y trabajadores. Por fuera hay **carriles externos** (uno por lado) para pasar directo sin dar la vuelta.
+  - **🚏 Paradas remodeladas:** todas las paradas tienen caseta de vidrio, techo verde, pantalla con el próximo bus, banca y mapa de rutas. En la rotonda hay dos **estaciones remodeladas**: pará el bus en la franja verde del carril externo de la derecha (+₡2500).
+  - **🚌 Terminal Autotransportes Lumaca (zona 32):** patio donde se puede entrar manejando, andenes techados con buses de Lumaca, boletería, pantalla de salidas y torre del reloj. Pará en el ANDÉN 1 (+₡8000).
+  - **🤝 Países unidos (zonas 33 y 34):** Nicaragua, Honduras, El Salvador, Guatemala, México, Colombia, Venezuela, Brasil, Perú, Chile y Argentina, cada uno con su arco de bienvenida, banderas y monumento (catedral de León, Copán, El Salvador del Mundo, Tikal, Pirámide del Sol, Salto Ángel, Cristo Redentor, Machu Picchu, los Andes, el Obelisco…). Al entrar a cada país te sellan el pasaporte (+₡500).
+  - **🏍 Motos para manejar** (deportiva y repartidora de Carl's Jr.) y **4 buses más** (Lumaca, escolar, turístico Pura Vida e internacional). También hay más buses de Lumaca en el tráfico.
+  - **🛒 Walmart y 🍔 Carl's Jr.** a la orilla de la carretera por todo el juego.
+- **31 vehículos (antes 25):** 🚛 **Super Diesel** (camión enorme con escapes de cromo que echan humo negro, llega a ~185 km/h y aplasta carros), 🚑 ambulancia y 🚒 camión de bomberos (con sirena, luces y sin límite de velocidad), 4 buses (ATD, Mercedes-Benz CAIO, Busscar Porvenir…), jeep, tanque, F1, un ultraligero que vuela, aerodeslizador, cohete y el nuevo **🐲 Oruga turbo**: todoterreno de orugas con alerón trasero y motor súper rápido (hasta ~245 km/h, casi no pierde velocidad fuera de la carretera)
+- **32 zonas:** centro urbano, autopista, puente atirantado, Túnel Zurquí, puente de madera, Rotonda del Walmart con cruce de tren, rotondas del Bicentenario y de la Bandera (de noche), pista de agua, de carreras y de prueba, y las nuevas:
   - **🗽 Nueva York:** cuadras de rascacielos con calles, pantallas gigantes, tren elevado (metro) con dos estaciones, terminal de buses, estación de bomberos, hospital, la Estatua de la Libertad, una torre altísima con aguja, taxis amarillos y presa
   - **🏭 Parque industrial:** oficinas de Intel, AMD, Microsoft y Windows con sus parqueos, fábricas con chimenea, patio de contenedores, tráileres y un tren de carga
   - **🛂 Frontera · Migración:** casetas de Migración y Aduana, Duty Free, banderas y presa de tráileres. Si pasás despacio (máx 30 km/h) te sellan el pasaporte (+₡500); si pasás rápido, multa
   - **🛣 Autopista nueva:** la principal tiene presa, pero por la derecha sale una **autopista alterna sin presa** que vuelve a la principal al final
   - **🌎 Rotonda de las Naciones:** rotonda con banderas de 23 países y una avenida de banderas
-- **Por todo el juego:** a la orilla de la carretera aparecen KFC, McDonald's, Dunkin', Burger King, estaciones de bomberos, hospitales, oficinas de Intel, AMD, Microsoft y Windows, y fábricas
-- **Tráfico nuevo:** camiones de bomberos con luces, tráileres, muchos más buses (escolares, articulados, de Nueva York y de rutas ticas) y más carros que antes
-- **⛽ Gasolina infinita** en todos los vehículos
+  - **💀 Ruta de la Muerte (Cerro de la Muerte):** neblina espesa, lomas grandes, barandas de metal, cruces, avisos de peligro y antenas en la cima
+  - **🔥 Autopista Florencio del Castillo · RECOPE:** a la orilla está el plantel de RECOPE con un **incendio gigantesco de 200 m de alto** que se ve desde lejos. Con el camión de bomberos y la tecla F lo podés apagar (tarda como 80 segundos) y ganás ₡50 000
+  - **🏖 Puntarenas:** playa con sombrillas y palmeras, mar, muelle con un crucero, dos ferrys que van y vienen, botes y hoteles
+  - **🌋 Parques nacionales:** volcanes Poás (con laguna), Turrialba, Arenal e Irazú echando humo, guardaparques, senderos y una catarata
+  - **🏙 Chicago:** rascacielos, torres negras gigantes, el "frijol" de acero, el río con lanchas y el tren elevado
+  - **❄ Minnesota:** nieve que cae, lagos congelados con casitas de pesca, pinos nevados, un mall gigante y la torre de agua
+  - **⚓ Nueva Jersey:** peaje del Turnpike, puerto con grúas, barcos de carga y contenedores, refinería y Manhattan a lo lejos
+  - **🇵🇦 Panamá:** el Canal de Panamá con esclusas y barcos que lo cruzan, rascacielos y la torre que se tuerce
+- **Por todo el juego:** a la orilla de la carretera aparecen KFC, McDonald's, Dunkin', Burger King, Pizza Hut, Subway, Starbucks, Taco Bell, Wendy's, Pollo Campero, Popeyes, Domino's, estaciones de bomberos, hospitales, oficinas de Intel, AMD, Microsoft y Windows, y fábricas
+- **Tráfico nuevo:** camiones de bomberos con luces, tráileres, motos, pickups, cisternas de combustible, mezcladoras, grúas, muchos más buses (escolares, articulados, de Nueva York y de rutas ticas) y más carros que antes
+- **⛽ Gasolina infinita** en todos los vehículos, y **ya no se sobrecalientan**
+- **🎁 La policía ya no multa: regala plata** cada vez que antes te habría multado
+- **Nunca se pierde:** si chocás tanto que el vehículo se destroza, queda como nuevo y seguís manejando
 - **🔥 Incendio gigante en la autopista (km 9, Circunvalación):** justo después de San José · Estadio Nacional. Hace una **presa de 5 km** (desde el peaje). En San José hay una **estación de bomberos** y un **hospital**, a 1 km del fuego.
   - **Carril de emergencia:** los carros se abren a los lados para dejar pasar a las ambulancias y a los bomberos (también a vos si manejás uno).
   - **🚒 Camión de bomberos:** acercate al fuego y mantené **F** (o el botón 💧) para echar agua. Es gigantesco: tarda como 35 segundos. Si lo apagás ganás ₡20 000 y la presa se empieza a mover. Los bomberos del tráfico también ayudan, pero más despacio.
@@ -63,10 +80,10 @@ En celulares y tablets aparecen botones en la pantalla.
 - **Carretera a Vara Blanca:** en San José · Estadio Nacional hay una salida a la derecha ("SALIDA · CARRETERA VARA BLANCA — CUIDADO DERRUMBES Y PRESA") que lleva a una carretera de montaña de 2 carriles. Sube con curvas hasta un paso de 24 m, tiene barandas, un derrumbe que tapa un carril, una presa de carros con las intermitentes y una piedra que rueda cerro abajo; hay que adelantar por el otro carril. Vuelve a la autopista antes del túnel.
 - **Ruta de montaña a Vara Blanca (150 km):** se entra pasando la presa de la carretera a Vara Blanca, o desde el menú ("Inicio: Ruta de montaña"). Tiene curvas y muchísimas subidas y bajadas, paredes de roca y **precipicios** (algunos sin baranda: si te salís, caés), bosques de parques nacionales (Braulio Carrillo, Volcán Poás, Tapantí, Volcán Irazú, Juan Castro Blanco y Volcán Arenal), miradores con **volcanes** (Poás con su laguna, Barva, Irazú, Turrialba y Arenal echando humo), bombas de gasolina cada 10 km y rótulos de kilómetro. Al llegar al km 150 ganás ₡50 000 y bajás de vuelta a la autopista.
 - **Km 44 · Puente del Río Caliente:** puente colgante de madera, angosto, sin barandas sólidas, con tablas que faltan y que se mece. Hay que pasar despacio (máx. 20 km/h) y por el centro: si vas rápido cruje y te daña, a más de 75 km/h se quiebran las tablas y si te salís del borde caés al río (que echa vapor).
-- **Multas y policía:** te multan por exceso de velocidad (70 km/h en ciudad, 100 en autopista), por chocar y por pasarte la parada. Con 3 multas te persigue una patrulla con sirena; si te alcanza, pagas ₡5000. Si le sacas más de 320 m, te escapas.
+- ~~Multas y policía~~ (ahora la policía regala plata): te multan por exceso de velocidad (70 km/h en ciudad, 100 en autopista), por chocar y por pasarte la parada. Con 3 multas te persigue una patrulla con sirena; si te alcanza, pagas ₡5000. Si le sacas más de 320 m, te escapas.
 - **Ambulancias** en el tráfico (más rápidas, con luces) y atendiendo los accidentes
 - **Parabrisas real:** desde la cámara del conductor se ve la carretera, con limpiaparabrisas, tablero y retrovisor
-- Tuning con 35 piezas, motor diésel de 6 cambios con sonido sintetizado, calentamiento e incendio del motor, y lluvia
+- Tuning con 35 piezas, motor diésel de 6 cambios con sonido sintetizado y lluvia
 
 ## Mejoras gráficas
 
@@ -81,6 +98,8 @@ En celulares y tablets los reflejos se apagan solos. Así la carretera y el bus 
 | [index.html](index.html) | Pantallas y botones (menú, panel, controles táctiles) |
 | [css/estilos.css](css/estilos.css) | Colores y estilos de la interfaz |
 | [js/juego.js](js/juego.js) | El juego (mundo 3D, vehículos, tráfico, física, sonido, multas) |
+| [js/mundo3.js](js/mundo3.js) | Las zonas 32 a 34 (Terminal Lumaca y Países unidos), la Rotonda de La Y Griega en obras con sus carriles externos, Walmart, Carl's Jr., las motos y los buses nuevos |
+| [js/mundo2.js](js/mundo2.js) | Las zonas 24 a 31 (Ruta de la Muerte, RECOPE, Puntarenas, volcanes, Chicago, Minnesota, Nueva Jersey, Panamá), el Super Diesel y más tráfico |
 | [js/mundo.js](js/mundo.js) | Las zonas 19 a 23, los negocios de la orilla (restaurantes, bomberos, hospitales, oficinas) y los vehículos nuevos |
 | [original.html](original.html) | La versión original, sin tocar |
 

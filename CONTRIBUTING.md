@@ -46,7 +46,9 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `const PVS` | Velocidad, aceleración y manejo de cada vehículo |
 | `const PARTS` | Las piezas de tuning del garaje |
 | `const ZN` | Los nombres de las zonas (las 5 nuevas se agregan en `js/mundo.js`) |
-| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (24) |
+| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (35) |
+| `function multa` | Lo que hace la policía (ahora regala plata) |
+| `function end` | Qué pasa cuando el vehículo se destroza (ahora queda como nuevo) |
 | `const JAM` | Dónde hay presas |
 | `OPTIMIZACIÓN` | Liberar memoria y congelar el escenario estático |
 
@@ -65,6 +67,30 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `SAN JOSÉ · BOMBEROS Y HOSPITAL` | Dónde están la estación y el hospital (`Z_ESTACION`, `Z_HOSPITAL`) |
 | `EMERGENCIAS` | Ambulancia y camión de bomberos para manejar, el incendio (`INC`: dónde está y cuánto mide), la presa de 5 km (`INC.presa`), el carril de emergencia (`cocheTick`), el agua y los heridos |
 | `CUADRO A CUADRO` | Los trenes que se mueven y el sello de Migración |
+
+## Dónde está cada cosa en `js/mundo2.js`
+
+| Busca | Para cambiar |
+|---|---|
+| `ZONA 24 · RUTA DE LA MUERTE` | Avisos, cruces, barandas y antenas (la neblina está en `js/juego.js`, busca `zl == 24`) |
+| `ZONA 25 · FLORENCIO DEL CASTILLO` | El plantel de RECOPE y su incendio (`RECOPE`: dónde está, la presa) |
+| `ZONA 26 · PUNTARENAS` | Playa, mar, muelle, crucero, ferrys, botes y hoteles (`HOTELES`) |
+| `ZONA 27 · VOLCANES` | Dónde está cada volcán (`volcan(...)`) y los letreros de parques nacionales |
+| `ZONA 28 · CHICAGO` · `ZONA 29 · MINNESOTA` · `ZONA 30 · NUEVA JERSEY` · `ZONA 31 · PANAMÁ` | Cada ciudad |
+| `SUPER DIESEL` | El modelo y el manejo del Super Diesel |
+| `TRÁFICO NUEVO` | Motos, pickups, cisternas, mezcladoras y grúas, y qué tan seguido salen |
+
+## Dónde está cada cosa en `js/mundo3.js`
+
+| Busca | Para cambiar |
+|---|---|
+| `WALMART Y CARL'S JR` | Cómo se ven los dos negocios (qué tan seguido salen: `elegirNegocio` en `js/mundo.js`) |
+| `ROTONDA LA Y GRIEGA · OBRAS` | Grúa, excavadora, conos, barreras y trabajadores de la rotonda |
+| `CARRILES EXTERNOS` | Forma de los carriles que rodean la rotonda (`CTRL`) y su ancho (`CARRIL_ANCHO`) |
+| `ESTACIONES REMODELADAS` | Las estaciones de la rotonda (la parada normal es `mkStop` en `js/juego.js`) |
+| `ZONA 32 · TERMINAL LUMACA` | La terminal, sus andenes y el premio del ANDÉN 1 (`TERM`) |
+| `PAÍSES UNIDOS` | Los países (`PAISES_UNIDOS`) y sus monumentos |
+| `MOTOS Y BUSES PARA MANEJAR` | Las motos (vehículos 25 y 26) y los buses 27 a 30 (pintura en `SK`) |
 
 ## Reglas sencillas
 

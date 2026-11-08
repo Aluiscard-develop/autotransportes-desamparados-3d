@@ -8,8 +8,9 @@ const _el = {},
   },
   R = (a, b) => a + Math.random() * (b - a),
   T = THREE;
-// Cantidad de zonas de 1 km que tiene el recorrido antes de repetirse (las nuevas están en js/mundo.js).
-const NZ = 24,
+// Cantidad de zonas de 1 km que tiene el recorrido antes de repetirse (las nuevas están en js/mundo.js,
+// js/mundo2.js y js/mundo3.js).
+const NZ = 35,
   CICLO = NZ * 1000,
   INICIO_MONTANA = 99; // valor del menú "Inicio: Ruta de montaña"
 
@@ -20,7 +21,7 @@ const NZ = 24,
 // Para cambiarlas: editá RELIEVE. [zona]: [altura máxima en metros, cantidad de lomas por km]
 // Cada zona sube y baja (subida, bajada, valle…) y termina a nivel, así que no afecta túneles, puentes ni rotondas.
 // Zonas: 1 Autopista · 3 Ruta del bosque · 9 Circunvalación · 13 Cruce Río Frío (ver la lista ZN más abajo).
-const RELIEVE = { 1: [9, 2], 3: [7, 3], 9: [8, 2], 13: [9, 2] };
+const RELIEVE = { 1: [9, 2], 3: [7, 3], 9: [8, 2], 13: [9, 2], 24: [13, 2] }; // 24: Ruta de la Muerte
 const relieveZona = (u) => {
   const k = Math.floor(u / 1000),
     c = RELIEVE[((k % NZ) + NZ) % NZ];
@@ -48,7 +49,7 @@ const bendY = (z) => (BEND.w ? relieveH(-z) - BEND.y : 0);
 uniform vec4 bendR;
 float bendY(float z){
   if(bendR.w<.5)return 0.;
-  float u=-z,k=floor(u/1000.),zn=mod(k,19.),s=u-k*1000.,A=0.,n=1.;
+  float u=-z,k=floor(u/1000.),zn=mod(k,${NZ}.),s=u-k*1000.,A=0.,n=1.;
   ${glslZona}
   return A*sin(6.2831853*n*s/1000.)*sin(3.1415927*s/1000.)-bendR.y;
 }
@@ -937,7 +938,7 @@ function scatter(c) {
       o = p.o,
       t = p.t,
       wz = () => -c.k * CH + o.position.z,
-      w = () => Math.abs(wz() - RC(wz())) < 50,
+      w = () => Math.abs(wz() - RC(wz())) < 135, // rotondas (y los carriles externos de La Y Griega)
       nb = () => Math.abs(wz() - BZ) < 140,
       hz = () => HB.some((r) => wz() - CZ < r[0] && wz() - CZ > r[1]),
       rt = () =>
@@ -974,11 +975,11 @@ function scatter(c) {
       return;
     }
     if (t == 4) {
-      o.visible = Z(1, 9);
+      o.visible = Z(1, 9, 25, 30);
       return;
     }
     if (t == 5) {
-      o.visible = Z(1, 4, 9);
+      o.visible = Z(1, 4, 9, 25, 30);
       return;
     }
     if (t == 6) {
@@ -995,12 +996,12 @@ function scatter(c) {
       o.visible = Z(8) && !w() && !hz() && !rt();
       return;
     }
-    const f = Z(3, 5, 6);
+    const f = Z(3, 5, 6, 24, 27);
     if (t == 0) {
       o.position.set(s * (Z(1) ? R(15, 45) : f ? R(9, 36) : R(11, 48)), 0, -R(0, CH));
       o.scale.setScalar(f ? R(1.3, 2.6) : R(0.8, 1.5));
       lf();
-      o.visible = !Z(2, 8, 16, 18, 19, 20) && !nb() && !hz() && !rt();
+      o.visible = !Z(2, 8, 16, 18, 19, 20, 28, 29) && !nb() && !hz() && !rt();
       if (w()) o.position.x = s * R(90, 120);
     } else if (t == 1) {
       o.position.set(s * R(13, 32), 0, -R(0, CH));
@@ -1012,10 +1013,11 @@ function scatter(c) {
       // montañas: el borde de la base queda siempre lejos de la carretera y de las calles laterales
       const k = R(0.8, 1.7),
         borde =
-          (Z(5, 6) ? 55 + R(0, 110) : Z(2, 16) ? 140 + R(0, 220) : 80 + R(0, 240)) +
+          (Z(5, 6, 24) ? 55 + R(0, 110) : Z(2, 16) ? 140 + R(0, 220) : 80 + R(0, 240)) +
           (Z(8) && s > 0 ? 170 : 0); // zona 8: deja libre la carretera a Vara Blanca
       o.scale.setScalar(k);
       o.position.set(s * (o.userData.rb * k + borde), (o.geometry.parameters.height * k) / 2 - 4, -R(0, CH));
+      o.visible = !Z(27) && !((s < 0 && Z(26)) || (s > 0 && Z(30, 31))); // ni en el mar, la bahía, el canal ni encima de los volcanes
     }
   });
 }
@@ -1199,9 +1201,12 @@ const SK = [
     fr: "DESAMPARADOS",
   },
 ];
+// Buses extra que se manejan con la misma carrocería del bus (js/mundo3.js): vehículo → pintura de SK.
+const BUS_EXTRA = {},
+  esBus = (i) => i < 4 || BUS_EXTRA[i] != null;
 function applySkin(i) {
   const k = SK[i],
-    fg = i == 2 ? "#222" : "#fff";
+    fg = k.fg || (i == 2 ? "#222" : "#fff");
   mBody.material.color.setHex(k.b);
   mB1.material.color.setHex(k.s);
   mB2.material.color.setHex(k.t);
@@ -2579,7 +2584,7 @@ function tuned(b, k) {
   return p;
 }
 function setVeh(i) {
-  const b = i < 4;
+  const b = esBus(i);
   body.visible = b;
   wheels.forEach((w) => (w.visible = b));
   Object.keys(VM).forEach((k) => (VM[k].g.visible = +k == i));
@@ -2588,7 +2593,7 @@ function setVeh(i) {
   PV = tuned(PB);
   cur = b ? body : VM[i].g;
   VWL = b ? [] : VM[i].w;
-  if (b) applySkin(i);
+  if (b) applySkin(i < 4 ? i : BUS_EXTRA[i]);
   hs.position.set(0, 1, PV.hz);
   hs.target.position.set(0, 0, PV.hz - 25);
 }
@@ -3081,31 +3086,64 @@ function mkStop(i) {
   zn.rotation.x = -Math.PI / 2;
   zn.position.set(3.6, 0.05, z);
   g.add(zn);
+  // ----- PARADA REMODELADA -----
+  // Andén de concreto con bahía pintada, caseta de vidrio con techo verde, pantalla LED con la
+  // próxima ruta, banca, mapa de rutas, basurero y maceteras. Mira hacia la carretera (-x).
   const s = new T.Group();
   s.position.set(9.5, 0, z);
-  const rf = new T.Mesh(new T.BoxGeometry(4, 0.2, 2.4), M(0x1b4fa8));
-  rf.position.y = 3;
-  s.add(rf);
-  [
-    [-1.8, -1],
-    [1.8, -1],
-    [-1.8, 1],
-    [1.8, 1],
-  ].forEach(([x, y]) => {
-    const p = new T.Mesh(new T.BoxGeometry(0.12, 3, 0.12), M(0x888));
-    p.position.set(x, 1.5, y * 1.1);
+  const bx_ = (w, h, d, c, x, y, zz, o) => {
+    const m = new T.Mesh(
+      new T.BoxGeometry(w, h, d),
+      new T.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.6 }, o)),
+    );
+    m.position.set(x, y, zz);
+    s.add(m);
+    return m;
+  };
+  const tx_ = (t, w, h, bg, fg, fs, x, y, zz, ry = -Math.PI / 2, luz) => {
+    const p = new T.Mesh(
+      new T.PlaneGeometry(w, h),
+      new T.MeshBasicMaterial({ map: S(t, (w * 128) | 0, (h * 128) | 0, bg, fg, fs * 2), toneMapped: !luz }),
+    );
+    p.position.set(x, y, zz);
+    p.rotation.y = ry;
     s.add(p);
+    return p;
+  };
+  const vid = { color: 0xbfe3f5, metalness: 0.3, roughness: 0.05, transparent: true, opacity: 0.35, depthWrite: false };
+  bx_(3.2, 0.22, 16, 0xc9c6bf, 0.4, 0.11, 0); // andén
+  bx_(0.25, 0.24, 16, 0xf2c200, -1.25, 0.12, 0); // cordón amarillo
+  bx_(0.12, 3, 0.12, 0x37474f, 1.6, 1.5, -3, { metalness: 0.7, roughness: 0.3 });
+  bx_(0.12, 3, 0.12, 0x37474f, 1.6, 1.5, 3, { metalness: 0.7, roughness: 0.3 });
+  bx_(0.12, 3, 0.12, 0x37474f, -0.4, 1.5, -3, { metalness: 0.7, roughness: 0.3 });
+  bx_(0.12, 3, 0.12, 0x37474f, -0.4, 1.5, 3, { metalness: 0.7, roughness: 0.3 });
+  bx_(2.8, 0.18, 7, 0x2e7d32, 0.5, 3.05, 0); // techo verde
+  bx_(2.9, 0.08, 7.1, 0xdfe6ea, 0.5, 3.18, 0, { metalness: 0.6, roughness: 0.3 });
+  bx_(0.05, 2.4, 5.8, 0, 1.6, 1.5, 0, vid); // vidrio de atrás
+  bx_(1.8, 2.4, 0.05, 0, 0.6, 1.5, -3, vid); // vidrios de los lados
+  bx_(1.8, 2.4, 0.05, 0, 0.6, 1.5, 3, vid);
+  bx_(0.6, 0.12, 4.4, 0x8d6e63, 1.1, 0.62, 0.4); // banca
+  bx_(0.12, 0.5, 4.4, 0x8d6e63, 1.38, 0.9, 0.4);
+  [-1.5, 2.3].forEach((q) => bx_(0.5, 0.5, 0.12, 0x455a64, 1.1, 0.36, q));
+  // pantalla LED (próximo bus) y letrero
+  bx_(0.25, 0.7, 2.6, 0x111111, 0.5, 2.6, 0);
+  tx_(pk_(["🚌 ATD  2 min", "🚌 LUMACA  4 min", "🚌 28 PORVENIR 1 min", "🚌 ATD  6 min"]), 2.4, 0.5, "#050505", "#ffb020", 20, 0.36, 2.6, 0, -Math.PI / 2, 1);
+  tx_("PARADA · REMODELADA", 6.6, 0.42, "#2e7d32", "#ffffff", 20, -0.95, 3.05, 0);
+  // panel de anuncio iluminado y mapa de rutas
+  bx_(0.2, 2.2, 1.4, 0x263238, 1.45, 1.4, -3.7);
+  tx_("MAPA DE RUTAS", 1.2, 1.9, "#e3f2fd", "#0d47a1", 13, 1.33, 1.4, -3.7, -Math.PI / 2, 1);
+  // poste con el letrero de PARADA
+  bx_(0.12, 3.8, 0.12, 0x777777, -0.9, 1.9, 5);
+  tx_("PARADA", 1.6, 0.6, "#ffd23f", "#111111", 30, -0.9, 3.6, 5.07, 0);
+  tx_("PARADA", 1.6, 0.6, "#ffd23f", "#111111", 30, -0.9, 3.6, 4.93, Math.PI);
+  // basurero y maceteras con arbustos
+  bx_(0.5, 0.9, 0.5, 0x2e7d32, -0.6, 0.67, -4.6);
+  [-6.5, 6.5].forEach((q) => {
+    bx_(1.2, 0.6, 1.2, 0x9e9e9e, 0.8, 0.52, q);
+    const b = new T.Mesh(new T.IcosahedronGeometry(0.75, 0), M(0x3f8f3a));
+    b.position.set(0.8, 1.3, q);
+    s.add(b);
   });
-  const bn = new T.Mesh(new T.BoxGeometry(3, 0.1, 0.6), M(0x6b4a2a));
-  bn.position.set(0, 0.5, 0.8);
-  s.add(bn);
-  const sg = new T.Mesh(
-    new T.PlaneGeometry(2, 0.5),
-    new T.MeshBasicMaterial({ map: S("PARADA", 256, 64, "#ffd23f", "#111", 44) }),
-  );
-  sg.position.set(-2.3, 3.3, 0);
-  sg.rotation.y = -Math.PI / 2;
-  s.add(sg);
   const pp = [];
   for (let i = 0; i < 6; i++) {
     const p = new T.Group(),
@@ -3117,7 +3155,7 @@ function mkStop(i) {
     b.position.y = 0.8;
     h.position.y = 1.65;
     p.add(b, h);
-    p.position.set(R(-1.5, 1.5), 0, R(-0.3, 0.6) + 1.6);
+    p.position.set(R(-0.9, 0.4), 0.22, R(-2.6, 2.6));
     s.add(p);
     pp.push(p);
   }
@@ -3203,8 +3241,8 @@ function gs(x, z, ry) {
   g.rotation.y = ry;
   rb.add(g);
 }
-gs(9.8, 75, 0);
-gs(-9.8, -75, Math.PI);
+gs(22, 75, 0);
+gs(-22, -75, Math.PI);
 rb.position.z = RZ;
 rb.updateMatrix();
 sc.add(rb);
@@ -3232,7 +3270,7 @@ const mp = (t, w, h, bg, fg, fs, x, y, z) => {
 };
 mp("McDonald’s", 8, 1.2, "#1c1c1e", "#fff", 44, 1.5, 4.4, 6.1);
 mp("M", 2.4, 2.4, "#d62828", "#ffc72c", 96, -11.5, 9, 8.15);
-md.position.set(48, 0, -6);
+md.position.set(70, 0, -6); // más afuera: por aquí pasa el carril externo
 md.rotation.y = -Math.PI / 2;
 rb.add(md);
 // zonas
@@ -3963,6 +4001,9 @@ const LZ = [0, 1, 3, 4, 7, 8, 9, 13, 14, 15],
     x > -34.5 &&
     LZ.includes(zoneAt(z - CZ)) &&
     !HB.some((r) => z - CZ < r[0] + 60 && z - CZ > r[1] - 60);
+// Pistas extra donde se puede manejar sin salirse (js/mundo3.js agrega los carriles externos de la
+// Rotonda de La Y Griega y el patio de la Terminal Lumaca). Cada una es una función (x, z) => true/false.
+const PISTAS_EXTRA = [];
 const onXs = (x, z) => Math.abs(x) > 5 && XS.some((q) => sd(x, z - CZ, q[0], q[1], q[2], q[3]) < q[4]);
 (function () {
   const g = new T.Group(),
@@ -4717,7 +4758,7 @@ const VN = [
   ];
 let gv = 0,
   gf = "*";
-const keyOf = (i) => (i < 4 ? 0 : i - 3);
+const keyOf = (i) => (esBus(i) ? 0 : i - 3);
 function save() {
   try {
     localStorage.setItem("adg", JSON.stringify({ w: wallet, t: TUN }));
@@ -4764,12 +4805,12 @@ function renderGar() {
   const g = $("gar");
   g.querySelector("#gx").onclick = closeGarage;
   g.querySelector("#gl").onclick = () => {
-    gv = (gv + 21) % 22;
+    gv = (gv + VN.length - 1) % VN.length;
     $("bs").value = gv;
     renderGar();
   };
   g.querySelector("#gr").onclick = () => {
-    gv = (gv + 1) % 22;
+    gv = (gv + 1) % VN.length;
     $("bs").value = gv;
     renderGar();
   };
@@ -4870,9 +4911,13 @@ function applyGfx() {
 }
 $("gq").value = GQ;
 applyGfx();
+// Ya no se puede perder: si el vehículo se destroza, queda como nuevo y seguís manejando.
 function end() {
-  if (dmg >= 100) over("💥 BUS DESTROZADO");
-  else over("⏱ SE ACABÓ EL TIEMPO");
+  dmg = 0;
+  onFire = false;
+  heat = 0;
+  shake = 0.6;
+  msg("🔧 ¡Aquí nadie pierde! Tu vehículo quedó como nuevo", 2500);
 }
 const _v1 = new T.Vector3(),
   _v2 = new T.Vector3();
@@ -4902,7 +4947,8 @@ function upd(dt) {
       Math.abs(B.x) > 7.4 &&
       Math.hypot(B.x, B.z - RC(B.z)) > 27.5 &&
       !onXs(B.x, B.z) &&
-      !onLf(B.x, B.z),
+      !onLf(B.x, B.z) &&
+      !PISTAS_EXTRA.some((f) => f(B.x, B.z)),
     mx = (off ? PV.off : PV.max) * (bo ? 1.3 : 1) * (wet ? 0.6 : 1);
   if (play && B.fl) {
     B.v += ((PV.fs || 22) - (G ? 5 : 0) + (Br ? 9 : 0) - B.v) * 0.5 * dt;
@@ -5049,7 +5095,7 @@ function upd(dt) {
         [-8800, 123],
       ].some((a) => Math.abs(B.z - (wo.position.z + a[0])) < a[1]);
     let wh = 0;
-    if ((zw == 1 || zw == 4 || zw == 9) && Math.abs(B.x) < 0.55 + PV.hw) {
+    if ((zw == 1 || zw == 4 || zw == 9 || zw == 25 || zw == 30) && Math.abs(B.x) < 0.55 + PV.hw) {
       B.x = B.x < 0 ? -0.55 - PV.hw : 0.55 + PV.hw;
       wh = 1;
     }
@@ -5057,7 +5103,7 @@ function upd(dt) {
       B.x = Math.sign(B.x) * (8.3 - PV.hw);
       wh = 1;
     }
-    if ((zw == 2 || zw == 10) && Math.abs(B.x) > 7.1 - PV.hw) {
+    if ((zw == 2 || zw == 10 || zw == 24) && Math.abs(B.x) > 7.1 - PV.hw) {
       B.x = Math.sign(B.x) * (7.1 - PV.hw);
       wh = 1;
     }
@@ -5143,7 +5189,7 @@ function upd(dt) {
   }
   if (!rbMsg && B.z > RZ && B.z - RZ < 110) {
     rbMsg = 1;
-    msg("🔄 Rotonda de La Y Griega: rodeá la isla con ella a tu izquierda", 3500);
+    msg("🚧 Rotonda de La Y Griega EN OBRAS: rodeá la isla o usá el carril externo de la derecha (pasa directo)", 4000);
   }
   const cy = Math.floor((-B.z + 100) / CICLO);
   if (cy != cyc) {
@@ -5191,9 +5237,9 @@ function upd(dt) {
   water.visible = br;
   wy += ((zb == 16 ? -0.15 : -3) - wy) * Math.min(1, dt * 3);
   water.position.set(B.x, wy, B.z);
-  ground.material.color.setHex(zl == 3 || zl == 5 || zl == 6 ? 0x8fb080 : 0xffffff);
-  const fn = (zl == 3 || zl == 5 || zl == 6 ? 40 : 90) * (1 - 0.3 * rnv),
-    ff = (zl == 3 || zl == 5 || zl == 6 ? 330 : 560) * (1 - 0.4 * rnv);
+  ground.material.color.setHex(zl == 24 ? 0xa8a27a : zl == 3 || zl == 5 || zl == 6 || zl == 27 ? 0x8fb080 : 0xffffff);
+  const fn = (zl == 24 ? 6 : zl == 3 || zl == 5 || zl == 6 ? 40 : 90) * (1 - 0.3 * rnv),
+    ff = (zl == 24 ? 150 : zl == 3 || zl == 5 || zl == 6 ? 330 : 560) * (1 - 0.4 * rnv);
   sc.fog.near += (fn - sc.fog.near) * Math.min(1, dt);
   sc.fog.far += (ff - sc.fog.far) * Math.min(1, dt);
   const tz = wo.position.z - 4250;
@@ -5253,8 +5299,8 @@ function upd(dt) {
   crs.forEach((j, i) => (j.rotation.y += dt * 0.12 * (i % 2 ? -1 : 1)));
   {
     const hv = Math.abs(B.v) / PV.max;
-    if (play && G && hv > 0.6) heat = Math.min(100, heat + hv * 18 * dt * PV.hr);
-    else heat = Math.max(0, heat - 10 * dt);
+    heat = 0; // los vehículos ya no se sobrecalientan (antes: subía al ir a fondo)
+    void hv;
     const st = heat >= 90 ? 3 : heat >= 65 ? 2 : heat >= 35 ? 1 : 0;
     if (st != hst) {
       hst = st;
@@ -5789,6 +5835,7 @@ const MULTAS_PARA_POLICIA = 3,
   MULTA_ATRAPADO = 5000,
   VEL_POLICIA = 34; // m/s (≈122 km/h): con nitro o un vehículo rápido se puede escapar
 let multas = 0,
+  regalos = 0, // la policía ya no multa: regala plata
   multaT = 0,
   velT = 0,
   velCd = 0,
@@ -5799,18 +5846,16 @@ const limiteVel = (z) => {
   const zn = zoneAt(z);
   if (PV && PV.emerg) return 0; // ambulancia y bomberos: sin límite de velocidad
   if (zn == 16 || zn == 17 || zn == 18) return 0; // pistas: sin límite
-  return zn == 1 || zn == 4 || zn == 9 || zn == 22 ? 100 : 70;
+  return zn == 1 || zn == 4 || zn == 9 || zn == 22 || zn == 25 || zn == 30 ? 100 : 70;
 };
+// La policía ya no multa ni persigue: cada vez que antes había multa, ahora te da un regalo.
 function multa(razon, monto) {
   if (state != "play") return;
-  multas++;
+  regalos++;
   multaT = 0;
-  cash = Math.max(0, cash - monto);
-  msg(
-    `🚨 MULTA por ${razon}${monto ? " −₡" + monto.toLocaleString("es-CR") : ""} · ${multas}/${MULTAS_PARA_POLICIA}`,
-    2600,
-  );
-  if (!chase && multas >= MULTAS_PARA_POLICIA) iniciarPersecucion();
+  const premio = Math.max(1000, monto || 0);
+  cash += premio;
+  msg(`🎁 ¡La policía te dio un regalo! +₡${premio.toLocaleString("es-CR")}`, 2600);
 }
 function mkPolicia() {
   const g = new T.Group(),
@@ -5953,7 +5998,7 @@ function policiaTick(dt) {
   }
   hudExtra =
     `<br>🚦 Límite ${lim ? `<span class="${kmh > lim + 5 ? "multa-alta" : ""}">${lim} km/h</span>` : "libre"}` +
-    `<br>🚓 Multas <span class="${multas >= MULTAS_PARA_POLICIA - 1 ? "multa-alta" : ""}">${multas}/${MULTAS_PARA_POLICIA}</span>`;
+    `<br>🎁 Regalos de la policía ${regalos}`;
   if (!chase) return;
   // persecución
   chase.t += dt;

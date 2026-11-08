@@ -13,6 +13,7 @@
 //   ZONA 22 · AUTOPISTA NUEVA · presa en la principal y autopista alterna sin presa
 //   ZONA 23 · NACIONES       · Rotonda de las Naciones y avenida de banderas
 //   SAN JOSÉ · BOMBEROS Y HOSPITAL · estación y hospital del km 8
+//   (las zonas 24 a 31 están en js/mundo2.js)
 //   EMERGENCIAS              · ambulancia y camión de bomberos para manejar, incendio gigante del km 9,
 //                              presa de 5 km, carril de emergencia, chorro de agua y heridos al hospital
 // Gasolina infinita, presas nuevas y la cantidad de zonas (NZ) están en js/juego.js.
@@ -105,12 +106,12 @@
     raiz.traverse((o) => {
       if (o === raiz) return;
       const rel = new T.Matrix4().multiplyMatrices(inv, o.matrixWorld);
-      if (o.isMesh && !o.isInstancedMesh && !Array.isArray(o.material) && o.geometry.attributes.normal) {
+      if (o.isMesh && !o.isInstancedMesh && !Array.isArray(o.material) && !o.material.vertexColors && o.geometry.attributes.normal) {
         const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
         g.applyMatrix4(rel);
         if (!porMat.has(o.material)) porMat.set(o.material, []);
         porMat.get(o.material).push(g);
-      } else if (o.isSprite || o.isLine || o.isInstancedMesh || o.isPoints) sueltos.push([o, rel]);
+      } else if (o.isSprite || o.isLine || o.isInstancedMesh || o.isPoints || o.isMesh) sueltos.push([o, rel]); // lo que no se puede juntar queda aparte
     });
     const out = new T.Group();
     for (const [mt, gs] of porMat) {
@@ -403,6 +404,14 @@
         caja(g, 12.2, 0.5, 10.2, 0xda1884, 0, 4.2, 0),
       ),
     burgerking: () => restaurante("BURGER KING", 0xf5ebdc, 0xd62300, "#ff8732", "#502314"),
+    pizzahut: () => restaurante("PIZZA HUT", 0xf2e8dc, 0xc8102e, "#c8102e", "#ffffff"),
+    subway: () => restaurante("SUBWAY", 0x0f6b38, 0xfdc20f, "#0f6b38", "#fdc20f"),
+    starbucks: () => restaurante("STARBUCKS", 0xece4d6, 0x00704a, "#00704a", "#ffffff"),
+    tacobell: () => restaurante("TACO BELL", 0xf4e9f7, 0x702082, "#702082", "#ffffff"),
+    wendys: () => restaurante("WENDY'S", 0xf7f2ea, 0xe2203d, "#ffffff", "#e2203d"),
+    campero: () => restaurante("POLLO CAMPERO", 0xfff4d6, 0xf5a800, "#e4002b", "#ffffff"),
+    popeyes: () => restaurante("POPEYES", 0xfff1e0, 0xf47b20, "#f47b20", "#ffffff"),
+    dominos: () => restaurante("DOMINO'S", 0xf2f2f2, 0x006491, "#006491", "#ffffff"),
     bomberos: estacionBomberos,
     hospital,
     intel: () =>
@@ -464,9 +473,13 @@
   // En las zonas con ciudad, cada pedazo de carretera (120 m) tiene 2 lotes a la orilla.
   // Para cambiar dónde aparecen: ZONAS_LOTE. Para cambiar qué aparece: elegirNegocio.
   const ZONAS_LOTE = { 0: 0.85, 1: 0.4, 4: 0.85, 7: 0.85, 8: 0.6, 9: 0.85, 11: 0.85, 13: 0.85, 14: 0.7, 15: 0.85, 20: 0.95, 21: 0.85, 23: 0.9 };
-  const COMIDA = ["kfc", "mcdonalds", "dunkin", "burgerking"],
+  const COMIDA = ["kfc", "mcdonalds", "dunkin", "burgerking", "pizzahut", "subway", "starbucks", "tacobell", "wendys", "campero", "popeyes", "dominos"],
     TECNO = ["intel", "amd", "microsoft", "windows"];
   function elegirNegocio(zn) {
+    // Walmart y Carl's Jr (js/mundo3.js) salen por todo el juego
+    const r0 = Math.random();
+    if (r0 < 0.1 && NEGOCIOS.walmart) return "walmart";
+    if (r0 < 0.22 && NEGOCIOS.carlsjr) return "carlsjr";
     const r = Math.random();
     if (zn == 20) return r < 0.72 ? pk_(TECNO) : r < 0.86 ? "fabrica" : pk_(COMIDA);
     if (r < 0.55) return pk_(COMIDA);
@@ -939,6 +952,7 @@
           }
     im.count = n;
     im.castShadow = true;
+    im.frustumCulled = false; // las copias están lejos del centro: el recorte automático las escondía
     zonaG.add(im);
   }
   // tráileres estacionados frente a la fábrica
@@ -1344,12 +1358,26 @@
       ox = B.x + fx * (PV.hl - 1),
       oz = B.z + fzz * (PV.hl - 1),
       dist = Math.hypot(B.x, B.z - (fz + INC.largo));
+    // hacia dónde apunta el agua: otro fuego cercano (js/mundo2.js) o hacia adelante
+    const obj = echando && typeof window.objetivoAgua == "function" ? window.objetivoAgua() : null;
+    let ax = fx,
+      az = fzz,
+      alcance = Math.min(45, Math.max(20, dist)),
+      arco = 6;
+    if (obj) {
+      const dx = obj.x - ox,
+        dz = obj.z - oz,
+        L = Math.hypot(dx, dz) || 1;
+      ax = dx / L;
+      az = dz / L;
+      alcance = Math.min(90, L);
+      arco = 18;
+    }
     gotas.forEach((sp) => {
       sp.visible = echando;
       if (!echando) return;
-      const u = (sp.userData.u + t * 1.6) % 1,
-        alcance = Math.min(45, Math.max(20, dist));
-      sp.position.set(ox + fx * alcance * u + R(-0.3, 0.3), B.y + 3.4 + Math.sin(u * Math.PI) * 6 - u * 3, oz + fzz * alcance * u);
+      const u = (sp.userData.u + t * 1.6) % 1;
+      sp.position.set(ox + ax * alcance * u + R(-0.3, 0.3), B.y + 3.4 + Math.sin(u * Math.PI) * arco - u * 3, oz + az * alcance * u);
       sp.scale.setScalar(0.6 + u * 2.2);
     });
     if (echando && INC.fuego > 0 && B.z > fz && B.z - fz < INC.largo + 50 && Math.abs(B.x) < 20) {
@@ -1380,7 +1408,6 @@
     // meterse al fuego quema
     if (INC.fuego > 0 && Math.abs(B.z - fz) < INC.largo && Math.abs(B.x) < 17 && B.y < 5) {
       dmg += (PV.bomberos ? 6 : 22) * dt;
-      heat = Math.min(100, heat + 35 * dt);
       B.v *= Math.pow(0.35, dt);
       shake = Math.max(shake, 0.3);
       if (!quemado) msg("🔥 ¡Te estás quemando! Salí del fuego", 1800);
@@ -1407,6 +1434,14 @@
       }
     } else heridos = 0;
   }
+
+  // Herramientas que usa js/mundo2.js para construir más mundo.
+  window.MUNDO = {
+    caja, cilindro, piso, cartel, cartelDibujo, fachada, fusionar, deModelo, bandera, copia, restaurante,
+    rascacielos, portico, traila, busNuevo, camionBomberos, lucesEmergencia, faros, compartir, mat, geoCaja,
+    planoTex, llamaTex, humoTex, BUSES, NEGOCIOS, COMIDA, TECNO, ZONAS_LOTE, PAISES, COLORES_EDIFICIO, VIDRIO, LUZ,
+    DER, IZQ, INC,
+  };
 
   // ===================== CUADRO A CUADRO =====================
   let reloj = 0,
@@ -1436,7 +1471,7 @@
     // (si el bus "salta" más de 30 m en un cuadro es un reinicio desde el menú, no cuenta)
     if (zAnt >= zm && B.z < zm && zAnt - B.z < 30 && Math.abs(B.x) < 9 && migraCiclo != cyc) {
       migraCiclo = cyc;
-      if (Math.abs(B.v) * 3.6 > 30) multa("pasar Migración sin parar", 2500);
+      if (Math.abs(B.v) * 3.6 > 30) msg("🛂 ¡Pasaste volando por Migración! La próxima vez pará para el sello", 2600);
       else {
         msg("🛂 Pasaporte sellado · ¡Bienvenido! +₡500", 2600);
         cash += 500;
