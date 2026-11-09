@@ -925,7 +925,8 @@ function montTick(dt) {
       B.fl = 0;
       B.y = h;
       B.vy = 0;
-      msg("🛬 Aterrizaste en la carretera", 1500);
+      msg(B.alaRota ? "🛬 Aterrizaste con el ala dañada · 🔧 ¡ya quedó arreglada!" : "🛬 Aterrizaste en la carretera", 2500);
+      B.alaRota = 0;
     }
     return;
   }

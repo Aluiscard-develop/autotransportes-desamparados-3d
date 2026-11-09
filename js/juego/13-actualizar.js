@@ -4,6 +4,22 @@
 
 const _v1 = new T.Vector3(),
   _v2 = new T.Vector3();
+// ===== ALA DAÑADA DEL TRIKE =====
+// Si vas volando con el ultraligero y le pegás a un carro (en la carretera o uno que va por el aire),
+// el ala se daña: se tuerce, el trike se ladea, ya no podés subir y vas bajando despacio hasta el piso.
+// Al aterrizar queda arreglada. Qué tan rápido baja: AJUSTES.trike (js/ajustes.js).
+function romperAla() {
+  if (B.alaRota) return;
+  B.alaRota = 1;
+  B.vy = Math.min(B.vy, 0);
+  dmg += AJUSTES.trike.danioAla * PV.dm;
+  shake = 0.9;
+  msg("💥🪂 ¡Le pegaste a un carro y se dañó el ala! Vas bajando despacio…", 3500);
+  if (dmg >= 100) {
+    dmg = 100;
+    end();
+  }
+}
 function upd(dt) {
   const L = keys.ArrowLeft || keys.KeyA || keys.TL,
     Rt = keys.ArrowRight || keys.KeyD || keys.TR,
@@ -76,6 +92,7 @@ function upd(dt) {
     } else {
       let ty = G ? 7 : Br ? -9 : -1.2;
       if (B.v < 11) ty -= (11 - B.v) * 0.8;
+      if (B.alaRota) ty = Br ? -6 : -AJUSTES.trike.bajadaAlaRota; // ala dañada: no sube, baja despacio
       B.vy += (ty - B.vy) * Math.min(1, dt * 1.3);
       B.y += B.vy * dt;
       B.lv = 0;
@@ -94,7 +111,8 @@ function upd(dt) {
             dmg = 100;
             end();
           }
-        } else msg("🛬 Aterrizaste", 1500);
+        } else msg(B.alaRota ? "🛬 Aterrizaste con el ala dañada · 🔧 ¡ya quedó arreglada!" : "🛬 Aterrizaste", 2500);
+        B.alaRota = 0;
         B.fl = 0;
         B.vy = 0;
         B.tk = 0;
@@ -219,7 +237,8 @@ function upd(dt) {
   if (PV.hover) cur.position.y += 0.25;
   if (wet || (PV.hover && zoneAt(B.z) == 16)) cur.position.y += Math.sin(performance.now() / 380) * 0.12;
   if (B.fl) {
-    cur.rotation.z = -B.st * 0.45;
+    // con el ala dañada se ladea y tiembla
+    cur.rotation.z = -B.st * 0.45 + (B.alaRota ? 0.22 + Math.sin(performance.now() / 150) * 0.07 : 0);
     cur.rotation.x = B.vy * 0.03;
     cur.position.y = 0;
   }
@@ -233,7 +252,10 @@ function upd(dt) {
   wheels.forEach((w) => (w.children[0].rotation.x -= (B.v * dt) / 0.55));
   VWL.forEach((w) => (w.rotation.x -= (B.v * dt) / w.userData.r));
   if (cur.userData.wing) {
-    cur.userData.wing.rotation.z = Math.sin(performance.now() / 700) * 0.04 - B.st * 0.12;
+    const ala = cur.userData.wing,
+      ahora = performance.now();
+    ala.rotation.z = Math.sin(ahora / 700) * 0.04 - B.st * 0.12 + (B.alaRota ? 0.34 + Math.sin(ahora / 85) * 0.06 : 0);
+    ala.rotation.x = B.alaRota ? Math.sin(ahora / 120) * 0.08 : 0; // aletea, está suelta
     cur.userData.pr.rotation.z += dt * 70;
   }
   if (cur.userData.fan) cur.userData.fan.rotation.z += dt * 45;
@@ -739,6 +761,15 @@ function upd(dt) {
           end();
         }
       }
+    }
+    // trike volando: un carro (en el piso o por el aire) le pega al ala de 7,5 m → ala dañada
+    if (play && PV.fly && B.fl && !B.alaRota) {
+      const cy = c.y || 0,
+        dx = c.x - B.x,
+        dz = c.z - B.z,
+        lx = dx * Math.cos(B.h) - dz * Math.sin(B.h),
+        lf = -dx * Math.sin(B.h) - dz * Math.cos(B.h);
+      if (Math.abs(lx) < 3.8 && Math.abs(lf) < PV.hl + c.hl && cy < B.y + 5 && cy + 1.8 > B.y) romperAla();
     }
   }
   // parada

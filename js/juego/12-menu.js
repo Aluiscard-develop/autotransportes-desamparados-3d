@@ -24,7 +24,7 @@ function start() {
   onFire = false;
   raceOn = 0;
   st0 = 2 * zi;
-  Object.assign(B, { y: 0, vy: 0, fl: 0, tk: 0, lv: 0, x: 5.25, z: -1000 * zi, h: 0, v: 0, st: 0 });
+  Object.assign(B, { y: 0, vy: 0, fl: 0, alaRota: 0, tk: 0, lv: 0, x: 5.25, z: -1000 * zi, h: 0, v: 0, st: 0 });
   RZ = zi ? -CICLO - 250 : -250;
   rbMsg = 0;
   rb.position.z = RZ;

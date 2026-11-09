@@ -22,6 +22,14 @@ const AJUSTES = {
     auto: { fpsMeta: 50, fpsSubir: 57, resolucionMinima: 0.55 },
   },
 
+  // ----- TRIKE (ultraligero) -----
+  // Si vas volando y le pegás a un carro, el ala se daña: ya no sube y baja despacio hasta el piso.
+  // Al aterrizar queda arreglada. (js/juego/13-actualizar.js, busca ALA DAÑADA)
+  trike: {
+    bajadaAlaRota: 3, // metros por segundo que baja con el ala dañada
+    danioAla: 8, // daño extra al pegarle a un carro con el ala (de 100)
+  },
+
   // ----- APOCALIPSIS (js/apocalipsis.js) -----
   // Orden: calma → caos → Tormenta Morada → tormenta de comida → calma → …
   apocalipsis: {
