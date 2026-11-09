@@ -847,7 +847,8 @@ function upd(dt) {
   if ($("dm").style.width != dmw) $("dm").style.width = dmw;
   setH(
     "tl",
-    `⏱ Tiempo infinito ∞<br>📍 ${MONT.on ? MONT.lugar : ZN[zoneAt(B.z)]}<br>₡ ${cash.toLocaleString("es-CR")}<br>👥 ${pas} / 40<br>⛽ ∞${PV.nit ? "<br>🔥 " + Math.round((nit / PV.nit) * 100) + "%" : ""}<br>🌡 ${heat | 0}%${onFire ? " 🔥" : ""}${hudExtra}`,
+    // las líneas "fijo" (siempre iguales) no se muestran en pantallas chicas (css/estilos.css)
+    `<span class="fijo">⏱ Tiempo infinito ∞<br></span>📍 ${MONT.on ? MONT.lugar : ZN[zoneAt(B.z)]}<br>₡ ${cash.toLocaleString("es-CR")}<br>👥 ${pas} / 40<span class="fijo"><br>⛽ ∞</span>${PV.nit ? "<br>🔥 " + Math.round((nit / PV.nit) * 100) + "%" : ""}<br>🌡 ${heat | 0}%${onFire ? " 🔥" : ""}${hudExtra}`,
   );
   eng(G, play, dt);
   if (PV.air && Br && Math.abs(B.v) > 6 && performance.now() - (B.ah || 0) > 1100) {

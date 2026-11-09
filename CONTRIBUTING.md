@@ -167,6 +167,14 @@ Busca estos comentarios (Ctrl+F) en el archivo indicado para llegar rápido:
 - `N_TORNADOS`: cuántos tornados cercanos puede haber a la vez.
 - En `js/apocalipsis2.js`: `N_HOR` (tornados del horizonte), `N_GENTE` (personas corriendo) y `N_AV` (avalanchas). Si el juego se pone lento en una computadora, bajá esos números.
 
+## Pantallas chicas y botones táctiles (`css/estilos.css`)
+
+- `Botones táctiles`: dónde va cada botón (◀ ▶ 👀 ▲ ■ 🔥 💧) en pantallas normales.
+- `Pantallas chicas`: cómo se acomoda todo en celulares de pie (`max-width: 600px`) y acostados
+  (`max-height: 500px`). El velocímetro y los botones Menú y 🔧 van juntos en `#der` (en `index.html`),
+  así nunca se enciman aunque el panel crezca.
+- Para probar: en Chrome, F12 y el botón de celular (📱) arriba a la izquierda.
+
 ## Reglas sencillas
 
 - Prueba tu cambio abriendo `index.html` antes de enviarlo.

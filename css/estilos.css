@@ -45,9 +45,28 @@ canvas {
   line-height: 1.5;
   font-size: 15px;
 }
-#tr {
+/* columna de la derecha: velocímetro (#tr) y debajo los botones Menú y 🔧 */
+#der {
+  position: fixed;
+  z-index: 5;
   top: calc(env(safe-area-inset-top, 0px) + 10px);
   right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+#der .p {
+  position: static;
+}
+#btns {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+#tr {
   text-align: right;
 }
 #spd {
@@ -136,8 +155,6 @@ canvas {
 #mb {
   pointer-events: auto;
   cursor: pointer;
-  top: calc(env(safe-area-inset-top, 0px) + 112px);
-  right: 10px;
   font-size: 14px;
   padding: 8px 12px;
   margin: 0;
@@ -187,8 +204,6 @@ canvas {
 #wb {
   pointer-events: auto;
   cursor: pointer;
-  top: calc(env(safe-area-inset-top, 0px) + 156px);
-  right: 10px;
   font-size: 20px;
   padding: 6px 12px;
   margin: 0;
@@ -668,4 +683,217 @@ select option {
 }
 .multa-alta {
   color: #ff6b6b;
+}
+
+/* ===== Botones táctiles ===== */
+.t[data-k="TL"] {
+  left: 14px;
+}
+.t[data-k="TR"] {
+  left: 96px;
+}
+.t[data-k="TV"] {
+  left: 178px;
+}
+.t[data-k="TG"] {
+  right: 14px;
+}
+.t[data-k="TB"] {
+  right: 96px;
+}
+.t[data-k="TN"] {
+  right: 178px;
+}
+.t[data-k="TF"] {
+  right: 260px;
+}
+
+/* ===== Pantallas chicas (celulares y laptops chicas) =====
+   Celular de pie: los paneles se achican, la parada y la avalancha van debajo de los paneles
+   y los botones táctiles se acomodan en dos filas. Celular acostado: todo más compacto. */
+#ov > *,
+#ov p {
+  max-width: min(640px, 100%);
+  box-sizing: border-box;
+}
+#ov select {
+  max-width: calc(100% - 44px);
+}
+@media (pointer: coarse) {
+  #ov .teclado {
+    display: none; /* las teclas no sirven en un celular */
+  }
+}
+@media (max-width: 600px), (max-height: 500px) {
+  #tl {
+    font-size: 11.5px;
+    line-height: 1.4;
+    padding: 6px 10px;
+    max-width: 48vw;
+  }
+  #tl .fijo {
+    display: none; /* "Tiempo infinito" y "Gasolina ∞" siempre dicen lo mismo */
+  }
+  #der {
+    right: 8px;
+    gap: 6px;
+  }
+  #tr {
+    min-width: 0;
+    padding: 6px 10px 8px;
+  }
+  #spd {
+    font-size: 34px;
+  }
+  #spd small {
+    font-size: 11px;
+  }
+  .bar {
+    width: 90px;
+  }
+  #btns {
+    flex-direction: row;
+    gap: 6px;
+  }
+  #mb {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  #wb {
+    font-size: 16px;
+    padding: 4px 10px;
+  }
+  #stop,
+  #avl,
+  #par,
+  #pol {
+    font-size: 12.5px !important;
+    padding: 5px 10px !important;
+    max-width: 92vw;
+    text-align: center;
+    white-space: nowrap;
+  }
+  #pol {
+    white-space: normal;
+  }
+  #par {
+    letter-spacing: 1px;
+  }
+  #msg {
+    font-size: 16px;
+    padding: 8px 14px;
+    max-width: 88vw;
+    box-sizing: border-box;
+  }
+  .t {
+    width: 60px;
+    height: 60px;
+    font-size: 22px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  }
+  #ov {
+    padding: 14px 12px;
+    gap: 8px;
+  }
+  #ov p {
+    font-size: 13.5px;
+    padding: 8px 12px;
+  }
+  #go {
+    font-size: 22px;
+    padding: 12px 34px;
+  }
+  button {
+    font-size: 17px;
+    padding: 11px 24px;
+  }
+}
+/* celular de pie */
+@media (max-width: 600px) {
+  #stop {
+    top: calc(env(safe-area-inset-top, 0px) + 150px);
+  }
+  #avl {
+    top: calc(env(safe-area-inset-top, 0px) + 184px) !important;
+  }
+  #par {
+    top: calc(env(safe-area-inset-top, 0px) + 218px);
+  }
+  #pol {
+    top: calc(env(safe-area-inset-top, 0px) + 252px);
+  }
+  #msg {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 150px);
+  }
+  /* dos filas: abajo manejar, arriba mirar atrás, nitro y agua */
+  .t[data-k="TL"] {
+    left: 8px;
+  }
+  .t[data-k="TR"] {
+    left: 74px;
+  }
+  .t[data-k="TG"] {
+    right: 8px;
+  }
+  .t[data-k="TB"] {
+    right: 74px;
+  }
+  .t[data-k="TV"],
+  .t[data-k="TN"],
+  .t[data-k="TF"] {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 76px);
+  }
+  .t[data-k="TV"] {
+    left: 8px;
+  }
+  .t[data-k="TN"] {
+    right: 8px;
+  }
+  .t[data-k="TF"] {
+    right: 74px;
+  }
+}
+/* celular acostado */
+@media (max-height: 500px) and (min-width: 601px) {
+  #tl {
+    line-height: 1.3;
+  }
+  #stop {
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+  }
+  #avl {
+    top: calc(env(safe-area-inset-top, 0px) + 40px) !important;
+  }
+  #pol {
+    top: calc(env(safe-area-inset-top, 0px) + 72px);
+  }
+  #par {
+    top: calc(env(safe-area-inset-top, 0px) + 104px);
+  }
+  #msg {
+    bottom: auto;
+    top: 36%;
+    max-width: 50vw;
+  }
+  .t[data-k="TL"] {
+    left: 10px;
+  }
+  .t[data-k="TR"] {
+    left: 76px;
+  }
+  .t[data-k="TV"] {
+    left: 142px;
+  }
+  .t[data-k="TG"] {
+    right: 10px;
+  }
+  .t[data-k="TB"] {
+    right: 76px;
+  }
+  .t[data-k="TN"] {
+    right: 142px;
+  }
+  .t[data-k="TF"] {
+    right: 208px;
+  }
 }

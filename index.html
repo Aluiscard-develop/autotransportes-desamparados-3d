@@ -16,22 +16,26 @@
   <body>
     <div class="p" id="tl"></div>
     <div id="vg"></div>
-    <button id="mb" class="p">☰ Menú</button><button id="wb" class="p">🔧</button>
     <div class="p" id="par">🔔 PARANDO</div>
     <div class="p" id="pol" hidden>🚨 ¡POLICÍA! Escapá o te multan</div>
-    <div class="p" id="tr">
-      <div id="spd">0 <small>km/h</small></div>
-      <div class="bar"><div id="dm"></div></div>
+    <!-- columna de la derecha: velocímetro y botones (así nunca se enciman, aunque el panel crezca) -->
+    <div id="der">
+      <div class="p" id="tr">
+        <div id="spd">0 <small>km/h</small></div>
+        <div class="bar"><div id="dm"></div></div>
+      </div>
+      <div id="btns"><button id="mb" class="p">☰ Menú</button><button id="wb" class="p">🔧</button></div>
     </div>
     <div class="p" id="stop"></div>
     <div class="p" id="msg"></div>
-    <div class="t" data-k="TN" style="right: 178px; background: #ff8a0055">🔥</div>
-    <div class="t" data-k="TV" style="left: 178px; background: #ffffff33">👀</div>
-    <div class="t" data-k="TF" id="agua" style="right: 260px; background: #2f8fff55; display: none">💧</div>
-    <div class="t" data-k="TL" style="left: 14px">◀</div>
-    <div class="t" data-k="TR" style="left: 96px">▶</div>
-    <div class="t" data-k="TB" style="right: 96px; background: #e0343a55">■</div>
-    <div class="t" data-k="TG" style="right: 14px; background: #2fbf6a55">▲</div>
+    <!-- botones táctiles (solo en celulares y tablets; dónde va cada uno: css/estilos.css, "Botones táctiles") -->
+    <div class="t" data-k="TN" style="background: #ff8a0055">🔥</div>
+    <div class="t" data-k="TV" style="background: #ffffff33">👀</div>
+    <div class="t" data-k="TF" id="agua" style="background: #2f8fff55; display: none">💧</div>
+    <div class="t" data-k="TL">◀</div>
+    <div class="t" data-k="TR">▶</div>
+    <div class="t" data-k="TB" style="background: #e0343a55">■</div>
+    <div class="t" data-k="TG" style="background: #2fbf6a55">▲</div>
     <div id="gar" style="display: none"></div>
     <div id="ov">
       <div id="ovr"></div>
@@ -44,7 +48,7 @@
         Pasá por la <b>Rotonda de La Y Griega</b>. Motor diésel trasero con 6 cambios. 🪂 Con el ultraligero
         mantené ↑ varios segundos para despegar: ↑ sube, ↓ baja.
       </p>
-      <p>
+      <p class="teclado">
         <b>Flechas / WASD</b> conducir · <b>Espacio</b> freno de mano · <b>C</b> cámara (4 vistas: exterior,
         conductor, pasillo, asiento) · <b>V</b> mirar atrás · <b>H</b> bocina · <b>R</b> reiniciar · <b>Shift/N</b> nitro ·
         <b>M/Esc</b> menú · <b>🔧</b> tuning
