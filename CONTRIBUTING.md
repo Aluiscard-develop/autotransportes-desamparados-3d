@@ -80,7 +80,7 @@ Busca estos comentarios (Ctrl+F) en el archivo indicado para llegar rápido:
 | `const PVS` | `06-manejo-y-tuning` | Velocidad, aceleración y manejo de cada vehículo |
 | `const PARTS` | `06-manejo-y-tuning` | Las piezas de tuning del garaje |
 | `const ZN` | `10-zonas` | Los nombres de las zonas (las 5 nuevas se agregan en `js/mundo.js`) |
-| `const NZ` | `01-base` | Cuántas zonas tiene el recorrido antes de repetirse (49) |
+| `const NZ` | `01-base` | Cuántas zonas tiene el recorrido antes de repetirse (50) |
 | `function multa` | `15-policia` | Lo que hace la policía (ahora regala plata) |
 | `function end` | `12-menu` | Qué pasa cuando el vehículo se destroza (ahora queda como nuevo) |
 | `const JAM` | `03-paisaje` | Dónde hay presas |
@@ -149,6 +149,19 @@ Busca estos comentarios (Ctrl+F) en el archivo indicado para llegar rápido:
 | `ZONA 46` | La pista de karts, las flechas turbo (`KART.turbos`) y el premio de la meta |
 | `ZONA 47` | El desierto y las plantas rodadoras |
 | `ZONA 48` | La Supertormenta: viento, rayos, tornado, incendios y el premio (`TORM`) |
+
+## Dónde está cada cosa en `js/mundo6.js` (zona 49 · Campo de guerra)
+
+Los números (cuántos tanques, cada cuánto disparan, daño, aviones, premio) están en `js/ajustes.js` → `AJUSTES.campoDeGuerra`.
+
+| Busca | Para cambiar |
+|---|---|
+| `ESCENARIO` | Sacos de arena, alambre de púas, erizos, búnkeres, carpas, torres, ruinas, árboles y carros quemados, cráteres y letreros |
+| `TANQUES` | Cómo se ven los tanques (`hacerTanque`) y a dónde disparan (`elegirBlanco`) |
+| `EXPLOSIONES` | Fuego, humo, cráteres, escombros y el daño (`explotar`) |
+| `AVIONES` | El avión y sus bombas (`pasarAvion`) |
+| `vehNuevo` | Los camiones y jeeps del ejército en el tráfico |
+| `FIN` | Hasta dónde llega la zona (el recorrido vuelve a empezar 100 m antes del final) |
 
 ## La avalancha (`js/avalancha.js`) y la cámara de atrás
 

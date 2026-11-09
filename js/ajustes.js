@@ -30,6 +30,18 @@ const AJUSTES = {
     danioAla: 8, // daño extra al pegarle a un carro con el ala (de 100)
   },
 
+  // ----- CAMPO DE GUERRA (zona 49, js/mundo6.js) -----
+  campoDeGuerra: {
+    tanques: 10, // cuántos tanques hay (mitad de cada lado)
+    cadaCuantoDisparan: [2.5, 5], // segundos entre disparos de cada tanque (mínimo, máximo)
+    alJugador: 0.25, // de cada disparo, qué parte cae en la carretera cerca de vos (0 a 1)
+    danio: 14, // daño de un cañonazo si te agarra (las bombas hacen más)
+    radio: 9, // metros alrededor de la explosión que te alcanzan
+    avionCada: [12, 20], // segundos entre un avión y el siguiente (mínimo, máximo)
+    bombasPorAvion: 7,
+    premio: 30000, // colones por cruzar la zona
+  },
+
   // ----- APOCALIPSIS (js/apocalipsis.js) -----
   // Orden: calma → caos → Tormenta Morada → tormenta de comida → calma → …
   apocalipsis: {

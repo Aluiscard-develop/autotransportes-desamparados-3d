@@ -46,6 +46,7 @@ En celulares y tablets aparecen botones en la pantalla.
 ## Qué tiene
 
 - **🆕 Lo más nuevo:**
+  - **🪖 Campo de guerra (zona 49):** la carretera cruza una batalla entre dos ejércitos. **10 tanques** se mueven, giran la torreta y disparan cañonazos que cruzan por encima de la carretera (y a veces caen cerca de vos). Cada tanto pasa **un avión que suelta una fila de bombas** sobre la carretera. Las explosiones dejan cráteres, tiran escombros, **mandan a volar los carros** (y a vos, si estás muy cerca), y los tanques que reciben un cañonazo se quedan quemándose. Hay sacos de arena, alambre de púas, erizos antitanque, búnkeres, ruinas y camiones del ejército en el tráfico. Si lo cruzás: +₡30 000.
   - **📱 Pantallas chicas:** en celulares (de pie o acostados) y laptops chicas los paneles se achican, la parada y la avalancha no se enciman, los botones táctiles se acomodan en dos filas y el menú cabe sin cortarse.
   - **🪂 Ala dañada del trike:** si vas volando con el ultraligero y le pegás a un carro (en la carretera o uno que va por el aire), el ala se tuerce, el trike se ladea y ya no podés subir: va bajando despacio hasta el piso. Al aterrizar queda arreglada.
   - **🍔🍕🍩 Tormenta de comida:** cuando termina la Tormenta Morada llueve **comida gigante** (hamburguesas, pizzas, donas, hot dogs, sandías, helados, pollo frito y papas). Un **círculo rojo** en el piso avisa dónde va a caer: ¡esquivalo! Al caer explota en migas, **aplasta los carros**, tira por el aire a los de al lado y deja un cráter. La comida se queda tirada: si chocás con ella te frena y la empujás a un lado (con el tanque o el camión monstruo la aplastás: +₡500). **Las donas ruedan** por la carretera y **las sandías rebotan**. Si aguantás 90 segundos: +₡15 000.
@@ -133,6 +134,7 @@ En todos los niveles, las piezas de los árboles, casas y postes se juntan al ca
 | [js/apocalipsis2.js](js/apocalipsis2.js) | El desastre total de la Tormenta Morada: tornados del horizonte, multitud, derrumbes, inundación, edificios, avalanchas, buses de evacuación y carros volcados |
 | [js/apocalipsis.js](js/apocalipsis.js) | El apocalipsis: tornados, carros rapidísimos, gente corriendo, la Tormenta Morada y el paso a la tormenta de comida |
 | [js/avalancha.js](js/avalancha.js) | La avalancha que te persigue (`AVALANCHA`: distancia, velocidad) |
+| [js/mundo6.js](js/mundo6.js) | La zona 49: el Campo de guerra (tanques, aviones, explosiones y ruinas) |
 | [js/mundo5.js](js/mundo5.js) | Las zonas 43 a 48 (montañas nevadas, Mundo de Bloques, Ciudad de Juguete, Pista de Karts, desierto y Supertormenta) y la Motonieve Ultra 4x4 |
 | [js/mundo4.js](js/mundo4.js) | Las zonas 35 a 42 (Carretera de las Minas, Túnel y Minas de Saratalán, ferry, Isla Bonita, Ciudad Esmeralda, cordillera, autopistas y playas), las obras en carretera, el ICE, kölbi y los carros nuevos |
 | [js/mundo3.js](js/mundo3.js) | Las zonas 32 a 34 (Terminal Lumaca y Países unidos), la Rotonda de La Y Griega en obras con sus carriles externos, Walmart, Carl's Jr., las motos y los buses nuevos |
