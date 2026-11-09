@@ -5,7 +5,9 @@
 let last = performance.now();
 function loop(n) {
   requestAnimationFrame(loop);
-  const dt = Math.min(0.05, Math.max(0, (n - last) / 1000));
+  const t0 = performance.now(),
+    msCuadro = n - last;
+  const dt = Math.min(0.05, Math.max(0, msCuadro / 1000));
   last = n;
   try {
     if (state != "paused") {
@@ -27,11 +29,14 @@ function loop(n) {
       const tz = B.z - Math.cos(B.h) * 22 * MIRA;
       cam.lookAt(B.x - Math.sin(B.h) * 22 * MIRA, 2.6 + B.y + bendY(tz), tz);
     }
+    CALIDAD.antesDeDibujar(); // nivel Bajo: niebla más cerca y no dibuja lo que queda detrás
     rd.render(sc, cam);
+    CALIDAD.despuesDeDibujar();
     cam.position.y = py;
     cam.quaternion.copy(_qCam);
   } catch (e) {
     console.error(e);
   }
+  CALIDAD.medir(msCuadro, performance.now() - t0); // modo automático: ¿va fluido?
 }
 requestAnimationFrame(loop);

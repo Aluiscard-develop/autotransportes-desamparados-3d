@@ -27,6 +27,12 @@ git commit -am "Describe tu mejora"
 git push origin mi-mejora   # y luego abre el pull request en GitHub
 ```
 
+## Los números que más se cambian: `js/ajustes.js`
+
+Antes de buscar en el código, mirá [js/ajustes.js](js/ajustes.js): ahí están juntos los niveles de
+gráficos (resolución, sombras, niebla, cuánta gente sale en el apocalipsis). El modo **Automático** de gráficos está en
+[js/rendimiento.js](js/rendimiento.js).
+
 ## Cómo está partido el juego (`js/juego/`)
 
 El juego base está partido en 18 archivos chicos, uno por tema. `index.html` los carga en orden

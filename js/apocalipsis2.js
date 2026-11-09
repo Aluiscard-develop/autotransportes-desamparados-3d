@@ -278,14 +278,11 @@
 
     // ----- tornados del horizonte -----
     horizonte.visible = true;
-    const nHor = Math.round(N_HOR * (mor ? Math.min(1, 0.5 + 0.17 * AP.nivel) : 0.3));
-    for (let i = 0; i < N_HOR; i++) {
+    // solo se calculan y dibujan los que se ven (en gráficos Bajo, menos: CALIDAD.efectos)
+    const nHor = Math.round(N_HOR * (mor ? Math.min(1, 0.5 + 0.17 * AP.nivel) : 0.3) * CALIDAD.efectos);
+    horizonte.count = nHor;
+    for (let i = 0; i < nHor; i++) {
       const o = hor[i];
-      if (i >= nHor) {
-        m4.makeScale(0, 0, 0);
-        horizonte.setMatrixAt(i, m4);
-        continue;
-      }
       if (!o.ok || o.z - B.z > 350 || B.z - o.z > 1100 || Math.abs(o.x - B.x) > 1100) ponerHor(o);
       o.x += o.vx * dt;
       o.z += o.vz * dt;
@@ -298,16 +295,13 @@
 
     // ----- multitud corriendo -----
     cuerpos.visible = cabezas.visible = true;
-    const nGente = Math.round(N_GENTE * (mor ? 1 : 0.4));
-    for (let i = 0; i < N_GENTE; i++) {
+    const nGente = Math.round(N_GENTE * (mor ? 1 : 0.4) * CALIDAD.efectos);
+    cuerpos.count = cabezas.count = nGente;
+    for (let i = 0; i < nGente; i++) {
       const p = multitud[i];
-      if (i >= nGente) {
-        m4.makeScale(0, 0, 0);
-      } else {
-        p.z += p.v * dt;
-        if (p.z - B.z > 160 || B.z - p.z > 530) ponerPersona(p, p.z - B.z > 160);
-        m4.makeTranslation(p.x + Math.sin(t * 2 + p.f) * 0.5, Math.abs(Math.sin(t * 12 + p.f)) * 0.2, p.z);
-      }
+      p.z += p.v * dt;
+      if (p.z - B.z > 160 || B.z - p.z > 530) ponerPersona(p, p.z - B.z > 160);
+      m4.makeTranslation(p.x + Math.sin(t * 2 + p.f) * 0.5, Math.abs(Math.sin(t * 12 + p.f)) * 0.2, p.z);
       cuerpos.setMatrixAt(i, m4);
       cabezas.setMatrixAt(i, m4);
     }
@@ -397,14 +391,10 @@
     // ----- avalanchas que bajan de las montañas -----
     avs.visible = mor;
     if (mor) {
-      const nAv = Math.round(N_AV * Math.min(1, 0.35 + 0.2 * AP.nivel));
-      for (let i = 0; i < N_AV; i++) {
+      const nAv = Math.round(N_AV * Math.min(1, 0.35 + 0.2 * AP.nivel) * Math.max(0.5, CALIDAD.efectos));
+      avs.count = nAv;
+      for (let i = 0; i < nAv; i++) {
         const a = avalanchas[i];
-        if (i >= nAv) {
-          m4.makeScale(0, 0, 0);
-          avs.setMatrixAt(i, m4);
-          continue;
-        }
         if (!a.ok || a.z - B.z > 300 || B.z - a.z > 900 || a.x * a.s < -80) ponerAv(a);
         a.x -= a.s * a.v * dt;
         m4.compose(v4.set(a.x, 0, a.z), q4.identity(), s4.set(a.alto * 0.9, a.alto, a.largo));
@@ -420,7 +410,7 @@
     }
 
     // ----- incendios -----
-    const nFuego = Math.round(fuegos.length * (mor ? 1 : 0.4));
+    const nFuego = Math.round(fuegos.length * (mor ? 1 : 0.4) * CALIDAD.efectos);
     fuegos.forEach((f, i) => {
       f.sp.visible = i < nFuego;
       if (!f.sp.visible) return;

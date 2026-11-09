@@ -50,6 +50,96 @@ function congelar(root, animados) {
 }
 congelar(wo, new Set([...crs, ...arms, ...amu.cabs, amu.fw, amu.cr, amu.cart, trA, trC]));
 congelar(rb, new Set());
+
+// ----- Juntar piezas: menos dibujos por cuadro -----
+// Cada pieza de un árbol, casa, poste o farol se dibujaba por separado (un pino = 5 dibujos,
+// una palmera = 12). Aquí las piezas de un mismo adorno que se ven iguales (mismo material, o
+// materiales idénticos que nadie más usa) se juntan en una sola malla. Se ve exactamente igual,
+// pero la tarjeta de video hace muchos menos dibujos: es lo que más ayuda a las PCs lentas.
+// Solo se usa con los adornos de los tramos que se reciclan (chunks), que se mueven enteros.
+function unirGeometrias(geos) {
+  const nombres = Object.keys(geos[0].attributes).filter((n) =>
+    geos.every((g) => g.attributes[n] && g.attributes[n].itemSize == geos[0].attributes[n].itemSize),
+  );
+  if (!nombres.includes("position")) return null;
+  const out = new T.BufferGeometry();
+  for (const n of nombres) {
+    const tam = geos[0].attributes[n].itemSize,
+      arr = new Float32Array(geos.reduce((s, g) => s + g.attributes[n].count * tam, 0));
+    let i = 0;
+    for (const g of geos) {
+      arr.set(g.attributes[n].array, i);
+      i += g.attributes[n].count * tam;
+    }
+    out.setAttribute(n, new T.BufferAttribute(arr, tam));
+  }
+  out.computeBoundingSphere();
+  return out;
+}
+// cuántas mallas usan cada material (un material de una sola malla no lo comparte nadie)
+const usosMaterial = new Map();
+sc.traverse((o) => o.material && !Array.isArray(o.material) && usosMaterial.set(o.material, (usosMaterial.get(o.material) || 0) + 1));
+const firmaMaterial = (m) =>
+  usosMaterial.get(m) > 1
+    ? m.uuid // compartido: puede que el juego lo cambie (por ejemplo las ventanas de noche); se respeta tal cual
+    : [
+        m.type,
+        m.color && m.color.getHex(),
+        m.emissive && m.emissive.getHex(),
+        m.emissiveIntensity,
+        m.roughness,
+        m.metalness,
+        m.flatShading,
+        m.transparent,
+        m.opacity,
+        m.side,
+        m.vertexColors,
+        m.map && m.map.uuid,
+        m.emissiveMap && m.emissiveMap.uuid,
+        m.bumpMap && m.bumpMap.uuid,
+      ].join("|");
+function fusionar(raiz) {
+  raiz.updateMatrixWorld(true);
+  const inv = new T.Matrix4().copy(raiz.matrixWorld).invert(),
+    grupos = new Map();
+  raiz.traverse((o) => {
+    if (o === raiz || !o.isMesh || o.isInstancedMesh || !o.visible || Array.isArray(o.material)) return;
+    if (o.geometry.morphAttributes.position || o.matrixWorld.determinant() < 0) return;
+    const k = firmaMaterial(o.material) + (o.castShadow ? "|s" : "") + (o.receiveShadow ? "|r" : "");
+    if (!grupos.has(k)) grupos.set(k, []);
+    grupos.get(k).push(o);
+  });
+  let antes = 0,
+    despues = 0;
+  grupos.forEach((ms) => {
+    antes += ms.length;
+    despues++;
+    if (ms.length < 2) return;
+    const m0 = ms[0];
+    if (m0.material.vertexColors && !ms.every((m) => m.geometry.attributes.color)) return (despues += ms.length - 1);
+    const geos = ms.map((m) => {
+      const g = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry.clone();
+      g.applyMatrix4(new T.Matrix4().multiplyMatrices(inv, m.matrixWorld));
+      return g;
+    });
+    const unida = unirGeometrias(geos);
+    if (!unida) return (despues += ms.length - 1);
+    const m = new T.Mesh(unida, m0.material);
+    m.castShadow = m0.castShadow;
+    m.receiveShadow = m0.receiveShadow;
+    raiz.add(m);
+    ms.forEach((x) => x.parent.remove(x));
+  });
+  // quitar los grupos que quedaron vacíos
+  const vacios = [];
+  raiz.traverse((o) => o !== raiz && o.isGroup && !o.children.length && vacios.push(o));
+  vacios.forEach((o) => o.parent && o.parent.remove(o));
+  return antes - despues;
+}
+const mallasAhorradas = chunks.reduce((s, c) => s + c.pr.reduce((t, p) => t + (p.o.isGroup ? fusionar(p.o) : 0), 0), 0);
+console.info(`Optimización: ${mallasAhorradas} mallas menos en el paisaje`);
+// lo que está "en el infinito": en gráficos Bajo se acerca a la cámara (js/rendimiento.js)
+CALIDAD.fondo(sky, sunM, sunG, cl);
 function relieveTick(dt) {
   const u = -B.z;
   BEND.x = u;

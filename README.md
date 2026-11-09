@@ -107,11 +107,23 @@ Cielo con halo del sol y estrellas de noche · nubes con volumen · asfalto con 
 
 En celulares y tablets los reflejos se apagan solos. Así la carretera y el bus nunca se ven negros ni sin color.
 
+### 🎨 Gráficos: también en PCs de pocos recursos
+
+En el menú, **🎨 Gráficos** tiene cuatro opciones:
+
+- **Automático** (la que viene puesta): revisa qué tan potente es la PC para elegir cómo empezar y, mientras jugás, mide si va fluido. Si se pone lento, baja la resolución y, si no alcanza, baja los gráficos (Ultra → Normal → Bajo).
+- **Ultra realista**, **Normal** y **Bajo**: fijos, no cambian solos.
+- **Bajo** es para PCs lentas: sin sombras, sin bordes suaves, menos resolución, más niebla (así no dibuja lo que está lejos) y menos gente y tornados en el apocalipsis. Los bordes suaves cambian al recargar la página.
+
+En todos los niveles, las piezas de los árboles, casas y postes se juntan al cargar: se ven igual, pero la PC dibuja un 30 % menos de cosas por cuadro.
+
 ## Cómo está hecho
 
 | Archivo | Qué contiene |
 |---|---|
 | [index.html](index.html) | Pantallas y botones (menú, panel, controles táctiles) |
+| [js/ajustes.js](js/ajustes.js) | **Los números que más se cambian**: niveles de gráficos (resolución, sombras, niebla, efectos) |
+| [js/rendimiento.js](js/rendimiento.js) | El modo de gráficos (Automático, Ultra, Normal, Bajo) y lo que hace que vaya fluido en PCs lentas |
 | [css/estilos.css](css/estilos.css) | Colores y estilos de la interfaz |
 | [js/juego/](js/juego/) | El juego base, partido en 18 archivos por tema (escena, paisaje, bus, vehículos, tráfico, zonas, menú, policía…). La lista está en [CONTRIBUTING.md](CONTRIBUTING.md) |
 | [js/apocalipsis2.js](js/apocalipsis2.js) | El desastre total de la Tormenta Morada: tornados del horizonte, multitud, derrumbes, inundación, edificios, avalanchas, buses de evacuación y carros volcados |

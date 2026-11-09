@@ -2,8 +2,9 @@
 // Parte 2 de 18 del juego. index.html carga estas partes en orden (01, 02, 03…);
 // todas comparten las mismas variables, así que una parte puede usar lo que definió una anterior.
 
-const rd = new T.WebGLRenderer({ antialias: true });
-rd.setPixelRatio(Math.min(devicePixelRatio, 2));
+// bordes suaves y resolución según el modo de gráficos (js/rendimiento.js)
+const rd = new T.WebGLRenderer({ antialias: CALIDAD.antialias, powerPreference: "high-performance" });
+rd.setPixelRatio(Math.min(devicePixelRatio, AJUSTES.graficos[CALIDAD.nivel].resolucion));
 rd.shadowMap.enabled = true;
 rd.shadowMap.type = T.PCFSoftShadowMap;
 rd.outputEncoding = T.sRGBEncoding;
@@ -170,7 +171,7 @@ const nz = cv(128, 128, (x, w, h) => {
   x.putImageData(d, 0, 0);
 });
 nz.wrapS = nz.wrapT = T.RepeatWrapping;
-let GQ = matchMedia("(pointer:coarse)").matches ? 0 : 1,
+let GQ = CALIDAD.nivel == "ultra" ? 1 : 0, // 1 = Ultra realista (lo maneja js/rendimiento.js)
   RAIN = 0,
   rnv = 0;
 const RN = 2200,

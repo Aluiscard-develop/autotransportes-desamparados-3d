@@ -144,6 +144,7 @@
   );
   cupula.visible = false;
   sc.add(cupula);
+  CALIDAD.fondo(cupula); // en gráficos Bajo se acerca a la cámara para que no la recorte
 
   // ----- sonidos: gritos y truenos -----
   const grito = () => {
@@ -300,7 +301,8 @@
       }
 
     // ----- tornados -----
-    const nActivos = moradaK ? Math.min(N_TORNADOS, 8 + AP.nivel * 2) : 5;
+    // en gráficos Bajo salen menos (CALIDAD.efectos, js/ajustes.js)
+    const nActivos = Math.max(2, Math.round((moradaK ? Math.min(N_TORNADOS, 8 + AP.nivel * 2) : 5) * CALIDAD.efectos));
     tornados.forEach((tr, i) => {
       if (i >= nActivos) {
         tr.g.visible = false;
@@ -355,7 +357,9 @@
     AP.golpeT -= dt;
 
     // ----- gente corriendo y gritando -----
-    gente.forEach((p) => {
+    const nGente = Math.max(6, Math.round(gente.length * CALIDAD.efectos));
+    gente.forEach((p, i) => {
+      if (i >= nGente) return (p.g.visible = false);
       p.z += p.v * dt;
       if (p.z - B.z > 120 || B.z - p.z > 420) ponerPersona(p);
       p.g.visible = true;

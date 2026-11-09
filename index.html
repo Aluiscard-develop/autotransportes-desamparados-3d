@@ -140,9 +140,11 @@
       </p>
       <p>
         🎨 Gráficos
-        <select id="gq">
-          <option value="1">Ultra realista</option>
-          <option value="0">Normal (más fluido)</option>
+        <select id="gq" title="Automático baja los gráficos solo si el juego se pone lento">
+          <option value="auto">Automático (se ajusta solo)</option>
+          <option value="ultra">Ultra realista</option>
+          <option value="normal">Normal</option>
+          <option value="bajo">Bajo (PC lenta, más fluido)</option>
         </select>
         · 🌦 Clima
         <select id="wx">
@@ -164,6 +166,9 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- los números que más se cambian, y el modo de gráficos (van primero) -->
+    <script src="js/ajustes.js"></script>
+    <script src="js/rendimiento.js"></script>
     <!-- el juego, en partes por tema (se cargan en orden; ver CONTRIBUTING.md) -->
     <script src="js/juego/01-base.js"></script>
     <script src="js/juego/02-escena.js"></script>

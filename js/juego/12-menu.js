@@ -254,18 +254,9 @@ $("mb").onclick = toggleMenu;
 $("wb").onclick = openGarage;
 $("tg").onclick = openGarage;
 function applyGfx() {
-  GQ = +$("gq").value;
+  // sombras, resolución, distancia de vista y GQ: js/rendimiento.js (niveles en js/ajustes.js)
+  CALIDAD.aplicar($("gq").value);
   RAIN = +$("wx").value;
-  const m = GQ ? 4096 : 2048;
-  if (sun.shadow.mapSize.x != m) {
-    sun.shadow.mapSize.set(m, m);
-    if (sun.shadow.map) {
-      sun.shadow.map.dispose();
-      sun.shadow.map = null;
-    }
-  }
-  rd.setPixelRatio(Math.min(devicePixelRatio, GQ ? 2 : 1.25));
-  rs();
   roadM.bumpMap = GQ ? nz : null;
   roadM.bumpScale = 0.9;
   roadM.envMap = null; // la carretera nunca usa reflejos: así se ve con color en cualquier dispositivo
@@ -274,7 +265,7 @@ function applyGfx() {
   ground.material.bumpScale = 1.4;
   ground.material.needsUpdate = true;
 }
-$("gq").value = GQ;
+$("gq").value = CALIDAD.eleccion;
 applyGfx();
 // Ya no se puede perder: si el vehículo se destroza, queda como nuevo y seguís manejando.
 function end() {
