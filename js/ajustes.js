@@ -43,18 +43,18 @@ const AJUSTES = {
   },
 
   // ----- APOCALIPSIS (js/apocalipsis.js) -----
-  // Orden: calma → caos → Tormenta Morada → tormenta de comida → calma → …
+  // Orden: calma → caos → Tormenta Morada (con lluvia de comida gigante y la carretera partiéndose) → calma → …
   apocalipsis: {
     primeraCalma: 25, // segundos de calma al empezar
     calma: 120, // segundos de calma entre apocalipsis
     caos: 40, // segundos de caos (tornados y carros rapidísimos)
     morada: 60, // cada cuántos segundos sube de nivel la Tormenta Morada (+₡5000)
     nivelesMorada: 3, // cuántos niveles dura la Tormenta Morada antes de terminar (3 × 60 s = 3 minutos)
-    comida: 90, // segundos que dura la tormenta de comida
+    premio: 20000, // colones por sobrevivir la Tormenta Morada entera
     velCarros: { caos: 3, morada: 4 }, // veces más rápido que lo normal
   },
 
-  // ----- TORMENTA DE COMIDA (js/tormenta-comida.js) -----
+  // ----- LLUVIA DE COMIDA GIGANTE (js/tormenta-comida.js) · cae durante la Tormenta Morada -----
   tormentaComida: {
     cadaCuanto: [0.5, 1.3], // segundos entre una comida y la siguiente (mínimo, máximo)
     maxComidas: 14, // cuántas comidas puede haber a la vez (en gráficos bajos, menos)
@@ -63,6 +63,16 @@ const AJUSTES = {
     danio: 16, // daño si te cae encima (de 100)
     radioGolpe: 11, // metros alrededor del impacto que te alcanzan
     segundosEnElSuelo: 14, // cuánto tiempo se queda la comida tirada en la carretera
-    premio: 15000, // colones por sobrevivir
+  },
+
+  // ----- CARRETERA PARTIDA (js/carretera-partida.js) · pasa durante la Tormenta Morada -----
+  // Adelante de vos la carretera se raja por la línea del centro y una mitad se hunde.
+  carreteraPartida: {
+    cadaCuanto: [7, 13], // segundos entre una rajadura y la siguiente (mínimo, máximo)
+    distancia: [140, 260], // a cuántos metros adelante de vos se raja (mínimo, máximo)
+    largo: [40, 100], // largo del pedazo que se hunde, en metros (mínimo, máximo)
+    aviso: 2, // segundos que se ve la raja antes de hundirse
+    danio: 20, // daño si te caés en el hueco (de 100)
+    maximo: 3, // cuántas puede haber a la vez
   },
 };

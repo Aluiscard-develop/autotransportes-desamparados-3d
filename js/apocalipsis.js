@@ -3,17 +3,17 @@
 //   1. CALMA      · un rato tranquilo (al empezar y entre apocalipsis)
 //   2. CAOS       · los carros van rapidísimo, tornados gigantes por todas partes con carros volando,
 //                   clima pésimo, explosiones y gente corriendo y gritando
-//   3. MORADA     · la Tormenta Morada: cielo morado, rayos morados, tornados morados y bolas de fuego.
+//   3. MORADA     · la Tormenta Morada, todo junto en una sola tormenta: cielo morado, rayos morados,
+//                   tornados morados, bolas de fuego, LLUVIA DE COMIDA GIGANTE (js/tormenta-comida.js)
+//                   y la CARRETERA PARTIÉNDOSE a la mitad (js/carretera-partida.js).
 //                   Cada minuto sube de nivel (más peligrosa) y te da ₡5000 por aguantar. Dura
-//                   AJUSTES.apocalipsis.nivelesMorada niveles y después…
-//   4. COMIDA     · ¡la tormenta de comida! Llueve comida gigante (js/tormenta-comida.js). La gente
-//                   sigue corriendo y gritando. Al terminar vuelve la calma (+₡ por sobrevivir).
+//                   AJUSTES.apocalipsis.nivelesMorada niveles y vuelve la calma (+₡ por sobrevivir).
 // El desastre total (tornados en el horizonte, multitudes, derrumbes, inundaciones…) está en js/apocalipsis2.js. Se apaga desde el menú ("🌪 Apocalipsis: No").
 // Cuánto dura cada fase y qué tan rápido van los carros: js/ajustes.js (AJUSTES.apocalipsis).
 // =====================================================================
 (function () {
   const { compartir, mat, humoTex, llamaTex } = MUNDO;
-  const FASES = AJUSTES.apocalipsis; // primeraCalma, calma, caos, morada (cada cuánto sube de nivel), comida
+  const FASES = AJUSTES.apocalipsis; // primeraCalma, calma, caos, morada (cada cuánto sube de nivel), premio
   const VEL_CARROS = FASES.velCarros; // veces más rápido que lo normal
   const AP = { fase: "calma", nivel: 0, t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0 };
   window.APOCALIPSIS = AP; // para revisar desde la consola
@@ -221,26 +221,16 @@
       trueno(1);
     } else if (f == "morada") {
       tornados.forEach((t) => !t.activo && ponerTornado(t, false));
-      msg("🟣⚡ ¡LA TORMENTA MORADA! Pura destrucción: rayos, bolas de fuego y tornados morados", 5000);
-      trueno(1);
-    } else if (f == "comida") {
-      // se van los tornados, los rayos y el cielo morado; la gente sigue corriendo
-      tornados.forEach((t) => ((t.g.visible = false), (t.activo = false)));
-      bolas.forEach((b) => ((b.m.visible = false), (b.activa = false)));
-      rayo.visible = false;
-      cupula.visible = false;
-      explosiones.forEach((e) => ((e.sp.visible = false), (e.t = 0)));
-      msg("🍔🍕🍩 ¡Terminó la Tormenta Morada... y ahora llueve COMIDA GIGANTE! Esquivá los círculos rojos", 5500);
+      msg("🟣⚡🍔 ¡LA TORMENTA MORADA! Rayos, tornados, bolas de fuego, COMIDA GIGANTE cayendo del cielo y la carretera partiéndose", 5500);
       trueno(1);
     } else {
       ocultarTodo();
-      const premio = antes == "comida" ? AJUSTES.tormentaComida.premio : 15000;
-      cash += premio;
-      msg(`🌤 ${antes == "comida" ? "Pasó la tormenta de comida" : "Pasó el apocalipsis"}... ¡Sobreviviste! +₡${premio.toLocaleString("es-CR")}`, 4500);
+      cash += FASES.premio;
+      msg(`🌤 ${antes == "morada" ? "Pasó la Tormenta Morada" : "Pasó el apocalipsis"}... ¡Sobreviviste! +₡${FASES.premio.toLocaleString("es-CR")}`, 4500);
     }
   };
 
-  // ----- gente corriendo y gritando (en el caos, la morada y la tormenta de comida) -----
+  // ----- gente corriendo y gritando (en el caos y en la Tormenta Morada) -----
   const moverGente = (t, dt) => {
     const nGente = Math.max(6, Math.round(gente.length * CALIDAD.efectos)); // en gráficos Bajo, menos
     gente.forEach((p, i) => {
@@ -314,11 +304,10 @@
     }
     if (AP.t <= 0) {
       if (AP.fase == "caos") cambiarFase("morada");
-      else if (AP.fase == "comida") cambiarFase("calma");
       else if (AP.nivel + 1 >= FASES.nivelesMorada) {
-        // la Tormenta Morada terminó: viene la tormenta de comida
+        // la Tormenta Morada terminó: vuelve la calma
         cash += 5000;
-        cambiarFase("comida");
+        cambiarFase("calma");
       } else {
         // la Tormenta Morada sube de nivel
         AP.t = FASES.morada;
@@ -327,12 +316,6 @@
         msg(`🟣⛈ La Tormenta Morada sube a nivel ${AP.nivel + 1} · aguantaste un minuto más +₡5000`, 3500);
         trueno(1);
       }
-    }
-    // ----- tormenta de comida: solo la gente corriendo y gritando (la comida está en js/tormenta-comida.js) -----
-    if (AP.fase == "comida") {
-      moverGente(t, dt);
-      gritar(dt, true);
-      return;
     }
     const moradaK = AP.fase == "morada" ? 1 : 0;
 
@@ -415,7 +398,7 @@
 
     // ----- gente corriendo y gritando -----
     moverGente(t, dt);
-    gritar(dt, false);
+    gritar(dt, moradaK && Math.random() < 0.5); // en la morada también gritan por la comida
     // ----- destrucción: explosiones -----
     AP.boomT -= dt;
     if (AP.boomT <= 0) {

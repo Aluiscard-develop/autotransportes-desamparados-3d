@@ -31,7 +31,7 @@ git push origin mi-mejora   # y luego abre el pull request en GitHub
 
 Antes de buscar en el código, mirá [js/ajustes.js](js/ajustes.js): ahí están juntos los niveles de
 gráficos (resolución, sombras, niebla, cuánta gente sale en el apocalipsis), cuánto dura cada fase
-del apocalipsis y cómo es la tormenta de comida. El modo **Automático** de gráficos está en
+del apocalipsis, la comida gigante y la carretera partida. El modo **Automático** de gráficos está en
 [js/rendimiento.js](js/rendimiento.js).
 
 ## Cómo está partido el juego (`js/juego/`)
@@ -168,13 +168,21 @@ Los números (cuántos tanques, cada cuánto disparan, daño, aviones, premio) e
 - `AV.dist` (a cuántos metros empieza), `AV.vel` (qué tan rápido avanza) y `AV.max` (nunca se queda más lejos) están al inicio de `js/avalancha.js`.
 - La cámara que mira hacia atrás: busca `MIRA` en `js/juego/13-actualizar.js` y `js/juego/18-bucle.js`.
 
-## El apocalipsis (`js/apocalipsis.js`) y la tormenta de comida (`js/tormenta-comida.js`)
+## El apocalipsis (`js/apocalipsis.js`), la comida gigante (`js/tormenta-comida.js`) y la carretera partida (`js/carretera-partida.js`)
+
+La Tormenta Morada es una sola tormenta con todo junto: rayos, tornados, bolas de fuego, comida gigante
+cayendo y la carretera partiéndose. La comida y la carretera partida solo pasan mientras
+`APOCALIPSIS.fase == "morada"`.
 
 - En `js/ajustes.js` → `AJUSTES.apocalipsis`: cuántos segundos dura la calma, el caos, cada nivel de la
-  Tormenta Morada, cuántos niveles dura (`nivelesMorada`) y la tormenta de comida (`comida`); y qué tan
-  rápido van los carros (`velCarros`).
+  Tormenta Morada, cuántos niveles dura (`nivelesMorada`), el premio por sobrevivirla (`premio`) y qué
+  tan rápido van los carros (`velCarros`).
 - En `js/ajustes.js` → `AJUSTES.tormentaComida`: cada cuánto cae comida, cuántas a la vez, qué tan
-  grandes, el daño y el premio.
+  grandes y el daño.
+- En `js/ajustes.js` → `AJUSTES.carreteraPartida`: cada cuánto se raja, a cuántos metros adelante, qué
+  tan largo es el hueco, cuántos segundos de aviso y el daño si te caés.
+- Para probar la carretera partida desde la consola del navegador (F12):
+  `CARRETERA_PARTIDA.rajar(B.z - 80, 1)` (1 = se hunde la mitad derecha, -1 = la izquierda).
 - Para cambiar cómo se ve una comida o agregar otra: `COMIDAS` en `js/tormenta-comida.js`. Cada una se
   arma con piezas de 1 metro (`pieza(...)`) y el juego la agranda.
 - `N_TORNADOS`: cuántos tornados cercanos puede haber a la vez.

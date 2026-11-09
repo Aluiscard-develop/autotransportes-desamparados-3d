@@ -1,6 +1,6 @@
 // =====================================================================
-// TORMENTA DE COMIDA. Se carga después de js/apocalipsis2.js y usa su estado (window.APOCALIPSIS).
-// Empieza cuando termina la Tormenta Morada (APOCALIPSIS.fase == "comida"). Del cielo cae comida
+// LLUVIA DE COMIDA GIGANTE. Se carga después de js/apocalipsis2.js y usa su estado (window.APOCALIPSIS).
+// Es parte de la Tormenta Morada (APOCALIPSIS.fase == "morada"): mientras dura, del cielo cae comida
 // GIGANTE: hamburguesas, pizzas, donas, hot dogs, sandías, helados, pollo frito y papas.
 //   AVISO     · un círculo rojo en el piso marca dónde va a caer (¡esquivalo!)
 //   IMPACTO   · explota en migas, aplasta los carros que agarra abajo, tira por el aire a los de
@@ -9,7 +9,7 @@
 //               la vas empujando a un lado (con el tanque o el camión monstruo la aplastás y te pagan)
 //   DONAS     · ruedan por la carretera aplastando lo que encuentran
 //   SANDÍAS   · rebotan antes de quedarse quietas
-// Los números (cada cuánto cae, tamaño, daño, duración) están en js/ajustes.js (AJUSTES.tormentaComida).
+// Los números (cada cuánto cae, tamaño, daño) están en js/ajustes.js (AJUSTES.tormentaComida).
 // Para agregar otra comida: agregala a COMIDAS (cada una se arma con piezas de 1 metro).
 // =====================================================================
 (function () {
@@ -17,7 +17,7 @@
   if (!AP) return;
   const A = AJUSTES.tormentaComida,
     { compartir, mat, humoTex } = MUNDO;
-  const enComida = () => AP.fase == "comida" && !MONT.on;
+  const enComida = () => AP.fase == "morada" && !MONT.on;
   const play = () => state == "play" && !MONT.on;
 
   // ===================== LAS COMIDAS (tamaño 1 = 1 metro de ancho) =====================
@@ -544,7 +544,7 @@
       }
       D.avisoT -= dt;
       if (D.avisoT <= 0) {
-        D.avisoT = R(6, 11);
+        D.avisoT = R(12, 18); // cada tanto (la Tormenta Morada también avisa cosas)
         msg(
           pk_([
             "🍔 ¡Cuidado con las hamburguesas gigantes!",
