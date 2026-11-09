@@ -30,7 +30,8 @@ git push origin mi-mejora   # y luego abre el pull request en GitHub
 ## Los números que más se cambian: `js/ajustes.js`
 
 Antes de buscar en el código, mirá [js/ajustes.js](js/ajustes.js): ahí están juntos los niveles de
-gráficos (resolución, sombras, niebla, cuánta gente sale en el apocalipsis). El modo **Automático** de gráficos está en
+gráficos (resolución, sombras, niebla, cuánta gente sale en el apocalipsis), cuánto dura cada fase
+del apocalipsis y cómo es la tormenta de comida. El modo **Automático** de gráficos está en
 [js/rendimiento.js](js/rendimiento.js).
 
 ## Cómo está partido el juego (`js/juego/`)
@@ -154,10 +155,15 @@ Busca estos comentarios (Ctrl+F) en el archivo indicado para llegar rápido:
 - `AV.dist` (a cuántos metros empieza), `AV.vel` (qué tan rápido avanza) y `AV.max` (nunca se queda más lejos) están al inicio de `js/avalancha.js`.
 - La cámara que mira hacia atrás: busca `MIRA` en `js/juego/13-actualizar.js` y `js/juego/18-bucle.js`.
 
-## El apocalipsis (`js/apocalipsis.js`)
+## El apocalipsis (`js/apocalipsis.js`) y la tormenta de comida (`js/tormenta-comida.js`)
 
-- `FASES`: cuántos segundos dura la calma, el caos y la Tormenta Morada.
-- `VEL_CARROS`: cuántas veces más rápido van los carros en cada fase.
+- En `js/ajustes.js` → `AJUSTES.apocalipsis`: cuántos segundos dura la calma, el caos, cada nivel de la
+  Tormenta Morada, cuántos niveles dura (`nivelesMorada`) y la tormenta de comida (`comida`); y qué tan
+  rápido van los carros (`velCarros`).
+- En `js/ajustes.js` → `AJUSTES.tormentaComida`: cada cuánto cae comida, cuántas a la vez, qué tan
+  grandes, el daño y el premio.
+- Para cambiar cómo se ve una comida o agregar otra: `COMIDAS` en `js/tormenta-comida.js`. Cada una se
+  arma con piezas de 1 metro (`pieza(...)`) y el juego la agranda.
 - `N_TORNADOS`: cuántos tornados cercanos puede haber a la vez.
 - En `js/apocalipsis2.js`: `N_HOR` (tornados del horizonte), `N_GENTE` (personas corriendo) y `N_AV` (avalanchas). Si el juego se pone lento en una computadora, bajá esos números.
 

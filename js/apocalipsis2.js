@@ -1,6 +1,6 @@
 // =====================================================================
 // DESASTRE TOTAL. Se carga después de js/apocalipsis.js y usa su estado (window.APOCALIPSIS).
-// En el CAOS y sobre todo en la TORMENTA MORADA (que nunca para) aparecen:
+// En el CAOS, en la TORMENTA MORADA y en la TORMENTA DE COMIDA (sin los tornados) aparecen:
 //   TORNADOS DEL HORIZONTE   · ~120 tornados ultra gigantescos (300 a 500 m de alto) alrededor
 //   MULTITUD                 · ~2000 personas corriendo desesperadas a los lados
 //   BUSES DE EVACUACIÓN      · buses llenos de gente (hasta en el techo) en el tráfico
@@ -277,9 +277,10 @@
     D.golpeT -= dt;
 
     // ----- tornados del horizonte -----
-    horizonte.visible = true;
-    // solo se calculan y dibujan los que se ven (en gráficos Bajo, menos: CALIDAD.efectos)
-    const nHor = Math.round(N_HOR * (mor ? Math.min(1, 0.5 + 0.17 * AP.nivel) : 0.3) * CALIDAD.efectos);
+    // solo se calculan y dibujan los que se ven (en gráficos Bajo, menos: CALIDAD.efectos);
+    // en la tormenta de comida no hay tornados
+    const nHor = AP.fase == "comida" ? 0 : Math.round(N_HOR * (mor ? Math.min(1, 0.5 + 0.17 * AP.nivel) : 0.3) * CALIDAD.efectos);
+    horizonte.visible = nHor > 0;
     horizonte.count = nHor;
     for (let i = 0; i < nHor; i++) {
       const o = hor[i];

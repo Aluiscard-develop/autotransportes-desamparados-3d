@@ -46,7 +46,8 @@ En celulares y tablets aparecen botones en la pantalla.
 ## Qué tiene
 
 - **🆕 Lo más nuevo:**
-  - **🌪 Apocalipsis en todo el juego** (se apaga en el menú: "🌪 Apocalipsis: No"): después de un rato de calma, **los carros empiezan a ir rapidísimo** y zigzaguean, salen **tornados gigantes por todas partes** con carros volando, el clima se pone pésimo, hay explosiones y **gente corriendo y gritando**. Después llega la **🟣 Tormenta Morada, que NUNCA PARA** y cada minuto sube de nivel (+₡5000 por aguantar): ~120 tornados ultra gigantescos en el horizonte, ~2000 personas corriendo, avalanchas que bajan de las montañas, **derrumbes** que tapan la carretera, **inundaciones**, **edificios que se derrumban**, incendios, **buses de evacuación llenos de gente** (hasta en el techo), **carros volcados**, rayos morados y bolas de fuego.
+  - **🍔🍕🍩 Tormenta de comida:** cuando termina la Tormenta Morada llueve **comida gigante** (hamburguesas, pizzas, donas, hot dogs, sandías, helados, pollo frito y papas). Un **círculo rojo** en el piso avisa dónde va a caer: ¡esquivalo! Al caer explota en migas, **aplasta los carros**, tira por el aire a los de al lado y deja un cráter. La comida se queda tirada: si chocás con ella te frena y la empujás a un lado (con el tanque o el camión monstruo la aplastás: +₡500). **Las donas ruedan** por la carretera y **las sandías rebotan**. Si aguantás 90 segundos: +₡15 000.
+  - **🌪 Apocalipsis en todo el juego** (se apaga en el menú: "🌪 Apocalipsis: No"): después de un rato de calma, **los carros empiezan a ir rapidísimo** y zigzaguean, salen **tornados gigantes por todas partes** con carros volando, el clima se pone pésimo, hay explosiones y **gente corriendo y gritando**. Después llega la **🟣 Tormenta Morada**, que cada minuto sube de nivel (+₡5000 por aguantar) durante 3 minutos: ~120 tornados ultra gigantescos en el horizonte, ~2000 personas corriendo, avalanchas que bajan de las montañas, **derrumbes** que tapan la carretera, **inundaciones**, **edificios que se derrumban**, incendios, **buses de evacuación llenos de gente** (hasta en el techo), **carros volcados**, rayos morados y bolas de fuego. Y cuando termina… **🍔 ¡la tormenta de comida!**
   - **🏔 Avalancha gigantesca por todo el juego:** apenas empezás en cualquier zona te avisa que viene una avalancha 400 m detrás de vos, con nieve, carros, rocas, árboles y troncos. Te persigue siempre (arriba de la pantalla dice a cuántos metros está). Si te alcanza te daña mucho y vuelve a quedar 400 m atrás.
   - **👀 Mirar hacia atrás:** mantené **V** (o el botón 👀) y la cámara mira hacia atrás.
   - **🏔 Montañas nevadas (zona 43):** nieve que cae, pinos nevados, lago congelado con patinadores, telesilla, cabañas y muñecos de nieve. Fuera de la carretera la nieve frena a todos, menos a las motos de nieve.
@@ -122,12 +123,13 @@ En todos los niveles, las piezas de los árboles, casas y postes se juntan al ca
 | Archivo | Qué contiene |
 |---|---|
 | [index.html](index.html) | Pantallas y botones (menú, panel, controles táctiles) |
-| [js/ajustes.js](js/ajustes.js) | **Los números que más se cambian**: niveles de gráficos (resolución, sombras, niebla, efectos) |
+| [js/ajustes.js](js/ajustes.js) | **Los números que más se cambian**: niveles de gráficos, duración de cada fase del apocalipsis y la tormenta de comida |
 | [js/rendimiento.js](js/rendimiento.js) | El modo de gráficos (Automático, Ultra, Normal, Bajo) y lo que hace que vaya fluido en PCs lentas |
 | [css/estilos.css](css/estilos.css) | Colores y estilos de la interfaz |
 | [js/juego/](js/juego/) | El juego base, partido en 18 archivos por tema (escena, paisaje, bus, vehículos, tráfico, zonas, menú, policía…). La lista está en [CONTRIBUTING.md](CONTRIBUTING.md) |
+| [js/tormenta-comida.js](js/tormenta-comida.js) | La tormenta de comida gigante (`COMIDAS`: cómo es cada comida; los números en `js/ajustes.js`) |
 | [js/apocalipsis2.js](js/apocalipsis2.js) | El desastre total de la Tormenta Morada: tornados del horizonte, multitud, derrumbes, inundación, edificios, avalanchas, buses de evacuación y carros volcados |
-| [js/apocalipsis.js](js/apocalipsis.js) | El apocalipsis: tornados, carros rapidísimos, gente corriendo y la Tormenta Morada (`FASES`, `VEL_CARROS`) |
+| [js/apocalipsis.js](js/apocalipsis.js) | El apocalipsis: tornados, carros rapidísimos, gente corriendo, la Tormenta Morada y el paso a la tormenta de comida |
 | [js/avalancha.js](js/avalancha.js) | La avalancha que te persigue (`AVALANCHA`: distancia, velocidad) |
 | [js/mundo5.js](js/mundo5.js) | Las zonas 43 a 48 (montañas nevadas, Mundo de Bloques, Ciudad de Juguete, Pista de Karts, desierto y Supertormenta) y la Motonieve Ultra 4x4 |
 | [js/mundo4.js](js/mundo4.js) | Las zonas 35 a 42 (Carretera de las Minas, Túnel y Minas de Saratalán, ferry, Isla Bonita, Ciudad Esmeralda, cordillera, autopistas y playas), las obras en carretera, el ICE, kölbi y los carros nuevos |

@@ -22,4 +22,27 @@ const AJUSTES = {
     auto: { fpsMeta: 50, fpsSubir: 57, resolucionMinima: 0.55 },
   },
 
+  // ----- APOCALIPSIS (js/apocalipsis.js) -----
+  // Orden: calma → caos → Tormenta Morada → tormenta de comida → calma → …
+  apocalipsis: {
+    primeraCalma: 25, // segundos de calma al empezar
+    calma: 120, // segundos de calma entre apocalipsis
+    caos: 40, // segundos de caos (tornados y carros rapidísimos)
+    morada: 60, // cada cuántos segundos sube de nivel la Tormenta Morada (+₡5000)
+    nivelesMorada: 3, // cuántos niveles dura la Tormenta Morada antes de terminar (3 × 60 s = 3 minutos)
+    comida: 90, // segundos que dura la tormenta de comida
+    velCarros: { caos: 3, morada: 4 }, // veces más rápido que lo normal
+  },
+
+  // ----- TORMENTA DE COMIDA (js/tormenta-comida.js) -----
+  tormentaComida: {
+    cadaCuanto: [0.5, 1.3], // segundos entre una comida y la siguiente (mínimo, máximo)
+    maxComidas: 14, // cuántas comidas puede haber a la vez (en gráficos bajos, menos)
+    tamano: [7, 15], // tamaño de la comida gigante en metros (mínimo, máximo)
+    velocidadCaida: 55, // metros por segundo
+    danio: 16, // daño si te cae encima (de 100)
+    radioGolpe: 11, // metros alrededor del impacto que te alcanzan
+    segundosEnElSuelo: 14, // cuánto tiempo se queda la comida tirada en la carretera
+    premio: 15000, // colones por sobrevivir
+  },
 };

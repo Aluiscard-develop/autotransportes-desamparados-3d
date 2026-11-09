@@ -4,14 +4,17 @@
 //   2. CAOS       · los carros van rapidísimo, tornados gigantes por todas partes con carros volando,
 //                   clima pésimo, explosiones y gente corriendo y gritando
 //   3. MORADA     · la Tormenta Morada: cielo morado, rayos morados, tornados morados y bolas de fuego.
-//                   ¡NUNCA PARA! Cada minuto sube de nivel (más peligrosa) y te da ₡5000 por aguantar.
+//                   Cada minuto sube de nivel (más peligrosa) y te da ₡5000 por aguantar. Dura
+//                   AJUSTES.apocalipsis.nivelesMorada niveles y después…
+//   4. COMIDA     · ¡la tormenta de comida! Llueve comida gigante (js/tormenta-comida.js). La gente
+//                   sigue corriendo y gritando. Al terminar vuelve la calma (+₡ por sobrevivir).
 // El desastre total (tornados en el horizonte, multitudes, derrumbes, inundaciones…) está en js/apocalipsis2.js. Se apaga desde el menú ("🌪 Apocalipsis: No").
-// Para cambiar cuánto dura cada fase: FASES. Qué tan rápido van los carros: VEL_CARROS.
+// Cuánto dura cada fase y qué tan rápido van los carros: js/ajustes.js (AJUSTES.apocalipsis).
 // =====================================================================
 (function () {
   const { compartir, mat, humoTex, llamaTex } = MUNDO;
-  const FASES = { primeraCalma: 25, calma: 120, caos: 40, morada: 60 }; // morada = cada cuánto sube de nivel
-  const VEL_CARROS = { caos: 3, morada: 4 }; // veces más rápido que lo normal
+  const FASES = AJUSTES.apocalipsis; // primeraCalma, calma, caos, morada (cada cuánto sube de nivel), comida
+  const VEL_CARROS = FASES.velCarros; // veces más rápido que lo normal
   const AP = { fase: "calma", nivel: 0, t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0 };
   window.APOCALIPSIS = AP; // para revisar desde la consola
 
@@ -207,6 +210,7 @@
     cupula.visible = false;
   };
   const cambiarFase = (f) => {
+    const antes = AP.fase;
     AP.fase = f;
     AP.t = FASES[f];
     AP.aviso = false;
@@ -219,13 +223,55 @@
       tornados.forEach((t) => !t.activo && ponerTornado(t, false));
       msg("🟣⚡ ¡LA TORMENTA MORADA! Pura destrucción: rayos, bolas de fuego y tornados morados", 5000);
       trueno(1);
+    } else if (f == "comida") {
+      // se van los tornados, los rayos y el cielo morado; la gente sigue corriendo
+      tornados.forEach((t) => ((t.g.visible = false), (t.activo = false)));
+      bolas.forEach((b) => ((b.m.visible = false), (b.activa = false)));
+      rayo.visible = false;
+      cupula.visible = false;
+      explosiones.forEach((e) => ((e.sp.visible = false), (e.t = 0)));
+      msg("🍔🍕🍩 ¡Terminó la Tormenta Morada... y ahora llueve COMIDA GIGANTE! Esquivá los círculos rojos", 5500);
+      trueno(1);
     } else {
       ocultarTodo();
-      cash += 15000;
-      msg("🌤 Pasó el apocalipsis... ¡Sobreviviste! +₡15 000", 4500);
+      const premio = antes == "comida" ? AJUSTES.tormentaComida.premio : 15000;
+      cash += premio;
+      msg(`🌤 ${antes == "comida" ? "Pasó la tormenta de comida" : "Pasó el apocalipsis"}... ¡Sobreviviste! +₡${premio.toLocaleString("es-CR")}`, 4500);
     }
   };
 
+  // ----- gente corriendo y gritando (en el caos, la morada y la tormenta de comida) -----
+  const moverGente = (t, dt) => {
+    const nGente = Math.max(6, Math.round(gente.length * CALIDAD.efectos)); // en gráficos Bajo, menos
+    gente.forEach((p, i) => {
+      if (i >= nGente) return (p.g.visible = false);
+      p.z += p.v * dt;
+      if (p.z - B.z > 120 || B.z - p.z > 420) ponerPersona(p);
+      p.g.visible = true;
+      const paso = Math.sin(t * 14 + p.f);
+      p.g.position.set(p.x + Math.sin(t * 3 + p.f) * 0.6, Math.abs(paso) * 0.15, p.z);
+      p.g.rotation.y = p.v > 0 ? Math.PI : 0;
+      p.piernaI.rotation.x = paso * 0.8;
+      p.piernaD.rotation.x = -paso * 0.8;
+      p.brazoI.rotation.z = 0.3 + Math.sin(t * 18 + p.f) * 0.4;
+      p.brazoD.rotation.z = -0.3 - Math.sin(t * 18 + p.f + 1) * 0.4;
+    });
+  };
+  const gritar = (dt, comida) => {
+    AP.gritoT -= dt;
+    if (AP.gritoT > 0) return;
+    AP.gritoT = R(1, 2.6);
+    grito();
+    if (Math.random() < 0.25)
+      msg(
+        pk_(
+          comida
+            ? ["😱 ¡UNA HAMBURGUESA GIGANTE!", "😭 ¡CORRAN, VIENE LA PIZZA!", "😱 ¡LAS DONAS NOS VAN A APLASTAR!", "🏃 ¡SÁLVESE QUIEN PUEDA!", "😨 ¡NO ME COMAN!"]
+            : ["😱 ¡AAAAAAH! ¡CORRAN!", "😭 ¡AYUDA! ¡AUXILIO!", "😱 ¡NOS VAMOS A MORIR!", "🏃 ¡SÁLVESE QUIEN PUEDA!", "😨 ¡EL TORNADO VIENE PARA ACÁ!"],
+        ),
+        1500,
+      );
+  };
   // ----- cuadro a cuadro -----
   let reloj = 0,
     zAnt = null;
@@ -268,14 +314,25 @@
     }
     if (AP.t <= 0) {
       if (AP.fase == "caos") cambiarFase("morada");
-      else {
-        // la Tormenta Morada nunca para: sube de nivel
+      else if (AP.fase == "comida") cambiarFase("calma");
+      else if (AP.nivel + 1 >= FASES.nivelesMorada) {
+        // la Tormenta Morada terminó: viene la tormenta de comida
+        cash += 5000;
+        cambiarFase("comida");
+      } else {
+        // la Tormenta Morada sube de nivel
         AP.t = FASES.morada;
         AP.nivel++;
         cash += 5000;
-        msg(`🟣⛈ La Tormenta Morada NO PARA · nivel ${AP.nivel + 1} · aguantaste un minuto más +₡5000`, 3500);
+        msg(`🟣⛈ La Tormenta Morada sube a nivel ${AP.nivel + 1} · aguantaste un minuto más +₡5000`, 3500);
         trueno(1);
       }
+    }
+    // ----- tormenta de comida: solo la gente corriendo y gritando (la comida está en js/tormenta-comida.js) -----
+    if (AP.fase == "comida") {
+      moverGente(t, dt);
+      gritar(dt, true);
+      return;
     }
     const moradaK = AP.fase == "morada" ? 1 : 0;
 
@@ -357,27 +414,8 @@
     AP.golpeT -= dt;
 
     // ----- gente corriendo y gritando -----
-    const nGente = Math.max(6, Math.round(gente.length * CALIDAD.efectos));
-    gente.forEach((p, i) => {
-      if (i >= nGente) return (p.g.visible = false);
-      p.z += p.v * dt;
-      if (p.z - B.z > 120 || B.z - p.z > 420) ponerPersona(p);
-      p.g.visible = true;
-      const paso = Math.sin(t * 14 + p.f);
-      p.g.position.set(p.x + Math.sin(t * 3 + p.f) * 0.6, Math.abs(paso) * 0.15, p.z);
-      p.g.rotation.y = p.v > 0 ? Math.PI : 0;
-      p.piernaI.rotation.x = paso * 0.8;
-      p.piernaD.rotation.x = -paso * 0.8;
-      p.brazoI.rotation.z = 0.3 + Math.sin(t * 18 + p.f) * 0.4;
-      p.brazoD.rotation.z = -0.3 - Math.sin(t * 18 + p.f + 1) * 0.4;
-    });
-    AP.gritoT -= dt;
-    if (AP.gritoT <= 0) {
-      AP.gritoT = R(1, 2.6);
-      grito();
-      if (Math.random() < 0.25) msg(pk_(["😱 ¡AAAAAAH! ¡CORRAN!", "😭 ¡AYUDA! ¡AUXILIO!", "😱 ¡NOS VAMOS A MORIR!", "🏃 ¡SÁLVESE QUIEN PUEDA!", "😨 ¡EL TORNADO VIENE PARA ACÁ!"]), 1500);
-    }
-
+    moverGente(t, dt);
+    gritar(dt, false);
     // ----- destrucción: explosiones -----
     AP.boomT -= dt;
     if (AP.boomT <= 0) {
