@@ -46,9 +46,10 @@ const CALIDAD = (() => {
       memoria = navigator.deviceMemory || 8,
       tactil = matchMedia("(pointer:coarse)").matches,
       // video por software, Intel viejos (HD Graphics / GMA) y celulares viejos
-      debil = /swiftshader|llvmpipe|softpipe|software|basic render|gma|intel\(r\) hd graphics|hd graphics [0-9]{3,4}|mali-[4t]|adreno \(tm\) [2-5]\d\d|powervr|vivante/i.test(
-        gpu,
-      ),
+      debil =
+        /swiftshader|llvmpipe|softpipe|software|basic render|gma|intel\(r\) hd graphics|hd graphics [0-9]{3,4}|mali-[4t]|adreno \(tm\) [2-5]\d\d|powervr|vivante/i.test(
+          gpu,
+        ),
       // tarjetas dedicadas
       fuerte = /nvidia|geforce|quadro|rtx|gtx|radeon (rx|pro|r9)|apple m\d/i.test(gpu);
     let nivel = "normal";
@@ -142,7 +143,8 @@ const CALIDAD = (() => {
     const i = NIVELES.indexOf(C.nivel);
     if (i <= 0) return false;
     ponerNivel(NIVELES[i - 1]);
-    if (typeof msg == "function") msg("⚙ Gráficos en " + NIVELES[i - 1].toUpperCase() + " para que vaya más fluido", 2500);
+    if (typeof msg == "function")
+      msg("⚙ Gráficos en " + NIVELES[i - 1].toUpperCase() + " para que vaya más fluido", 2500);
     return true;
   }
   // msCuadro: tiempo desde el cuadro anterior · msTrabajo: lo que tardó el juego en este cuadro

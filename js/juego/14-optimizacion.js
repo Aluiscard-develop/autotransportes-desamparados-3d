@@ -78,7 +78,12 @@ function unirGeometrias(geos) {
 }
 // cuántas mallas usan cada material (un material de una sola malla no lo comparte nadie)
 const usosMaterial = new Map();
-sc.traverse((o) => o.material && !Array.isArray(o.material) && usosMaterial.set(o.material, (usosMaterial.get(o.material) || 0) + 1));
+sc.traverse(
+  (o) =>
+    o.material &&
+    !Array.isArray(o.material) &&
+    usosMaterial.set(o.material, (usosMaterial.get(o.material) || 0) + 1),
+);
 const firmaMaterial = (m) =>
   usosMaterial.get(m) > 1
     ? m.uuid // compartido: puede que el juego lo cambie (por ejemplo las ventanas de noche); se respeta tal cual
@@ -116,7 +121,8 @@ function fusionar(raiz) {
     despues++;
     if (ms.length < 2) return;
     const m0 = ms[0];
-    if (m0.material.vertexColors && !ms.every((m) => m.geometry.attributes.color)) return (despues += ms.length - 1);
+    if (m0.material.vertexColors && !ms.every((m) => m.geometry.attributes.color))
+      return (despues += ms.length - 1);
     const geos = ms.map((m) => {
       const g = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry.clone();
       g.applyMatrix4(new T.Matrix4().multiplyMatrices(inv, m.matrixWorld));
@@ -136,7 +142,10 @@ function fusionar(raiz) {
   vacios.forEach((o) => o.parent && o.parent.remove(o));
   return antes - despues;
 }
-const mallasAhorradas = chunks.reduce((s, c) => s + c.pr.reduce((t, p) => t + (p.o.isGroup ? fusionar(p.o) : 0), 0), 0);
+const mallasAhorradas = chunks.reduce(
+  (s, c) => s + c.pr.reduce((t, p) => t + (p.o.isGroup ? fusionar(p.o) : 0), 0),
+  0,
+);
 console.info(`Optimización: ${mallasAhorradas} mallas menos en el paisaje`);
 // lo que está "en el infinito": en gráficos Bajo se acerca a la cámara (js/rendimiento.js)
 CALIDAD.fondo(sky, sunM, sunG, cl);
