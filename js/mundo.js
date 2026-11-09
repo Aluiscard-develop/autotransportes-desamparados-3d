@@ -1,6 +1,6 @@
 // =====================================================================
 // MUNDO NUEVO
-// Se carga después de js/juego.js y usa sus piezas (mm, pn, S, cv, W, rnd, chunks, cars, B…).
+// Se carga después de las partes de js/juego/ y usa sus piezas (mm, pn, S, cv, W, rnd, chunks, cars, B…).
 // Qué hay aquí (busca estos títulos con Ctrl+F):
 //   LETREROS Y PIEZAS        · ayudas para hacer cajas, carteles y banderas
 //   NEGOCIOS                 · KFC, McDonald's, Dunkin', Burger King, bomberos, hospital,
@@ -16,7 +16,7 @@
 //   (las zonas 24 a 31 están en js/mundo2.js)
 //   EMERGENCIAS              · ambulancia y camión de bomberos para manejar, incendio gigante del km 9,
 //                              presa de 5 km, carril de emergencia, chorro de agua y heridos al hospital
-// Gasolina infinita, presas nuevas y la cantidad de zonas (NZ) están en js/juego.js.
+// Gasolina infinita, presas nuevas y la cantidad de zonas (NZ) están en js/juego/ (NZ en 01-base.js, JAM en 03-paisaje.js).
 // =====================================================================
 (function () {
   ZN[9] = "Autopista Circunvalación × Ruta 27";

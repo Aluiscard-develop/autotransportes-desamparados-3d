@@ -113,7 +113,7 @@ En celulares y tablets los reflejos se apagan solos. Así la carretera y el bus 
 |---|---|
 | [index.html](index.html) | Pantallas y botones (menú, panel, controles táctiles) |
 | [css/estilos.css](css/estilos.css) | Colores y estilos de la interfaz |
-| [js/juego.js](js/juego.js) | El juego (mundo 3D, vehículos, tráfico, física, sonido, multas) |
+| [js/juego/](js/juego/) | El juego base, partido en 18 archivos por tema (escena, paisaje, bus, vehículos, tráfico, zonas, menú, policía…). La lista está en [CONTRIBUTING.md](CONTRIBUTING.md) |
 | [js/apocalipsis2.js](js/apocalipsis2.js) | El desastre total de la Tormenta Morada: tornados del horizonte, multitud, derrumbes, inundación, edificios, avalanchas, buses de evacuación y carros volcados |
 | [js/apocalipsis.js](js/apocalipsis.js) | El apocalipsis: tornados, carros rapidísimos, gente corriendo y la Tormenta Morada (`FASES`, `VEL_CARROS`) |
 | [js/avalancha.js](js/avalancha.js) | La avalancha que te persigue (`AVALANCHA`: distancia, velocidad) |

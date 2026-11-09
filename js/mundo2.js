@@ -103,7 +103,7 @@
   W(animados);
 
   // ===================== ZONA 24 · RUTA DE LA MUERTE =====================
-  // Niebla espesa, lomas grandes (RELIEVE en js/juego.js) y barandas que no dejan salirse.
+  // Niebla espesa, lomas grandes (RELIEVE en js/juego/01-base.js) y barandas que no dejan salirse.
   {
     portico(-24030, "RUTA DE LA MUERTE · CERRO DE LA MUERTE 3 451 m", "#3e2723", "#ffd54f");
     const avisos = ["⚠ NEBLINA DENSA", "⚠ CURVA PELIGROSA", "⚠ ZONA DE DERRUMBES", "MANEJE CON CUIDADO", "⚠ PENDIENTE FUERTE", "⚠ NO ADELANTE"];

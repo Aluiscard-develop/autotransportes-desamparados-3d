@@ -4,7 +4,7 @@
 //   WALMART Y CARL'S JR           · los dos negocios nuevos que salen por todo el juego
 //   ROTONDA LA Y GRIEGA · OBRAS   · obras en construcción, grúa torre, conos y trabajadores
 //   CARRILES EXTERNOS             · los carriles que rodean la rotonda por fuera (se pueden manejar)
-//   ESTACIONES REMODELADAS        · las paradas nuevas de la rotonda (la parada normal está en js/juego.js, mkStop)
+//   ESTACIONES REMODELADAS        · las paradas nuevas de la rotonda (la parada normal está en js/juego/08-trafico.js, mkStop)
 //   ZONA 32 · TERMINAL LUMACA     · terminal de buses de Autotransportes Lumaca
 //   ZONA 33 · PAÍSES UNIDOS I     · Nicaragua, Honduras, El Salvador, Guatemala y México
 //   ZONA 34 · PAÍSES UNIDOS II    · Colombia, Venezuela, Brasil, Perú, Chile y Argentina
@@ -191,7 +191,7 @@
   COMIDA.push("carlsjr");
 
   // ===================== ROTONDA LA Y GRIEGA · OBRAS =====================
-  // Todo esto va dentro del grupo de la rotonda (rb, en js/juego.js): se mueve con ella en cada vuelta.
+  // Todo esto va dentro del grupo de la rotonda (rb, en js/juego/09-rotonda.js): se mueve con ella en cada vuelta.
   // Coordenadas relativas al centro de la rotonda. El bus llega desde +z y sigue hacia -z.
   const RY = new T.Group();
   // ----- CARRILES EXTERNOS -----
@@ -808,7 +808,7 @@
   VN.push("Moto deportiva", "Moto repartidora Carl's Jr");
   VI.push("🏍", "🛵");
   TUN.push({}, {});
-  // buses nuevos: la pintura se agrega a SK (js/juego.js) y BUS_EXTRA dice qué pintura usa cada vehículo
+  // buses nuevos: la pintura se agrega a SK (js/juego/04-bus.js) y BUS_EXTRA dice qué pintura usa cada vehículo
   [
     ["Bus Lumaca", { b: 0xf4f6f8, s: 0xc62828, t: 0x0d47a1, side: "AUTOTRANSPORTES LUMACA", bg: "#c62828", dest: "LUMACA · SAN JOSÉ", fr: "LUMACA" }],
     ["Bus escolar", { b: 0xf2b400, s: 0x111111, t: 0x111111, side: "TRANSPORTE DE ESTUDIANTES", bg: "#111111", fg: "#f2b400", dest: "ESCOLAR", fr: "ESTUDIANTES" }],

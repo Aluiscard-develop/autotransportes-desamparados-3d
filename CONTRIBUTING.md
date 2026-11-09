@@ -9,7 +9,7 @@
 
 ## Opción 2: cambiar el código desde el navegador
 
-1. Abre el archivo que quieres cambiar, por ejemplo [js/juego.js](js/juego.js).
+1. Abre el archivo que quieres cambiar, por ejemplo [js/juego/15-policia.js](js/juego/15-policia.js).
 2. Toca el **lápiz ✏️** (arriba a la derecha). GitHub crea automáticamente tu propia copia (un *fork*).
 3. Haz el cambio y toca **Commit changes…** → **Propose changes**.
 4. Toca **Create pull request**. Revisamos el cambio, y cuando lo aprobamos aparece en el juego en un par de minutos.
@@ -27,30 +27,57 @@ git commit -am "Describe tu mejora"
 git push origin mi-mejora   # y luego abre el pull request en GitHub
 ```
 
-## Dónde está cada cosa en `js/juego.js`
+## Cómo está partido el juego (`js/juego/`)
 
-Busca estos comentarios (Ctrl+F) para llegar rápido:
+El juego base está partido en 18 archivos chicos, uno por tema. `index.html` los carga en orden
+(01, 02, 03…) y todos comparten las mismas variables: un archivo puede usar lo que creó uno anterior.
+Si agregás un archivo nuevo, ponelo en `index.html` en el lugar que le toca.
 
-| Busca | Para cambiar |
+| Archivo | Qué tiene |
 |---|---|
-| `PENDIENTES Y BAJADAS` | En qué zonas hay lomas, qué tan altas son y cuántas por km (`RELIEVE`) |
-| `CARRETERA A VARA BLANCA` | La salida de montaña: forma del camino (`VB`), altura del paso (`VB_ALTURA`), derrumbe y presa |
-| `RUTA DE MONTAÑA A VARA BLANCA` | Los 150 km: curvas y alturas del camino, precipicios (`mK`), barandas, bombas (`M_BOMBAS`), parques (`M_PARQUES`), volcanes (`M_VOLCANES`) y el puente del km 44 (`PUENTE`) |
-| `Oruga turbo` | El vehículo de orugas con alerón (modelo; su manejo está al final de `const PVS`) |
-| `MULTAS Y POLICÍA` | Límite de velocidad, monto de las multas, velocidad de la patrulla |
-| `AMBULANCIA` | El modelo de la ambulancia y sus luces |
-| `// cielo` | El cielo, el sol y las estrellas |
-| `function tree` / `function house` / `function mount` | Árboles, casas y montañas |
-| `function mkCar` | Los carros del tráfico |
-| `// autobus` y `Carrocería` | El bus, su parabrisas y su interior |
-| `const PVS` | Velocidad, aceleración y manejo de cada vehículo |
-| `const PARTS` | Las piezas de tuning del garaje |
-| `const ZN` | Los nombres de las zonas (las 5 nuevas se agregan en `js/mundo.js`) |
-| `const NZ` | Cuántas zonas tiene el recorrido antes de repetirse (49) |
-| `function multa` | Lo que hace la policía (ahora regala plata) |
-| `function end` | Qué pasa cuando el vehículo se destroza (ahora queda como nuevo) |
-| `const JAM` | Dónde hay presas |
-| `OPTIMIZACIÓN` | Liberar memoria y congelar el escenario estático |
+| [`01-base.js`](js/juego/01-base.js) | utilidades ($, setH, R), cantidad de zonas (NZ) y PENDIENTES Y BAJADAS (RELIEVE) |
+| [`02-escena.js`](js/juego/02-escena.js) | renderizador, cámara, cielo, sol, nubes, lluvia y suelo |
+| [`03-paisaje.js`](js/juego/03-paisaje.js) | texturas, calles, árboles, casas, montañas, postes y los tramos que se reciclan (scatter) |
+| [`04-bus.js`](js/juego/04-bus.js) | el bus: carrocería, parabrisas, luces y pinturas (SK, applySkin) |
+| [`05-vehiculos.js`](js/juego/05-vehiculos.js) | los demás vehículos que se pueden manejar (mkV 4 a 21, Oruga turbo) |
+| [`06-manejo-y-tuning.js`](js/juego/06-manejo-y-tuning.js) | velocidad y manejo de cada vehículo (PVS), piezas del garaje (PARTS) y setVeh |
+| [`07-bus-interior.js`](js/juego/07-bus-interior.js) | interior del bus: tablero, piso, asientos, pasajeros y ruedas |
+| [`08-trafico.js`](js/juego/08-trafico.js) | carros del tráfico (mkCar), ambulancia, accidentes, botes y paradas (mkStop) |
+| [`09-rotonda.js`](js/juego/09-rotonda.js) | Rotonda de La Y Griega y el McDonald's |
+| [`10-zonas.js`](js/juego/10-zonas.js) | nombres de las zonas (ZN), torres, peaje, túneles, trenes, ciudades, puentes y rampas |
+| [`11-controles-y-sonido.js`](js/juego/11-controles-y-sonido.js) | estado del juego, teclado y botones táctiles, sonidos (motor, bocina, timbre) |
+| [`12-menu.js`](js/juego/12-menu.js) | empezar (start), garaje y tuning, menú, guardar partida y gráficos (applyGfx) |
+| [`13-actualizar.js`](js/juego/13-actualizar.js) | lo que pasa en cada cuadro: manejo, choques, paradas, cámara y HUD (función upd) |
+| [`14-optimizacion.js`](js/juego/14-optimizacion.js) | liberar memoria, congelar el escenario estático y efectos por cuadro (gfxTick) |
+| [`15-policia.js`](js/juego/15-policia.js) | MULTAS Y POLICÍA |
+| [`16-vara-blanca.js`](js/juego/16-vara-blanca.js) | CARRETERA A VARA BLANCA (zona 8): salida de montaña, derrumbe y presa |
+| [`17-ruta-montana.js`](js/juego/17-ruta-montana.js) | RUTA DE MONTAÑA A VARA BLANCA (150 km): curvas, precipicios, bombas, volcanes y puente |
+| [`18-bucle.js`](js/juego/18-bucle.js) | el bucle principal: actualiza y dibuja cada cuadro |
+
+## Dónde está cada cosa en `js/juego/`
+
+Busca estos comentarios (Ctrl+F) en el archivo indicado para llegar rápido:
+
+| Busca | En | Para cambiar |
+|---|---|---|
+| `PENDIENTES Y BAJADAS` | `01-base` | En qué zonas hay lomas, qué tan altas son y cuántas por km (`RELIEVE`) |
+| `CARRETERA A VARA BLANCA` | `16-vara-blanca` | La salida de montaña: forma del camino (`VB`), altura del paso (`VB_ALTURA`), derrumbe y presa |
+| `RUTA DE MONTAÑA A VARA BLANCA` | `17-ruta-montana` | Los 150 km: curvas y alturas del camino, precipicios (`mK`), barandas, bombas (`M_BOMBAS`), parques (`M_PARQUES`), volcanes (`M_VOLCANES`) y el puente del km 44 (`PUENTE`) |
+| `Oruga turbo` | `05-vehiculos` | El vehículo de orugas con alerón (modelo; su manejo está al final de `const PVS`) |
+| `MULTAS Y POLICÍA` | `15-policia` | Límite de velocidad, monto de las multas, velocidad de la patrulla |
+| `AMBULANCIA` | `08-trafico` | El modelo de la ambulancia y sus luces |
+| `// cielo` | `02-escena` | El cielo, el sol y las estrellas |
+| `function tree` / `function house` / `function mount` | `03-paisaje` | Árboles, casas y montañas |
+| `function mkCar` | `08-trafico` | Los carros del tráfico |
+| `// autobus` y `Carrocería` | `04-bus` · `07-bus-interior` | El bus, su parabrisas y su interior |
+| `const PVS` | `06-manejo-y-tuning` | Velocidad, aceleración y manejo de cada vehículo |
+| `const PARTS` | `06-manejo-y-tuning` | Las piezas de tuning del garaje |
+| `const ZN` | `10-zonas` | Los nombres de las zonas (las 5 nuevas se agregan en `js/mundo.js`) |
+| `const NZ` | `01-base` | Cuántas zonas tiene el recorrido antes de repetirse (49) |
+| `function multa` | `15-policia` | Lo que hace la policía (ahora regala plata) |
+| `function end` | `12-menu` | Qué pasa cuando el vehículo se destroza (ahora queda como nuevo) |
+| `const JAM` | `03-paisaje` | Dónde hay presas |
+| `OPTIMIZACIÓN` | `14-optimizacion` | Liberar memoria y congelar el escenario estático |
 
 ## Dónde está cada cosa en `js/mundo.js`
 
@@ -72,7 +99,7 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 
 | Busca | Para cambiar |
 |---|---|
-| `ZONA 24 · RUTA DE LA MUERTE` | Avisos, cruces, barandas y antenas (la neblina está en `js/juego.js`, busca `zl == 24`) |
+| `ZONA 24 · RUTA DE LA MUERTE` | Avisos, cruces, barandas y antenas (la neblina está en `js/juego/13-actualizar.js`, busca `zl == 24`) |
 | `ZONA 25 · FLORENCIO DEL CASTILLO` | El plantel de RECOPE y su incendio (`RECOPE`: dónde está, la presa) |
 | `ZONA 26 · PUNTARENAS` | Playa, mar, muelle, crucero, ferrys, botes y hoteles (`HOTELES`) |
 | `ZONA 27 · VOLCANES` | Dónde está cada volcán (`volcan(...)`) y los letreros de parques nacionales |
@@ -87,7 +114,7 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 | `WALMART Y CARL'S JR` | Cómo se ven los dos negocios (qué tan seguido salen: `elegirNegocio` en `js/mundo.js`) |
 | `ROTONDA LA Y GRIEGA · OBRAS` | Grúa, excavadora, conos, barreras y trabajadores de la rotonda |
 | `CARRILES EXTERNOS` | Forma de los carriles que rodean la rotonda (`CTRL`) y su ancho (`CARRIL_ANCHO`) |
-| `ESTACIONES REMODELADAS` | Las estaciones de la rotonda (la parada normal es `mkStop` en `js/juego.js`) |
+| `ESTACIONES REMODELADAS` | Las estaciones de la rotonda (la parada normal es `mkStop` en `js/juego/08-trafico.js`) |
 | `ZONA 32 · TERMINAL LUMACA` | La terminal, sus andenes y el premio del ANDÉN 1 (`TERM`) |
 | `PAÍSES UNIDOS` | Los países (`PAISES_UNIDOS`) y sus monumentos |
 | `MOTOS Y BUSES PARA MANEJAR` | Las motos (vehículos 25 y 26) y los buses 27 a 30 (pintura en `SK`) |
@@ -119,7 +146,7 @@ Busca estos comentarios (Ctrl+F) para llegar rápido:
 ## La avalancha (`js/avalancha.js`) y la cámara de atrás
 
 - `AV.dist` (a cuántos metros empieza), `AV.vel` (qué tan rápido avanza) y `AV.max` (nunca se queda más lejos) están al inicio de `js/avalancha.js`.
-- La cámara que mira hacia atrás está en `js/juego.js`: busca `MIRA`.
+- La cámara que mira hacia atrás: busca `MIRA` en `js/juego/13-actualizar.js` y `js/juego/18-bucle.js`.
 
 ## El apocalipsis (`js/apocalipsis.js`)
 
