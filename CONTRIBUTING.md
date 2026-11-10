@@ -183,10 +183,18 @@ cayendo y la carretera partiéndose. La comida y la carretera partida solo pasan
   tan largo es el hueco, cuántos segundos de aviso y el daño si te caés.
 - Para probar la carretera partida desde la consola del navegador (F12):
   `CARRETERA_PARTIDA.rajar(B.z - 80, 1)` (1 = se hunde la mitad derecha, -1 = la izquierda).
+- Las albóndigas del espagueti: busca `ALBÓNDIGAS` en `js/tormenta-comida.js`; cuántas dispara, cada cuánto y el daño están en `AJUSTES.tormentaComida`. Para probar desde la consola: `TORMENTA_COMIDA.soltar(8)` (8 = el espagueti).
 - Para cambiar cómo se ve una comida o agregar otra: `COMIDAS` en `js/tormenta-comida.js`. Cada una se
   arma con piezas de 1 metro (`pieza(...)`) y el juego la agranda.
 - `N_TORNADOS`: cuántos tornados cercanos puede haber a la vez.
 - En `js/apocalipsis2.js`: `N_HOR` (tornados del horizonte), `N_GENTE` (personas corriendo) y `N_AV` (avalanchas). Si el juego se pone lento en una computadora, bajá esos números.
+
+## Tiendas de celulares (`js/tiendas.js`)
+
+- `TIENDAS`: en qué zonas hay tienda, a cuántos metros del inicio de la zona y de qué lado (1 = derecha,
+  -1 = izquierda). Si una cae cerca de una rotonda, se corre 300 m solita.
+- Cuánta plata dan: `AJUSTES.tiendas.premio` en `js/ajustes.js`.
+- Cómo se ven: `hacerTienda` (el local) y `logo` (el dibujo del rótulo).
 
 ## Pantallas chicas y botones táctiles (`css/estilos.css`)
 

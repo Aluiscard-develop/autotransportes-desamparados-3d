@@ -9,6 +9,9 @@
 //               la vas empujando a un lado (con el tanque o el camión monstruo la aplastás y te pagan)
 //   DONAS     · ruedan por la carretera aplastando lo que encuentran
 //   SANDÍAS   · rebotan antes de quedarse quietas
+//   ESPAGUETI · el plato de espagueti dispara ALBÓNDIGAS gigantes: un montón cuando cae y después
+//               una cada pocos segundos mientras está en el piso. Las albóndigas saltan, ruedan,
+//               mandan a volar los carros y te dañan si te pegan (busca ALBÓNDIGAS)
 // Los números (cada cuánto cae, tamaño, daño) están en js/ajustes.js (AJUSTES.tormentaComida).
 // Para agregar otra comida: agregala a COMIDAS (cada una se arma con piezas de 1 metro).
 // =====================================================================
@@ -247,6 +250,48 @@
       alto: 1.1,
       radio: 0.4,
     },
+    {
+      nombre: "plato de espagueti",
+      un: "un",
+      el: "el",
+      emoji: "🍝",
+      arma(g) {
+        pieza(g, cil(0.6, 0.45, 0.08, 24), 0xf5f5f0, 0, 0.04, 0); // plato
+        pieza(g, cil(0.63, 0.63, 0.03, 24), 0xe2e2dc, 0, 0.09, 0); // borde del plato
+        pieza(g, esfera(0.45, 16, 10), 0xf2d16b, 0, 0.1, 0, 0, 0, 0, 1, 0.5, 1); // montaña de fideos
+        for (let i = 0; i < 18; i++) {
+          // fideos enredados
+          const a = R(0, 6.28),
+            r = R(0, 0.32);
+          pieza(
+            g,
+            compartir(new T.TorusGeometry(R(0.1, 0.24), 0.022, 5, 18)),
+            0xf2d16b,
+            Math.cos(a) * r,
+            0.16 + R(0, 0.16),
+            Math.sin(a) * r,
+            R(0, 3),
+            R(0, 3),
+            R(0, 3),
+          );
+        }
+        pieza(g, esfera(0.27, 14, 8), 0xc8281e, 0, 0.3, 0, 0, 0, 0, 1, 0.32, 1); // salsa de tomate
+        [
+          [0.09, 0.37, 0.05],
+          [-0.12, 0.35, -0.07],
+          [0.02, 0.36, -0.17],
+        ].forEach(([x, y, z]) =>
+          pieza(g, esfera(0.1, 10, 8), 0x6b3b22, x, y, z, 0, 0, 0, 1, 1, 1, { flatShading: true }),
+        ); // albóndigas
+        pieza(g, caja(0.05, 0.7, 0.02), 0xc0c0c8, 0.22, 0.55, 0.1, 0, 0, -0.35, 1, 1, 1, {
+          metalness: 0.8,
+          roughness: 0.3,
+        }); // tenedor
+      },
+      alto: 0.6,
+      radio: 0.62,
+      albondigas: true, // dispara albóndigas
+    },
   ];
   // cada comida queda en pocas mallas (una por color) para que pese poco
   COMIDAS.forEach((c) => {
@@ -388,6 +433,22 @@
     p.sp.visible = true;
   };
 
+  // ===================== ALBÓNDIGAS =====================
+  // Todas en una sola malla (InstancedMesh). Las dispara el plato de espagueti.
+  const N_ALB = 24,
+    albMesh = new T.InstancedMesh(
+      compartir(new T.IcosahedronGeometry(1, 1)),
+      new T.MeshStandardMaterial({ color: 0x6b3b22, roughness: 0.85, flatShading: true }),
+      N_ALB,
+    );
+  albMesh.frustumCulled = false;
+  albMesh.castShadow = true;
+  albMesh.count = 0;
+  sc.add(albMesh);
+  const albs = [];
+  for (let i = 0; i < N_ALB; i++)
+    albs.push({ t: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, r: 1, rx: 0, rz: 0 });
+
   // ===================== SONIDOS =====================
   const ruido = (dur, f0, f1, vol) => {
     try {
@@ -407,11 +468,13 @@
   };
   const sonidoGolpe = (cerca) => ruido(0.7, 150, 32, cerca ? 0.6 : 0.25); // ¡PUM!
   const sonidoSilbido = (dur) => ruido(dur, 1300, 380, 0.05); // fiiiiuuu (cuando viene hacia vos)
+  const sonidoPop = (cerca) => ruido(0.25, 260, 90, cerca ? 0.35 : 0.12); // ¡POP! (sale una albóndiga)
 
   // ===================== LA TORMENTA =====================
   const comidas = []; // las que están cayendo o en el piso
   const D = { t: 0, golpeT: 0, choqueT: 0, avisoT: 0 };
   D.COMIDAS = COMIDAS;
+  D.albondigas = albs;
   window.TORMENTA_COMIDA = D; // para revisar desde la consola
   const maxComidas = () => Math.max(4, Math.round(A.maxComidas * Math.max(0.45, CALIDAD.efectos)));
   const golpear = (cuanto, texto) => {
@@ -426,9 +489,9 @@
       end();
     }
   };
-  function soltar() {
-    const k = (Math.random() * COMIDAS.length) | 0,
-      c = COMIDAS[k],
+  // k: qué comida (si no se dice, una al azar). Para probar desde la consola: TORMENTA_COMIDA.soltar(8)
+  function soltar(k = (Math.random() * COMIDAS.length) | 0) {
+    const c = COMIDAS[k],
       tam = R(A.tamano[0], A.tamano[1]),
       y0 = R(130, 170),
       tCaida = y0 / A.velocidadCaida,
@@ -466,8 +529,43 @@
     comidas.push(f);
     if (haciaVos && play()) sonidoSilbido(tCaida);
   }
+  // el plato de espagueti dispara una albóndiga (a veces hacia vos)
+  function lanzarAlbondiga(f, haciaVos) {
+    const a = albs.find((q) => q.t <= 0);
+    if (!a) return;
+    let dx = Math.cos(R(0, 6.28)),
+      dz = Math.sin(R(0, 6.28));
+    if (haciaVos) {
+      const ex = B.x - Math.sin(B.h) * B.v * 1.2 - f.x,
+        ez = B.z - Math.cos(B.h) * B.v * 1.2 - f.z,
+        d = Math.hypot(ex, ez) || 1;
+      dx = ex / d;
+      dz = ez / d;
+    }
+    const v = haciaVos ? R(16, 24) : R(8, 18);
+    Object.assign(a, {
+      t: 9,
+      r: f.tam * R(0.13, 0.18),
+      x: f.x,
+      y: f.tam * 0.45,
+      z: f.z,
+      vx: dx * v,
+      vy: R(12, 20),
+      vz: dz * v,
+      rx: 0,
+      rz: 0,
+    });
+    sonidoPop(Math.hypot(B.x - f.x, B.z - f.z) < 150);
+  }
   function impacto(f, fuerza) {
     const { x, z, tam, c } = f;
+    if (c.albondigas && !f.disparo) {
+      // ¡al caer el espagueti salen volando las albóndigas!
+      f.disparo = true;
+      f.albT = R(A.albondigasCada[0], A.albondigasCada[1]);
+      const cerca = Math.hypot(B.x - x, B.z - z) < 250;
+      for (let i = 0; i < A.albondigasAlCaer; i++) lanzarAlbondiga(f, cerca && i < 2);
+    }
     soltarMigas(f.k, x, 0, z, tam);
     levantarPolvo(x, z, tam);
     ponerCrater(x, z, tam * c.radio * 0.9 * fuerza);
@@ -497,6 +595,8 @@
       );
   }
 
+  D.soltar = soltar;
+
   function ocultarTodo() {
     comidas.forEach((f) => {
       guardar(f);
@@ -507,6 +607,8 @@
     polvos.forEach((p) => ((p.t = 0), (p.sp.visible = false)));
     miga.forEach((p) => (p.t = 0));
     migas.count = 0;
+    albs.forEach((a) => (a.t = 0));
+    albMesh.count = 0;
   }
 
   // ===================== CUADRO A CUADRO =====================
@@ -530,7 +632,7 @@
       return;
     }
     const activa = enComida();
-    if (!activa && !comidas.length && migas.count == 0) return;
+    if (!activa && !comidas.length && migas.count == 0 && albMesh.count == 0) return;
     estaba = true;
     if (state != "play") return;
     D.golpeT -= dt;
@@ -552,6 +654,7 @@
             "🍩 ¡Las donas ruedan! ¡Apartate!",
             "🌭 ¡Un hot dog gigante va cayendo!",
             "🍉 ¡Sandías que rebotan!",
+            "🍝 ¡El espagueti dispara albóndigas gigantes!",
             "😱 ¡LA COMIDA NOS ATACA!",
           ]),
           2200,
@@ -601,6 +704,14 @@
               car.o.scale.y = 0.25;
             }
         }
+        // el espagueti en el piso sigue disparando albóndigas
+        if (c.albondigas && enComida() && f.y > -f.tam * 0.1 && Math.abs(B.z - f.z) < 400) {
+          f.albT -= dt;
+          if (f.albT <= 0) {
+            f.albT = R(A.albondigasCada[0], A.albondigasCada[1]);
+            lanzarAlbondiga(f, Math.random() < 0.5);
+          }
+        }
         // se hunde y desaparece; se apura si ya terminó la tormenta o quedó muy atrás
         const vida = enComida() ? A.segundosEnElSuelo : Math.min(A.segundosEnElSuelo, 3);
         if (f.t > vida) f.y -= dt * f.tam * 0.25;
@@ -641,6 +752,55 @@
       }
       f.g.position.set(f.x, f.y, f.z);
     }
+    // ----- albóndigas: saltan, rebotan y ruedan -----
+    let na = 0;
+    for (let i = 0; i < N_ALB; i++) {
+      const a = albs[i];
+      if (a.t <= 0) continue;
+      a.t -= dt;
+      a.vy -= 30 * dt;
+      a.x += a.vx * dt;
+      a.y += a.vy * dt;
+      a.z += a.vz * dt;
+      if (a.y < a.r) {
+        a.y = a.r;
+        if (a.vy < -4) {
+          a.vy *= -0.45; // rebota
+          if (Math.random() < 0.5) soltarMigas(COMIDAS.length - 1, a.x, 0, a.z, a.r * 3); // salpica salsa
+        } else a.vy = 0;
+        const roce = Math.pow(0.7, dt); // rueda y se va frenando
+        a.vx *= roce;
+        a.vz *= roce;
+      }
+      a.rx += (a.vz * dt) / a.r;
+      a.rz -= (a.vx * dt) / a.r;
+      // manda a volar los carros
+      for (const car of cars)
+        if (!car.vy && a.y < a.r * 2 + 1 && Math.hypot(car.x - a.x, car.z - a.z) < a.r + 1.3) {
+          car.vy = R(9, 15);
+          car.vx = Math.sign(car.x - a.x || 1) * R(3, 8);
+          car.hit = 1;
+        }
+      // te pega
+      if (
+        play() &&
+        Math.abs(B.x - a.x) < a.r + PV.hw &&
+        Math.abs(B.z - a.z) < a.r + PV.hl * 0.5 &&
+        B.y < a.y + a.r
+      ) {
+        golpear(A.danioAlbondiga, "🍝💥 ¡Te pegó una ALBÓNDIGA GIGANTE!");
+        a.vx = Math.sign(a.x - B.x || 1) * 10;
+        a.vz = 0;
+        a.vy = 8;
+      }
+      if (a.z - B.z > 150 || B.z - a.z > 900) a.t = 0;
+      if (a.t <= 0) continue;
+      const s = a.r * Math.min(1, a.t * 2);
+      m4.compose(v4.set(a.x, a.y, a.z), q4.setFromEuler(e4.set(a.rx, 0, a.rz)), s4.set(s, s, s));
+      albMesh.setMatrixAt(na++, m4);
+    }
+    albMesh.count = na;
+    albMesh.instanceMatrix.needsUpdate = true;
     // ----- migas -----
     let n = 0;
     for (let i = 0; i < N_MIGAS; i++) {

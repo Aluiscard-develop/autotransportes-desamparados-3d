@@ -42,6 +42,11 @@ const AJUSTES = {
     premio: 30000, // colones por cruzar la zona
   },
 
+  // ----- TIENDAS DE CELULARES (js/tiendas.js) -----
+  tiendas: {
+    premio: 1000, // colones cada vez que pasás frente a una tienda (una vez por tienda en cada vuelta)
+  },
+
   // ----- APOCALIPSIS (js/apocalipsis.js) -----
   // Orden: calma → caos → Tormenta Morada (con lluvia de comida gigante y la carretera partiéndose) → calma → …
   apocalipsis: {
@@ -63,6 +68,9 @@ const AJUSTES = {
     danio: 16, // daño si te cae encima (de 100)
     radioGolpe: 11, // metros alrededor del impacto que te alcanzan
     segundosEnElSuelo: 14, // cuánto tiempo se queda la comida tirada en la carretera
+    albondigasAlCaer: 5, // cuántas albóndigas dispara el plato de espagueti cuando cae
+    albondigasCada: [2, 3.5], // después, cada cuántos segundos dispara otra (mínimo, máximo)
+    danioAlbondiga: 9, // daño si te pega una albóndiga (de 100)
   },
 
   // ----- CARRETERA PARTIDA (js/carretera-partida.js) · pasa durante la Tormenta Morada -----
