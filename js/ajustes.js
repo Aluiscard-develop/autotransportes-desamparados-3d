@@ -48,7 +48,8 @@ const AJUSTES = {
   },
 
   // ----- APOCALIPSIS (js/apocalipsis.js) -----
-  // Orden: calma → caos → Tormenta Morada (con lluvia de comida gigante y la carretera partiéndose) → calma → …
+  // Orden: calma → caos → Tormenta Morada (con comida gigante y la carretera partiéndose) → calma →
+  //        caos → Tormenta de Fettuccine → calma → … (las dos tormentas se turnan)
   apocalipsis: {
     primeraCalma: 25, // segundos de calma al empezar
     calma: 120, // segundos de calma entre apocalipsis
@@ -56,7 +57,9 @@ const AJUSTES = {
     morada: 60, // cada cuántos segundos sube de nivel la Tormenta Morada (+₡5000)
     nivelesMorada: 3, // cuántos niveles dura la Tormenta Morada antes de terminar (3 × 60 s = 3 minutos)
     premio: 20000, // colones por sobrevivir la Tormenta Morada entera
-    velCarros: { caos: 3, morada: 4 }, // veces más rápido que lo normal
+    fettuccine: 120, // segundos que dura la Tormenta de Fettuccine
+    premioFettuccine: 15000, // colones por sobrevivir la Tormenta de Fettuccine
+    velCarros: { caos: 3, morada: 4, fettuccine: 2 }, // veces más rápido que lo normal
   },
 
   // ----- LLUVIA DE COMIDA GIGANTE (js/tormenta-comida.js) · cae durante la Tormenta Morada -----
@@ -71,6 +74,16 @@ const AJUSTES = {
     albondigasAlCaer: 5, // cuántas albóndigas dispara el plato de espagueti cuando cae
     albondigasCada: [2, 3.5], // después, cada cuántos segundos dispara otra (mínimo, máximo)
     danioAlbondiga: 9, // daño si te pega una albóndiga (de 100)
+  },
+
+  // ----- TORMENTA DE FETTUCCINE (js/tormenta-fettuccine.js) · se turna con la Tormenta Morada -----
+  // Las comidas que caen (platos Alfredo, nidos y tiras) usan cadaCuanto, tamano y danio de tormentaComida.
+  tormentaFettuccine: {
+    fideos: 180, // cuántos fideos caen a la vez en la lluvia (en gráficos Bajo, menos)
+    charcoSegundos: 18, // cuánto dura un charco de salsa Alfredo
+    deslizar: 5, // qué tan rápido te vas de lado en la salsa (metros por segundo)
+    frenoTira: 0.3, // cuánta velocidad te queda después de 1 segundo pegado en una tira (0 a 1)
+    danioTira: 3, // daño al enredarte en una tira (de 100)
   },
 
   // ----- CARRETERA PARTIDA (js/carretera-partida.js) · pasa durante la Tormenta Morada -----

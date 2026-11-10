@@ -1,7 +1,11 @@
 // =====================================================================
 // LLUVIA DE COMIDA GIGANTE. Se carga después de js/apocalipsis2.js y usa su estado (window.APOCALIPSIS).
-// Es parte de la Tormenta Morada (APOCALIPSIS.fase == "morada"): mientras dura, del cielo cae comida
-// GIGANTE: hamburguesas, pizzas, donas, hot dogs, sandías, helados, pollo frito y papas.
+// Cae en la Tormenta Morada (hamburguesas, pizzas, donas, hot dogs, sandías, helados, pollo frito,
+// papas y espagueti) y en la Tormenta de Fettuccine (la comida de js/tormenta-fettuccine.js).
+// Cada comida dice en qué tormenta cae con "tormenta" (si no lo dice, en la Morada).
+// Otros archivos agregan comidas con TORMENTA_COMIDA.agregarComida({...}) y pueden usar estos extras:
+//   alImpacto(f) · algo más cuando cae · alChocar(f, dt) · qué pasa si la chocás (en vez de empujarla)
+//   tira: [largo, ancho] · es larga y queda atravesada en la carretera (choque en forma de tira)
 //   AVISO     · un círculo rojo en el piso marca dónde va a caer (¡esquivalo!)
 //   IMPACTO   · explota en migas, aplasta los carros que agarra abajo, tira por el aire a los de
 //               al lado, deja un cráter y, si estás cerca, te daña
@@ -20,7 +24,7 @@
   if (!AP) return;
   const A = AJUSTES.tormentaComida,
     { compartir, mat, humoTex } = MUNDO;
-  const enComida = () => AP.fase == "morada" && !MONT.on;
+  const enComida = () => (AP.fase == "morada" || AP.fase == "fettuccine") && !MONT.on;
   const play = () => state == "play" && !MONT.on;
 
   // ===================== LAS COMIDAS (tamaño 1 = 1 metro de ancho) =====================
@@ -383,11 +387,12 @@
     e4 = new T.Euler(),
     v4 = new T.Vector3(),
     s4 = new T.Vector3();
-  const colores = COMIDAS.map((c) => {
+  const coloresDe = (c) => {
     const cs = [];
     c.plantilla.traverse((o) => o.isMesh && cs.push(o.material.color.getHex()));
     return cs;
-  });
+  };
+  const colores = COMIDAS.map(coloresDe);
   const soltarMigas = (k, x, y, z, tam) => {
     const n = Math.round(26 * Math.max(0.4, CALIDAD.efectos)),
       cs = colores[k];
@@ -489,8 +494,14 @@
       end();
     }
   };
+  // una comida al azar de las que caen en la tormenta de ahora
+  const elegir = () => {
+    const lista = [];
+    COMIDAS.forEach((c, i) => (c.tormenta || "morada") == AP.fase && lista.push(i));
+    return lista.length ? pk_(lista) : 0;
+  };
   // k: qué comida (si no se dice, una al azar). Para probar desde la consola: TORMENTA_COMIDA.soltar(8)
-  function soltar(k = (Math.random() * COMIDAS.length) | 0) {
+  function soltar(k = elegir()) {
     const c = COMIDAS[k],
       tam = R(A.tamano[0], A.tamano[1]),
       y0 = R(130, 170),
@@ -508,6 +519,7 @@
     g.scale.setScalar(tam);
     g.rotation.set(c.clava ? 0.35 : 0, R(0, 6.28), 0);
     if (c.rueda) g.rotation.y = 0; // las donas ruedan hacia atrás, por la carretera
+    if (c.tira) g.rotation.y = R(-0.15, 0.15); // las tiras quedan atravesadas en la carretera
     const f = {
       k,
       c,
@@ -528,6 +540,7 @@
     f.aviso.scale.setScalar(tam * c.radio * 1.1);
     comidas.push(f);
     if (haciaVos && play()) sonidoSilbido(tCaida);
+    return f;
   }
   // el plato de espagueti dispara una albóndiga (a veces hacia vos)
   function lanzarAlbondiga(f, haciaVos) {
@@ -559,6 +572,7 @@
   }
   function impacto(f, fuerza) {
     const { x, z, tam, c } = f;
+    if (c.alImpacto) c.alImpacto(f, fuerza);
     if (c.albondigas && !f.disparo) {
       // ¡al caer el espagueti salen volando las albóndigas!
       f.disparo = true;
@@ -596,6 +610,31 @@
   }
 
   D.soltar = soltar;
+  // avisos que salen cada tanto, según la tormenta (otros archivos agregan los suyos)
+  const MENSAJES = {
+    morada: [
+      "🍔 ¡Cuidado con las hamburguesas gigantes!",
+      "🍕 ¡Llueven pizzas! Esquivá los círculos rojos",
+      "🍩 ¡Las donas ruedan! ¡Apartate!",
+      "🌭 ¡Un hot dog gigante va cayendo!",
+      "🍉 ¡Sandías que rebotan!",
+      "🍝 ¡El espagueti dispara albóndigas gigantes!",
+      "😱 ¡LA COMIDA NOS ATACA!",
+    ],
+  };
+  D.mensajes = MENSAJES;
+  // para que otros archivos agreguen comidas (como js/tormenta-fettuccine.js)
+  D.agregarComida = (c) => {
+    c.plantilla = new T.Group();
+    c.arma(c.plantilla);
+    fusionar(c.plantilla);
+    COMIDAS.push(c);
+    libres.push([]);
+    colores.push(coloresDe(c));
+    return COMIDAS.length - 1;
+  };
+  D.golpear = golpear;
+  D.soltarMigas = soltarMigas;
 
   function ocultarTodo() {
     comidas.forEach((f) => {
@@ -647,18 +686,7 @@
       D.avisoT -= dt;
       if (D.avisoT <= 0) {
         D.avisoT = R(12, 18); // cada tanto (la Tormenta Morada también avisa cosas)
-        msg(
-          pk_([
-            "🍔 ¡Cuidado con las hamburguesas gigantes!",
-            "🍕 ¡Llueven pizzas! Esquivá los círculos rojos",
-            "🍩 ¡Las donas ruedan! ¡Apartate!",
-            "🌭 ¡Un hot dog gigante va cayendo!",
-            "🍉 ¡Sandías que rebotan!",
-            "🍝 ¡El espagueti dispara albóndigas gigantes!",
-            "😱 ¡LA COMIDA NOS ATACA!",
-          ]),
-          2200,
-        );
+        msg(pk_(MENSAJES[AP.fase] || MENSAJES.morada), 2200);
       }
     }
     // ----- cada comida -----
@@ -668,7 +696,9 @@
       f.t += dt;
       if (f.fase == "cae") {
         f.y += f.vy * dt;
-        if (c.gira) f.g.rotation.y += dt * 6;
+        if (c.tira)
+          f.g.rotation.z = Math.sin(f.t * 6) * 0.12; // la tira ondea al caer
+        else if (c.gira) f.g.rotation.y += dt * 6;
         else if (c.rueda) f.g.rotation.x += dt * 3;
         else f.g.rotation.y += dt * 1.2;
         if (f.aviso) f.aviso.material.opacity = 0.45 + 0.35 * Math.sin(f.t * 14);
@@ -722,9 +752,11 @@
         }
         // chocar con la comida tirada
         if (play() && f.y > -f.tam * c.alto * 0.5 && B.y < f.tam * c.alto * 0.8) {
-          const r = f.tam * c.radio;
-          if (Math.abs(B.x - f.x) < r + PV.hw && Math.abs(B.z - f.z) < r + PV.hl * 0.5) {
-            if (PV.crush) {
+          const rx = f.tam * (c.tira ? c.tira[0] : c.radio),
+            rz = f.tam * (c.tira ? c.tira[1] : c.radio);
+          if (Math.abs(B.x - f.x) < rx + PV.hw && Math.abs(B.z - f.z) < rz + PV.hl * 0.5) {
+            if (c.alChocar) c.alChocar(f, dt);
+            else if (PV.crush) {
               // el tanque y el camión monstruo la aplastan
               if (f.g.scale.y > f.tam * 0.3) {
                 f.g.scale.y = f.tam * 0.2;

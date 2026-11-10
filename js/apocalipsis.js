@@ -3,7 +3,9 @@
 //   1. CALMA      · un rato tranquilo (al empezar y entre apocalipsis)
 //   2. CAOS       · los carros van rapidísimo, tornados gigantes por todas partes con carros volando,
 //                   clima pésimo, explosiones y gente corriendo y gritando
-//   3. MORADA     · la Tormenta Morada, todo junto en una sola tormenta: cielo morado, rayos morados,
+//   3. TORMENTA   · se turnan: un apocalipsis trae la Tormenta Morada y el siguiente la Tormenta de
+//                   Fettuccine (js/tormenta-fettuccine.js). AP.turno cuenta cuál toca.
+//      MORADA     · la Tormenta Morada, todo junto en una sola tormenta: cielo morado, rayos morados,
 //                   tornados morados, bolas de fuego, LLUVIA DE COMIDA GIGANTE (js/tormenta-comida.js)
 //                   y la CARRETERA PARTIÉNDOSE a la mitad (js/carretera-partida.js).
 //                   Cada minuto sube de nivel (más peligrosa) y te da ₡5000 por aguantar. Dura
@@ -15,7 +17,7 @@
   const { compartir, mat, humoTex, llamaTex } = MUNDO;
   const FASES = AJUSTES.apocalipsis; // primeraCalma, calma, caos, morada (cada cuánto sube de nivel), premio
   const VEL_CARROS = FASES.velCarros; // veces más rápido que lo normal
-  const AP = { fase: "calma", nivel: 0, t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0 };
+  const AP = { fase: "calma", nivel: 0, t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0, turno: 0 };
   window.APOCALIPSIS = AP; // para revisar desde la consola
 
   // ----- opción del menú -----
@@ -223,14 +225,23 @@
       tornados.forEach((t) => !t.activo && ponerTornado(t, false));
       msg("🟣⚡🍔 ¡LA TORMENTA MORADA! Rayos, tornados, bolas de fuego, COMIDA GIGANTE cayendo del cielo y la carretera partiéndose", 5500);
       trueno(1);
+    } else if (f == "fettuccine") {
+      // se van los tornados del caos: ahora llueve fettuccine (js/tormenta-fettuccine.js)
+      tornados.forEach((t) => ((t.g.visible = false), (t.activo = false)));
+      explosiones.forEach((e) => ((e.sp.visible = false), (e.t = 0)));
+      rayo.visible = false;
+      msg("🍝🌪 ¡TORMENTA DE FETTUCCINE! Llueven fideos, platos gigantes de fettuccine Alfredo y la salsa resbala · ¡SOBREVIVÍ!", 5500);
+      trueno(1);
     } else {
       ocultarTodo();
-      cash += FASES.premio;
-      msg(`🌤 ${antes == "morada" ? "Pasó la Tormenta Morada" : "Pasó el apocalipsis"}... ¡Sobreviviste! +₡${FASES.premio.toLocaleString("es-CR")}`, 4500);
+      const fett = antes == "fettuccine",
+        premio = fett ? FASES.premioFettuccine : FASES.premio;
+      cash += premio;
+      msg(`🌤 ${fett ? "Pasó la Tormenta de Fettuccine" : antes == "morada" ? "Pasó la Tormenta Morada" : "Pasó el apocalipsis"}... ¡Sobreviviste! +₡${premio.toLocaleString("es-CR")}`, 4500);
     }
   };
 
-  // ----- gente corriendo y gritando (en el caos y en la Tormenta Morada) -----
+  // ----- gente corriendo y gritando (en el caos y en las tormentas) -----
   const moverGente = (t, dt) => {
     const nGente = Math.max(6, Math.round(gente.length * CALIDAD.efectos)); // en gráficos Bajo, menos
     gente.forEach((p, i) => {
@@ -247,20 +258,25 @@
       p.brazoD.rotation.z = -0.3 - Math.sin(t * 18 + p.f + 1) * 0.4;
     });
   };
-  const gritar = (dt, comida) => {
+  const GRITOS = {
+    normal: ["😱 ¡AAAAAAH! ¡CORRAN!", "😭 ¡AYUDA! ¡AUXILIO!", "😱 ¡NOS VAMOS A MORIR!", "🏃 ¡SÁLVESE QUIEN PUEDA!", "😨 ¡EL TORNADO VIENE PARA ACÁ!"],
+    comida: ["😱 ¡UNA HAMBURGUESA GIGANTE!", "😭 ¡CORRAN, VIENE LA PIZZA!", "😱 ¡LAS DONAS NOS VAN A APLASTAR!", "🏃 ¡SÁLVESE QUIEN PUEDA!", "😨 ¡NO ME COMAN!"],
+    fettuccine: ["😱 ¡ME CAYÓ SALSA ALFREDO!", "😭 ¡TENGO FETTUCCINE EN EL PELO!", "🏃 ¡CORRAN, VIENE EL FETTUCCINE!", "😨 ¡NOS VA A ENREDAR!", "😱 ¡NO ME RESBALO, NO ME RESBALO!"],
+  };
+  const gritar = (dt, tema) => {
     AP.gritoT -= dt;
     if (AP.gritoT > 0) return;
     AP.gritoT = R(1, 2.6);
     grito();
-    if (Math.random() < 0.25)
-      msg(
-        pk_(
-          comida
-            ? ["😱 ¡UNA HAMBURGUESA GIGANTE!", "😭 ¡CORRAN, VIENE LA PIZZA!", "😱 ¡LAS DONAS NOS VAN A APLASTAR!", "🏃 ¡SÁLVESE QUIEN PUEDA!", "😨 ¡NO ME COMAN!"]
-            : ["😱 ¡AAAAAAH! ¡CORRAN!", "😭 ¡AYUDA! ¡AUXILIO!", "😱 ¡NOS VAMOS A MORIR!", "🏃 ¡SÁLVESE QUIEN PUEDA!", "😨 ¡EL TORNADO VIENE PARA ACÁ!"],
-        ),
-        1500,
-      );
+    if (Math.random() < 0.25) msg(pk_(GRITOS[tema] || GRITOS.normal), 1500);
+  };
+  // los carros van rapidísimo (k = veces más rápido que lo normal)
+  const acelerarCarros = (k, dt) => {
+    for (const c of cars)
+      if (!c.hit && !c.stat) {
+        c.z += c.vz * (k - 1) * dt;
+        c.o.position.z = c.z;
+      }
   };
   // ----- cuadro a cuadro -----
   let reloj = 0,
@@ -303,7 +319,8 @@
       return;
     }
     if (AP.t <= 0) {
-      if (AP.fase == "caos") cambiarFase("morada");
+      if (AP.fase == "caos") cambiarFase(AP.turno++ % 2 ? "fettuccine" : "morada"); // se turnan
+      else if (AP.fase == "fettuccine") cambiarFase("calma");
       else if (AP.nivel + 1 >= FASES.nivelesMorada) {
         // la Tormenta Morada terminó: vuelve la calma
         cash += 5000;
@@ -316,6 +333,14 @@
         msg(`🟣⛈ La Tormenta Morada sube a nivel ${AP.nivel + 1} · aguantaste un minuto más +₡5000`, 3500);
         trueno(1);
       }
+    }
+    // ----- Tormenta de Fettuccine: aquí solo la gente y los carros (lo demás está en js/tormenta-fettuccine.js) -----
+    if (AP.fase == "fettuccine") {
+      cupula.visible = false;
+      acelerarCarros(VEL_CARROS.fettuccine, dt);
+      moverGente(t, dt);
+      gritar(dt, "fettuccine");
+      return;
     }
     const moradaK = AP.fase == "morada" ? 1 : 0;
 
@@ -333,12 +358,7 @@
     }
 
     // ----- los carros van rapidísimo -----
-    const k = moradaK ? VEL_CARROS.morada : VEL_CARROS.caos;
-    for (const c of cars)
-      if (!c.hit && !c.stat) {
-        c.z += c.vz * (k - 1) * dt;
-        c.o.position.z = c.z;
-      }
+    acelerarCarros(moradaK ? VEL_CARROS.morada : VEL_CARROS.caos, dt);
 
     // ----- tornados -----
     // en gráficos Bajo salen menos (CALIDAD.efectos, js/ajustes.js)
@@ -398,7 +418,7 @@
 
     // ----- gente corriendo y gritando -----
     moverGente(t, dt);
-    gritar(dt, moradaK && Math.random() < 0.5); // en la morada también gritan por la comida
+    gritar(dt, moradaK && Math.random() < 0.5 ? "comida" : "normal"); // en la morada también gritan por la comida
     // ----- destrucción: explosiones -----
     AP.boomT -= dt;
     if (AP.boomT <= 0) {

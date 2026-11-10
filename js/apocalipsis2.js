@@ -278,7 +278,8 @@
 
     // ----- tornados del horizonte -----
     // solo se calculan y dibujan los que se ven (en gráficos Bajo, menos: CALIDAD.efectos)
-    const nHor = Math.round(N_HOR * (mor ? Math.min(1, 0.5 + 0.17 * AP.nivel) : 0.3) * CALIDAD.efectos);
+    // (en la Tormenta de Fettuccine no hay tornados)
+    const nHor = AP.fase == "fettuccine" ? 0 : Math.round(N_HOR * (mor ? Math.min(1, 0.5 + 0.17 * AP.nivel) : 0.3) * CALIDAD.efectos);
     horizonte.visible = nHor > 0;
     horizonte.count = nHor;
     for (let i = 0; i < nHor; i++) {
