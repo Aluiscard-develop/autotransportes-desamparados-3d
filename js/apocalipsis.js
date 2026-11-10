@@ -3,8 +3,10 @@
 //   1. CALMA      · un rato tranquilo (al empezar y entre apocalipsis)
 //   2. CAOS       · los carros van rapidísimo, tornados gigantes por todas partes con carros volando,
 //                   clima pésimo, explosiones y gente corriendo y gritando
-//   3. TORMENTA   · se turnan: un apocalipsis trae la Tormenta Morada y el siguiente la Tormenta de
-//                   Fettuccine (js/tormenta-fettuccine.js). AP.turno cuenta cuál toca.
+//   3. TORMENTA   · la Tormenta Morada y la Tormenta de Fettuccine (js/tormenta-fettuccine.js) vienen
+//                   JUNTAS en cada apocalipsis. Con AJUSTES.apocalipsis.juntas = false se turnan: un
+//                   apocalipsis trae la Morada y el siguiente la de Fettuccine (AP.turno cuenta cuál toca).
+//                   AP.tormentas() dice cuáles están pasando ahora: ["morada", "fettuccine"], ["morada"]…
 //      MORADA     · la Tormenta Morada, todo junto en una sola tormenta: cielo morado, rayos morados,
 //                   tornados morados, bolas de fuego, LLUVIA DE COMIDA GIGANTE (js/tormenta-comida.js)
 //                   y la CARRETERA PARTIÉNDOSE a la mitad (js/carretera-partida.js).
@@ -19,6 +21,9 @@
   const VEL_CARROS = FASES.velCarros; // veces más rápido que lo normal
   const AP = { fase: "calma", nivel: 0, t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0, turno: 0 };
   window.APOCALIPSIS = AP; // para revisar desde la consola
+  // qué tormentas están pasando ahora (las usan js/tormenta-comida.js y js/tormenta-fettuccine.js)
+  AP.tormentas = () =>
+    AP.fase == "morada" ? (FASES.juntas ? ["morada", "fettuccine"] : ["morada"]) : AP.fase == "fettuccine" ? ["fettuccine"] : [];
 
   // ----- opción del menú -----
   const sel = document.getElementById("apo");
@@ -217,13 +222,16 @@
     AP.t = FASES[f];
     AP.aviso = false;
     if (f == "caos") {
+      AP.nivel = 0; // cada apocalipsis nuevo empieza la tormenta desde el nivel 1
       tornados.forEach((t, i) => i < 5 && ponerTornado(t, true));
       gente.forEach(ponerPersona);
       msg("🌪🌪🌪 ¡APOCALIPSIS! Tornados gigantes en todas partes, los carros se volvieron locos · ¡SOBREVIVÍ!", 5000);
       trueno(1);
     } else if (f == "morada") {
       tornados.forEach((t) => !t.activo && ponerTornado(t, false));
-      msg("🟣⚡🍔 ¡LA TORMENTA MORADA! Rayos, tornados, bolas de fuego, COMIDA GIGANTE cayendo del cielo y la carretera partiéndose", 5500);
+      if (FASES.juntas)
+        msg("🟣🍝⚡ ¡LA TORMENTA MORADA Y LA DE FETTUCCINE JUNTAS! Rayos, tornados, COMIDA GIGANTE, fideos y salsa Alfredo cayendo del cielo y la carretera partiéndose", 6000);
+      else msg("🟣⚡🍔 ¡LA TORMENTA MORADA! Rayos, tornados, bolas de fuego, COMIDA GIGANTE cayendo del cielo y la carretera partiéndose", 5500);
       trueno(1);
     } else if (f == "fettuccine") {
       // se van los tornados del caos: ahora llueve fettuccine (js/tormenta-fettuccine.js)
@@ -235,9 +243,11 @@
     } else {
       ocultarTodo();
       const fett = antes == "fettuccine",
-        premio = fett ? FASES.premioFettuccine : FASES.premio;
+        juntas = antes == "morada" && FASES.juntas,
+        premio = fett ? FASES.premioFettuccine : juntas ? FASES.premio + FASES.premioFettuccine : FASES.premio;
       cash += premio;
-      msg(`🌤 ${fett ? "Pasó la Tormenta de Fettuccine" : antes == "morada" ? "Pasó la Tormenta Morada" : "Pasó el apocalipsis"}... ¡Sobreviviste! +₡${premio.toLocaleString("es-CR")}`, 4500);
+      const cual = fett ? "Pasó la Tormenta de Fettuccine" : juntas ? "Pasaron la Tormenta Morada y la de Fettuccine" : antes == "morada" ? "Pasó la Tormenta Morada" : "Pasó el apocalipsis";
+      msg(`🌤 ${cual}... ¡Sobreviviste! +₡${premio.toLocaleString("es-CR")}`, 4500);
     }
   };
 
@@ -319,7 +329,7 @@
       return;
     }
     if (AP.t <= 0) {
-      if (AP.fase == "caos") cambiarFase(AP.turno++ % 2 ? "fettuccine" : "morada"); // se turnan
+      if (AP.fase == "caos") cambiarFase(!FASES.juntas && AP.turno++ % 2 ? "fettuccine" : "morada"); // juntas, o se turnan
       else if (AP.fase == "fettuccine") cambiarFase("calma");
       else if (AP.nivel + 1 >= FASES.nivelesMorada) {
         // la Tormenta Morada terminó: vuelve la calma
@@ -418,7 +428,8 @@
 
     // ----- gente corriendo y gritando -----
     moverGente(t, dt);
-    gritar(dt, moradaK && Math.random() < 0.5 ? "comida" : "normal"); // en la morada también gritan por la comida
+    // en la morada también gritan por la comida (y por el fettuccine si vienen juntas)
+    gritar(dt, moradaK ? pk_(FASES.juntas ? ["normal", "comida", "fettuccine"] : ["normal", "comida"]) : "normal");
     // ----- destrucción: explosiones -----
     AP.boomT -= dt;
     if (AP.boomT <= 0) {

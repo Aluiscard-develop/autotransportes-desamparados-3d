@@ -18,7 +18,7 @@
   if (!AP || !TC) return;
   const A = AJUSTES.tormentaFettuccine,
     { compartir, mat } = MUNDO;
-  const enTormenta = () => AP.fase == "fettuccine" && !MONT.on;
+  const enTormenta = () => AP.tormentas().includes("fettuccine") && !MONT.on;
   const play = () => state == "play" && !MONT.on;
   const FIDEO = 0xeccb7a, // color del fettuccine
     SALSA = 0xfaf3e0; // salsa Alfredo
@@ -279,7 +279,7 @@
     const activa = enTormenta();
     // ----- cielo crema y lluvia de fideos -----
     if (activa) {
-      sc.fog.color.lerp(crema, 0.65);
+      sc.fog.color.lerp(crema, AP.fase == "fettuccine" ? 0.65 : 0.3); // junto con la Morada: morado cremoso
       sc.fog.near = Math.min(sc.fog.near, 30);
       sc.fog.far = Math.min(sc.fog.far, 340);
     }

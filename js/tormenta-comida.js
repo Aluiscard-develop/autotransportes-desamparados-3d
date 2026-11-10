@@ -24,7 +24,7 @@
   if (!AP) return;
   const A = AJUSTES.tormentaComida,
     { compartir, mat, humoTex } = MUNDO;
-  const enComida = () => (AP.fase == "morada" || AP.fase == "fettuccine") && !MONT.on;
+  const enComida = () => AP.tormentas().length > 0 && !MONT.on;
   const play = () => state == "play" && !MONT.on;
 
   // ===================== LAS COMIDAS (tamaño 1 = 1 metro de ancho) =====================
@@ -494,10 +494,11 @@
       end();
     }
   };
-  // una comida al azar de las que caen en la tormenta de ahora
+  // una comida al azar de las que caen en la tormenta de ahora (si hay dos juntas, primero se elige la tormenta)
   const elegir = () => {
-    const lista = [];
-    COMIDAS.forEach((c, i) => (c.tormenta || "morada") == AP.fase && lista.push(i));
+    const tormenta = pk_(AP.tormentas()),
+      lista = [];
+    COMIDAS.forEach((c, i) => (c.tormenta || "morada") == tormenta && lista.push(i));
     return lista.length ? pk_(lista) : 0;
   };
   // k: qué comida (si no se dice, una al azar). Para probar desde la consola: TORMENTA_COMIDA.soltar(8)
@@ -686,7 +687,7 @@
       D.avisoT -= dt;
       if (D.avisoT <= 0) {
         D.avisoT = R(12, 18); // cada tanto (la Tormenta Morada también avisa cosas)
-        msg(pk_(MENSAJES[AP.fase] || MENSAJES.morada), 2200);
+        msg(pk_(MENSAJES[pk_(AP.tormentas())] || MENSAJES.morada), 2200);
       }
     }
     // ----- cada comida -----

@@ -170,23 +170,27 @@ Los números (cuántos tanques, cada cuánto disparan, daño, aviones, premio) e
 
 ## El apocalipsis (`js/apocalipsis.js`), la comida gigante (`js/tormenta-comida.js`), la Tormenta de Fettuccine (`js/tormenta-fettuccine.js`) y la carretera partida (`js/carretera-partida.js`)
 
-Después de cada caos viene una tormenta, y se turnan: una vez la Tormenta Morada, la siguiente la
-Tormenta de Fettuccine (`APOCALIPSIS.turno` cuenta cuál toca). La Tormenta Morada es una sola tormenta
-con todo junto: rayos, tornados, bolas de fuego, comida gigante cayendo y la carretera partiéndose
-(`APOCALIPSIS.fase == "morada"`). La de Fettuccine tiene su propia comida, lluvia de fideos y charcos de
-salsa (`APOCALIPSIS.fase == "fettuccine"`).
+Después de cada caos vienen la Tormenta Morada y la Tormenta de Fettuccine **juntas**
+(`APOCALIPSIS.fase == "morada"`). La Morada trae rayos, tornados, bolas de fuego, comida gigante y la
+carretera partiéndose; la de Fettuccine trae su propia comida (platos, nidos y tiras), lluvia de fideos y
+charcos de salsa. `APOCALIPSIS.tormentas()` dice cuáles están pasando ahora (`["morada", "fettuccine"]`),
+y cada archivo se fija ahí. Cuando cae comida, primero se elige de cuál tormenta y después cuál comida.
+
+Con `AJUSTES.apocalipsis.juntas = false` se vuelven a turnar: una vez la Morada sola y la siguiente la de
+Fettuccine sola (`APOCALIPSIS.fase == "fettuccine"`, `APOCALIPSIS.turno` cuenta cuál toca).
 
 - En `js/ajustes.js` → `AJUSTES.apocalipsis`: cuántos segundos dura la calma, el caos, cada nivel de la
   Tormenta Morada, cuántos niveles dura (`nivelesMorada`), el premio por sobrevivirla (`premio`) y qué
   tan rápido van los carros (`velCarros`).
-- En `js/ajustes.js` → `AJUSTES.apocalipsis`: `fettuccine` (cuántos segundos dura la Tormenta de
-  Fettuccine) y `premioFettuccine`.
+- En `js/ajustes.js` → `AJUSTES.apocalipsis`: `juntas` (las dos tormentas juntas o turnándose),
+  `fettuccine` (cuántos segundos dura la de Fettuccine cuando va sola) y `premioFettuccine` (juntas, se
+  suma al premio de la Morada).
 - En `js/ajustes.js` → `AJUSTES.tormentaComida`: cada cuánto cae comida, cuántas a la vez, qué tan
   grandes y el daño (sirve para las dos tormentas).
 - En `js/ajustes.js` → `AJUSTES.tormentaFettuccine`: cuántos fideos llueven, cuánto dura un charco de
   salsa, qué tan rápido resbalás y cuánto frenan las tiras.
-- Para probar la de Fettuccine desde la consola: `APOCALIPSIS.turno = 1; APOCALIPSIS.fase = "caos"; APOCALIPSIS.t = 0.01`
-  (empieza ya), `TORMENTA_COMIDA.soltar(TORMENTA_FETTUCCINE.tira)` (también `.plato` y `.nido`) y
+- Para probar las tormentas desde la consola: `APOCALIPSIS.fase = "caos"; APOCALIPSIS.t = 0.01`
+  (empiezan ya), `TORMENTA_COMIDA.soltar(TORMENTA_FETTUCCINE.tira)` (también `.plato` y `.nido`) y
   `TORMENTA_FETTUCCINE.ponerCharco(B.x, B.z - 30, 9)` (un charco 30 m adelante).
 - En `js/ajustes.js` → `AJUSTES.carreteraPartida`: cada cuánto se raja, a cuántos metros adelante, qué
   tan largo es el hueco, cuántos segundos de aviso y el daño si te caés.

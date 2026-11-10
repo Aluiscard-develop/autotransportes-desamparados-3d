@@ -48,21 +48,22 @@ const AJUSTES = {
   },
 
   // ----- APOCALIPSIS (js/apocalipsis.js) -----
-  // Orden: calma → caos → Tormenta Morada (con comida gigante y la carretera partiéndose) → calma →
-  //        caos → Tormenta de Fettuccine → calma → … (las dos tormentas se turnan)
+  // Orden: calma → caos → Tormenta Morada + Tormenta de Fettuccine juntas (con comida gigante, fideos,
+  //        salsa Alfredo y la carretera partiéndose) → calma → caos → …
   apocalipsis: {
+    juntas: true, // true = la Morada y la de Fettuccine vienen juntas; false = se turnan (una y una)
     primeraCalma: 25, // segundos de calma al empezar
     calma: 120, // segundos de calma entre apocalipsis
     caos: 40, // segundos de caos (tornados y carros rapidísimos)
     morada: 60, // cada cuántos segundos sube de nivel la Tormenta Morada (+₡5000)
     nivelesMorada: 3, // cuántos niveles dura la Tormenta Morada antes de terminar (3 × 60 s = 3 minutos)
     premio: 20000, // colones por sobrevivir la Tormenta Morada entera
-    fettuccine: 120, // segundos que dura la Tormenta de Fettuccine
-    premioFettuccine: 15000, // colones por sobrevivir la Tormenta de Fettuccine
+    fettuccine: 120, // segundos que dura la Tormenta de Fettuccine (cuando se turnan; juntas dura lo de la Morada)
+    premioFettuccine: 15000, // colones por sobrevivir la Tormenta de Fettuccine (juntas: se suma al de la Morada)
     velCarros: { caos: 3, morada: 4, fettuccine: 2 }, // veces más rápido que lo normal
   },
 
-  // ----- LLUVIA DE COMIDA GIGANTE (js/tormenta-comida.js) · cae durante la Tormenta Morada -----
+  // ----- LLUVIA DE COMIDA GIGANTE (js/tormenta-comida.js) · cae en las tormentas -----
   tormentaComida: {
     cadaCuanto: [0.5, 1.3], // segundos entre una comida y la siguiente (mínimo, máximo)
     maxComidas: 14, // cuántas comidas puede haber a la vez (en gráficos bajos, menos)
@@ -76,7 +77,7 @@ const AJUSTES = {
     danioAlbondiga: 9, // daño si te pega una albóndiga (de 100)
   },
 
-  // ----- TORMENTA DE FETTUCCINE (js/tormenta-fettuccine.js) · se turna con la Tormenta Morada -----
+  // ----- TORMENTA DE FETTUCCINE (js/tormenta-fettuccine.js) · viene junto con la Tormenta Morada -----
   // Las comidas que caen (platos Alfredo, nidos y tiras) usan cadaCuanto, tamano y danio de tormentaComida.
   tormentaFettuccine: {
     fideos: 180, // cuántos fideos caen a la vez en la lluvia (en gráficos Bajo, menos)
