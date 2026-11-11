@@ -200,11 +200,36 @@ Fettuccine sola (`APOCALIPSIS.fase == "fettuccine"`, `APOCALIPSIS.turno` cuenta 
 - Para cambiar cómo se ve una comida o agregar otra: `COMIDAS` en `js/tormenta-comida.js`. Cada una se
   arma con piezas de 1 metro (`pieza(...)`) y el juego la agranda.
 - Desde otro archivo se puede agregar comida con `TORMENTA_COMIDA.agregarComida({...})` (así lo hace
-  `js/tormenta-fettuccine.js`). Además de lo de `COMIDAS`, acepta: `tormenta` (en cuál cae: `"morada"` o
-  `"fettuccine"`), `alImpacto(f, fuerza)` (qué pasa cuando cae), `alChocar(f, dt)` (qué pasa si la tocás
+  `js/tormenta-fettuccine.js`). Además de lo de `COMIDAS`, acepta: `tormenta` (en cuál cae: `"morada"`,
+  `"fettuccine"`, `"roja"`, `"naranja"` o una lista), `alImpacto(f, fuerza)` (qué pasa cuando cae), `alChocar(f, dt)` (qué pasa si la tocás
   en el piso, en vez del choque normal) y `tira: [ancho, largo]` (para comidas largas y planas).
 - `N_TORNADOS`: cuántos tornados cercanos puede haber a la vez.
 - En `js/apocalipsis2.js`: `N_HOR` (tornados del horizonte), `N_GENTE` (personas corriendo) y `N_AV` (avalanchas). Si el juego se pone lento en una computadora, bajá esos números.
+
+## La computadora de mi casa y las tormentas de colores (`js/condominio.js`, `js/tormentas-colores.js`)
+
+- Mi casa está en la zona 50 (`js/condominio.js`). Los colores de la casa están en `CASA`, arriba del archivo.
+  Si te parás frente a ella (casi quieto) aparece el botón de la computadora.
+- Los códigos de la computadora están en `CODIGOS` (`js/tormentas-colores.js`): cada uno tiene el código,
+  un emoji, el nombre, qué hace y una función. Para agregar uno, copiá una línea y cambiale la función.
+- Las tormentas que prende la computadora se guardan en `APOCALIPSIS.forzadas` (segundos que faltan). Los
+  nombres dicen qué comida cae: `"morada"` (la comida gigante), `"fettuccine"`, `"roja"` y `"naranja"`. Una
+  comida cae en las tormentas que tenga en `tormenta` (puede ser una lista: `tormenta: ["roja", "morada"]`).
+- La Morada de la computadora es la de verdad (`APOCALIPSIS.empezarMorada()`): funciona aunque el
+  apocalipsis esté apagado en el menú, y cuando termina no se repite.
+- Los números (cuánto dura cada tormenta, el premio de la Ultra, cada cuánto vienen las avalanchas) están en
+  `AJUSTES.generador`. Que la comida se quede donde cae: `AJUSTES.tormentaComida.segundosEnElSuelo = 0`.
+  Qué tan seguido cae comida encima de un edificio: `AJUSTES.tormentaComida.enEdificios`.
+- Para probar desde la consola: `GENERADOR.usar("ULTRA")`, `GENERADOR.avalancha()`,
+  `COMPUTADORA.abrir()` o `TORMENTA_COMIDA.soltar(COMIDA_NUEVA.mazorca)`.
+
+## Mundos nuevos (`js/mundo7.js`)
+
+- Cada zona empieza con `nuevaZona(número, nombre, clima)`: el clima trae el color del suelo, la neblina y
+  qué tan oscuro es. Después se pone el escenario y al final `terminar(...)` lo junta en pocas mallas.
+- Para agregar una zona más: subí `NZ` en `js/juego/01-base.js`, agregá la opción en `index.html`
+  (`<select id="zs">`) y armala aquí. La última zona solo llega hasta `FIN` (100 m antes del final el
+  mundo salta a la vuelta siguiente).
 
 ## Tiendas de celulares (`js/tiendas.js`)
 

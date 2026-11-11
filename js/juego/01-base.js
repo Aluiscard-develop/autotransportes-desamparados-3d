@@ -16,7 +16,7 @@ const _el = {},
   T = THREE;
 // Cantidad de zonas de 1 km que tiene el recorrido antes de repetirse (las nuevas están en js/mundo.js
 // a js/mundo6.js; la última, la 49, es el Campo de guerra).
-const NZ = 50,
+const NZ = 55,
   CICLO = NZ * 1000,
   INICIO_MONTANA = 99; // valor del menú "Inicio: Ruta de montaña"
 

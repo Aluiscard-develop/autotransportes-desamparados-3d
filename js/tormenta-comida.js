@@ -2,10 +2,17 @@
 // LLUVIA DE COMIDA GIGANTE. Se carga después de js/apocalipsis2.js y usa su estado (window.APOCALIPSIS).
 // Cae en la Tormenta Morada (hamburguesas, pizzas, donas, hot dogs, sandías, helados, pollo frito,
 // papas y espagueti) y en la Tormenta de Fettuccine (la comida de js/tormenta-fettuccine.js).
-// Cada comida dice en qué tormenta cae con "tormenta" (si no lo dice, en la Morada).
+// Cada comida dice en qué tormenta cae con "tormenta" (si no lo dice, en la Morada); puede ser una lista,
+// por ejemplo tormenta: ["roja", "morada"]. Las tormentas de colores están en js/tormentas-colores.js.
 // Otros archivos agregan comidas con TORMENTA_COMIDA.agregarComida({...}) y pueden usar estos extras:
 //   alImpacto(f) · algo más cuando cae · alChocar(f, dt) · qué pasa si la chocás (en vez de empujarla)
 //   tira: [largo, ancho] · es larga y queda atravesada en la carretera (choque en forma de tira)
+//   radioRueda · para las que ruedan: qué tan alto queda el centro (la dona: 0.53)
+// TORMENTA_COMIDA.soltar(k, { x, z, y, tam, vx, vz, vy, gravedad }) tira una comida en un lugar o
+// lanzada en curva (así el tornado de papas lanza hamburguesas). TORMENTA_COMIDA.alSoltar: funciones
+// que se llaman con cada comida que sale (js/comida-nueva.js la hace caer en edificios con f.techo).
+// LA COMIDA SE QUEDA DONDE CAE (AJUSTES.tormentaComida.segundosEnElSuelo = 0): solo se quita cuando
+// queda muy atrás o cuando ya hay muchas (se hunde la más vieja).
 //   AVISO     · un círculo rojo en el piso marca dónde va a caer (¡esquivalo!)
 //   IMPACTO   · explota en migas, aplasta los carros que agarra abajo, tira por el aire a los de
 //               al lado, deja un cráter y, si estás cerca, te daña
@@ -365,7 +372,7 @@
     c.position.set(x, 0.04, z);
     c.scale.setScalar(r);
     c.material.opacity = 0.75;
-    c.userData.t = A.segundosEnElSuelo + 4;
+    c.userData.t = (A.segundosEnElSuelo || 20) + 4; // con 0 (la comida se queda) el cráter dura 24 s
   };
   // migas: todas en una sola malla (InstancedMesh) para que sea liviano
   const N_MIGAS = 320;
@@ -479,9 +486,16 @@
   const comidas = []; // las que están cayendo o en el piso
   const D = { t: 0, golpeT: 0, choqueT: 0, avisoT: 0 };
   D.COMIDAS = COMIDAS;
+  D.comidas = comidas;
   D.albondigas = albs;
   window.TORMENTA_COMIDA = D; // para revisar desde la consola
   const maxComidas = () => Math.max(4, Math.round(A.maxComidas * Math.max(0.45, CALIDAD.efectos)));
+  // la comida se queda donde cae: cuando ya hay muchas, la más vieja de las que están en el piso se hunde
+  const hundirLaMasVieja = () => {
+    let vieja = null;
+    for (const f of comidas) if (f.fase == "piso" && !f.hundir && (!vieja || f.t > vieja.t)) vieja = f;
+    if (vieja) vieja.hundir = true;
+  };
   const golpear = (cuanto, texto) => {
     if (D.golpeT > 0) return;
     D.golpeT = 1.4;
@@ -498,18 +512,22 @@
   const elegir = () => {
     const tormenta = pk_(AP.tormentas()),
       lista = [];
-    COMIDAS.forEach((c, i) => (c.tormenta || "morada") == tormenta && lista.push(i));
+    COMIDAS.forEach((c, i) => [].concat(c.tormenta || "morada").includes(tormenta) && lista.push(i));
     return lista.length ? pk_(lista) : 0;
   };
   // k: qué comida (si no se dice, una al azar). Para probar desde la consola: TORMENTA_COMIDA.soltar(8)
-  function soltar(k = elegir()) {
+  // op (opcional): { x, z } dónde cae, y desde qué altura, tam, y si va lanzada: vx, vz, vy, gravedad
+  function soltar(k = elegir(), op = {}) {
     const c = COMIDAS[k],
-      tam = R(A.tamano[0], A.tamano[1]),
-      y0 = R(130, 170),
+      tam = op.tam || R(A.tamano[0], A.tamano[1]),
+      y0 = op.y != null ? op.y : R(130, 170),
       tCaida = y0 / A.velocidadCaida,
-      haciaVos = Math.random() < 0.25; // una de cada 4 va directo a donde vas a estar
+      haciaVos = op.x == null && Math.random() < 0.25; // una de cada 4 va directo a donde vas a estar
     let x, z;
-    if (haciaVos) {
+    if (op.x != null) {
+      x = op.x;
+      z = op.z;
+    } else if (haciaVos) {
       x = B.x - Math.sin(B.h) * B.v * tCaida + R(-3, 3);
       z = B.z - Math.cos(B.h) * B.v * tCaida + R(-6, 6);
     } else {
@@ -529,18 +547,33 @@
       x,
       z,
       y: y0,
-      vy: -A.velocidadCaida,
+      vy: op.vy != null ? op.vy : -A.velocidadCaida,
       fase: "cae",
       t: 0,
       rebotes: c.rebota ? 2 : 0,
-      gravedad: false,
+      gravedad: op.gravedad || false, // número: cae en curva con esa gravedad (lanzada)
+      vx: op.vx || 0,
       vz: 0,
+      vzAire: op.vz || 0,
+      danioK: op.danioK || 1, // las hamburguesas del tornado de papas dañan menos
+      techo: 0, // si cae encima de un edificio: a qué altura está el techo (js/comida-nueva.js)
     };
+    // el círculo rojo va donde va a caer (si va lanzada, se calcula dónde)
+    let ax = x,
+      az = z;
+    if (op.gravedad) {
+      const g = op.gravedad,
+        v = f.vy,
+        tVuelo = (v + Math.sqrt(v * v + 2 * g * y0)) / g;
+      ax += f.vx * tVuelo;
+      az += f.vzAire * tVuelo;
+    }
     f.aviso = sacarAviso();
-    f.aviso.position.set(x, 0.06, z);
+    f.aviso.position.set(ax, 0.06, az);
     f.aviso.scale.setScalar(tam * c.radio * 1.1);
     comidas.push(f);
     if (haciaVos && play()) sonidoSilbido(tCaida);
+    D.alSoltar.forEach((fn) => fn(f, op));
     return f;
   }
   // el plato de espagueti dispara una albóndiga (a veces hacia vos)
@@ -605,12 +638,14 @@
     }
     if (play() && dJugador < radio && B.y < tam * 0.6)
       golpear(
-        A.danio * fuerza,
+        A.danio * fuerza * (f.danioK || 1),
         `${c.emoji}💥 ¡Te ${c.un == "unas" ? "cayeron" : "cayó"} ${c.un} ${c.nombre.toUpperCase()} ${c.un == "unas" ? "GIGANTES" : "GIGANTE"} encima!`,
       );
   }
 
   D.soltar = soltar;
+  D.alSoltar = []; // funciones que se llaman con cada comida que sale (fn(f, op))
+  D.ritmo = 1; // más alto = cae comida más seguido (la Ultra Pro Max lo sube)
   // avisos que salen cada tanto, según la tormenta (otros archivos agregan los suyos)
   const MENSAJES = {
     morada: [
@@ -681,8 +716,9 @@
     if (activa) {
       D.t -= dt;
       if (D.t <= 0) {
-        D.t = R(A.cadaCuanto[0], A.cadaCuanto[1]) / Math.max(0.5, CALIDAD.efectos);
+        D.t = R(A.cadaCuanto[0], A.cadaCuanto[1]) / Math.max(0.5, CALIDAD.efectos) / D.ritmo;
         if (comidas.length < maxComidas()) soltar();
+        else hundirLaMasVieja(); // ya hay muchas: la más vieja se hunde y deja lugar
       }
       D.avisoT -= dt;
       if (D.avisoT <= 0) {
@@ -697,6 +733,13 @@
       f.t += dt;
       if (f.fase == "cae") {
         f.y += f.vy * dt;
+        f.x += f.vx * dt; // lanzada en curva
+        f.z += f.vzAire * dt;
+        if (f.techo && f.y <= f.techo) {
+          // cayó encima de un edificio: lo rompe y sigue cayendo
+          f.techo = 0;
+          if (f.alTecho) f.alTecho(f);
+        }
         if (c.tira)
           f.g.rotation.z = Math.sin(f.t * 6) * 0.12; // la tira ondea al caer
         else if (c.gira) f.g.rotation.y += dt * 6;
@@ -706,6 +749,7 @@
         if (f.y <= 0) {
           f.y = 0;
           impacto(f, f.rebotes == 2 || !c.rebota ? 1 : 0.5);
+          f.vx = f.vzAire = 0;
           if (f.rebotes > 0) {
             f.vy = A.velocidadCaida * (f.rebotes == 2 ? 0.45 : 0.25);
             f.rebotes--;
@@ -717,12 +761,12 @@
             f.aviso = null;
             if (c.rueda) f.vz = R(9, 15); // ruedan hacia atrás (hacia el que viene manejando)
           }
-        } else if (f.gravedad) f.vy -= 60 * dt; // rebote: sube y vuelve a caer
+        } else if (f.gravedad) f.vy -= (f.gravedad === true ? 60 : f.gravedad) * dt; // rebote o lanzada: sube y vuelve a caer
       } else {
         // en el piso (y las donas rodando)
         if (f.vz) {
           f.z += f.vz * dt;
-          f.g.rotation.x += (f.vz * dt) / (f.tam * 0.53);
+          f.g.rotation.x += (f.vz * dt) / (f.tam * (c.radioRueda || 0.53));
           for (const car of cars)
             if (
               !car.vy &&
@@ -743,9 +787,14 @@
             lanzarAlbondiga(f, Math.random() < 0.5);
           }
         }
-        // se hunde y desaparece; se apura si ya terminó la tormenta o quedó muy atrás
-        const vida = enComida() ? A.segundosEnElSuelo : Math.min(A.segundosEnElSuelo, 3);
-        if (f.t > vida) f.y -= dt * f.tam * 0.25;
+        // se queda donde cayó (segundosEnElSuelo = 0); si no, se hunde después de un rato.
+        // También se hunde si ya hay muchas (hundirLaMasVieja) o si quedó muy atrás.
+        const vida = !A.segundosEnElSuelo
+          ? Infinity
+          : enComida()
+            ? A.segundosEnElSuelo
+            : Math.min(A.segundosEnElSuelo, 3);
+        if (f.t > vida || f.hundir) f.y -= dt * f.tam * 0.25;
         if (f.y < -f.tam * c.alto || f.z - B.z > 120 || B.z - f.z > 900) {
           guardar(f);
           comidas.splice(i, 1);

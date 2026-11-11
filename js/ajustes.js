@@ -71,7 +71,8 @@ const AJUSTES = {
     velocidadCaida: 55, // metros por segundo
     danio: 16, // daño si te cae encima (de 100)
     radioGolpe: 11, // metros alrededor del impacto que te alcanzan
-    segundosEnElSuelo: 14, // cuánto tiempo se queda la comida tirada en la carretera
+    segundosEnElSuelo: 0, // cuánto se queda la comida tirada (0 = se queda donde cae hasta que la dejás atrás)
+    enEdificios: 0.18, // de cada comida, qué parte cae encima de un edificio y lo rompe (0 a 1)
     albondigasAlCaer: 5, // cuántas albóndigas dispara el plato de espagueti cuando cae
     albondigasCada: [2, 3.5], // después, cada cuántos segundos dispara otra (mínimo, máximo)
     danioAlbondiga: 9, // daño si te pega una albóndiga (de 100)
@@ -85,6 +86,21 @@ const AJUSTES = {
     deslizar: 5, // qué tan rápido te vas de lado en la salsa (metros por segundo)
     frenoTira: 0.3, // cuánta velocidad te queda después de 1 segundo pegado en una tira (0 a 1)
     danioTira: 3, // daño al enredarte en una tira (de 100)
+  },
+
+  // ----- GENERADOR DE TORMENTAS (la computadora de mi casa, js/tormentas-colores.js) -----
+  // Los códigos (ROJA, NARANJA, MORADA, ULTRA…) y lo que hace cada uno están en CÓDIGOS en ese archivo.
+  generador: {
+    duracion: 90, // segundos que dura cada tormenta que prende la computadora (la Morada dura lo suyo)
+    despegue: 2.5, // segundos que tarda la máquina en llegar al cielo antes de que empiece la tormenta
+    premioUltra: 100000, // colones por sobrevivir la ULTRA PRO MAX APOCALIPSIS
+    ritmoUltra: 2, // en la Ultra la comida cae el doble de seguido
+    hamburguesaCada: [2, 3.5], // segundos entre hamburguesas del tornado de papas (mínimo, máximo)
+    danioTornado: 12, // daño si te agarra el tornado de papas (de 100)
+    danioTotopo: 8, // daño si te pega un totopo volador
+    gotasJugo: 240, // cuántas gotas de jugo de naranja caen a la vez (en gráficos Bajo, menos)
+    avalanchaCada: [35, 60], // segundos entre avalanchas de comida en cualquier tormenta de comida
+    avalanchaComidas: 10, // cuántas comidas trae cada avalancha
   },
 
   // ----- CARRETERA PARTIDA (js/carretera-partida.js) · pasa durante la Tormenta Morada -----

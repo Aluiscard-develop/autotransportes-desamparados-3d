@@ -897,3 +897,200 @@ select option {
     right: 208px;
   }
 }
+
+/* ===== ULTRA PRO MAX APOCALIPSIS (js/tormentas-colores.js) ===== */
+#ultra {
+  display: none;
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 92px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 6px 16px;
+  border-radius: 10px;
+  font:
+    900 clamp(13px, 2.6vw, 22px) system-ui,
+    Arial,
+    sans-serif;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 2px 6px #000;
+  white-space: nowrap;
+  pointer-events: none;
+  background: linear-gradient(90deg, #ff2a14, #ff8c1a, #9b30ff, #ff2a14);
+  background-size: 300% 100%;
+  animation: ultra 1.6s linear infinite;
+  box-shadow: 0 0 18px #ff8c1aaa;
+}
+@keyframes ultra {
+  to {
+    background-position: 300% 0;
+  }
+}
+
+/* ===== COMPUTADORA DE MI CASA (js/condominio.js) ===== */
+#btnCompu {
+  display: none;
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22% + 110px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  padding: 12px 22px;
+  border: 2px solid #18ffff;
+  border-radius: 14px;
+  background: #0a1830e6;
+  color: #e0f7fa;
+  font:
+    800 18px system-ui,
+    Arial,
+    sans-serif;
+  box-shadow: 0 0 16px #18ffff88;
+  cursor: pointer;
+}
+#compu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #000a;
+}
+#compu .pantalla {
+  width: min(680px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 10px solid #cfd8dc;
+  border-radius: 16px;
+  background: #06140c;
+  color: #39ff14;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  box-shadow:
+    0 0 0 3px #90a4ae,
+    0 12px 40px #000;
+  overflow: hidden;
+}
+#compu .barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 14px;
+  color: #b9f6ca;
+}
+#compu .x {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: #d32f2f;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+#compu .texto {
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+#compu form {
+  display: flex;
+  gap: 8px;
+}
+#compu input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 2px solid #39ff14;
+  border-radius: 8px;
+  background: #000;
+  color: #39ff14;
+  font:
+    700 18px ui-monospace,
+    Consolas,
+    monospace;
+  text-transform: uppercase;
+}
+#compu form button {
+  flex: none;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #39ff14;
+  color: #002b0a;
+  font:
+    900 15px system-ui,
+    Arial,
+    sans-serif;
+  cursor: pointer;
+}
+#compu .resp {
+  min-height: 1.3em;
+  font-size: 15px;
+}
+#compu .resp.bien {
+  color: #b9f6ca;
+}
+#compu .resp.mal {
+  color: #ff8a80;
+}
+#compu .lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+#compu .codigo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid #1b5e20;
+  border-radius: 8px;
+  background: #0b2414;
+  color: #39ff14;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+#compu .codigo b {
+  font-size: 14px;
+}
+#compu .codigo span {
+  font-size: 11px;
+  color: #a5d6a7;
+}
+#compu .codigo:hover,
+#compu .codigo:focus-visible {
+  background: #134d26;
+}
+#compu .codigo.ultra {
+  border-color: #ff8c1a;
+  background: linear-gradient(90deg, #4a0d07, #4a2a07, #2b0d4a);
+  color: #ffd180;
+}
+@media (max-width: 600px), (max-height: 500px) {
+  #compu {
+    padding: 8px;
+  }
+  #compu .pantalla {
+    border-width: 6px;
+    padding: 10px;
+    gap: 6px;
+  }
+  #compu .lista {
+    grid-template-columns: 1fr 1fr;
+  }
+  #btnCompu {
+    font-size: 15px;
+    padding: 10px 16px;
+  }
+}

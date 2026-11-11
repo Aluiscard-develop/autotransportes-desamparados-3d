@@ -22,12 +22,18 @@
   const AP = { fase: "calma", nivel: 0, t: FASES.primeraCalma, aviso: false, gritoT: 0, rayoT: 0, boomT: 0, golpeT: 0, turno: 0 };
   window.APOCALIPSIS = AP; // para revisar desde la consola
   // qué tormentas están pasando ahora (las usan js/tormenta-comida.js y js/tormenta-fettuccine.js)
-  AP.tormentas = () =>
-    AP.fase == "morada" ? (FASES.juntas ? ["morada", "fettuccine"] : ["morada"]) : AP.fase == "fettuccine" ? ["fettuccine"] : [];
+  // AP.forzadas: tormentas que prendió la computadora de la casa (js/tormentas-colores.js): nombre → segundos que faltan.
+  // Los nombres dicen qué comida cae: "morada" (comida gigante), "fettuccine", "roja", "naranja".
+  AP.forzadas = {};
+  AP.tormentas = () => {
+    const ts = AP.fase == "morada" ? (FASES.juntas ? ["morada", "fettuccine"] : ["morada"]) : AP.fase == "fettuccine" ? ["fettuccine"] : [];
+    for (const k in AP.forzadas) if (AP.forzadas[k] > 0 && !ts.includes(k)) ts.push(k);
+    return ts;
+  };
 
   // ----- opción del menú -----
   const sel = document.getElementById("apo");
-  const activo = () => !sel || sel.value == "1";
+  const activo = () => AP.forzada || !sel || sel.value == "1"; // AP.forzada: la prendió la computadora de la casa
 
   // ----- tornados (se mueven por el mundo alrededor del jugador) -----
   const N_TORNADOS = 14;
@@ -248,7 +254,16 @@
       cash += premio;
       const cual = fett ? "Pasó la Tormenta de Fettuccine" : juntas ? "Pasaron la Tormenta Morada y la de Fettuccine" : antes == "morada" ? "Pasó la Tormenta Morada" : "Pasó el apocalipsis";
       msg(`🌤 ${cual}... ¡Sobreviviste! +₡${premio.toLocaleString("es-CR")}`, 4500);
+      if (AP.forzada && sel && sel.value != "1") AP.forzada = false; // la prendió la computadora: no se repite
     }
+  };
+  // la computadora de la casa (js/tormentas-colores.js) empieza el apocalipsis aunque esté apagado en el menú:
+  // unos segundos de caos y después la Tormenta Morada (con la de Fettuccine si van juntas)
+  AP.empezarMorada = () => {
+    AP.forzada = true;
+    if (AP.fase == "morada") return;
+    cambiarFase("caos");
+    AP.t = 4;
   };
 
   // ----- gente corriendo y gritando (en el caos y en las tormentas) -----
@@ -306,10 +321,13 @@
         AP.t = FASES.calma;
       }
       ocultarTodo();
+      zAnt = B.z; // así, cuando la computadora la prende, no parece un reinicio
       return;
     }
     // al empezar de nuevo (inicio o reinicio) vuelve la calma
     if (zAnt != null && Math.abs(B.z - zAnt) > 30 && state == "play") {
+      AP.forzada = false;
+      for (const k in AP.forzadas) AP.forzadas[k] = 0;
       AP.fase = "calma";
       AP.nivel = 0;
       AP.t = FASES.primeraCalma;

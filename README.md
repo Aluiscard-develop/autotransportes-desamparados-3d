@@ -46,6 +46,17 @@ En celulares y tablets aparecen botones en la pantalla.
 ## Qué tiene
 
 - **🆕 Lo más nuevo:**
+  - **🏠 Condominio con mi casa (zona 50) y la COMPUTADORA:** la carretera pasa por el Condominio Villa Tormenta. A la derecha, a la mitad de la zona, está **mi casa** (dos pisos, blanca, techo rojo, cochera, balcón y la ventana de la computadora brillando). Si te parás frente a la casa aparece **💻 Usar la computadora** (o la tecla E): escribís un **código de tormenta** (o tocás uno de la lista) y la **Máquina Generadora de Tormentas** del patio **sale disparada al cielo**. Desde allá arriba, con un rayo de luz, empieza la tormenta. Códigos: `ROJA`, `NARANJA`, `MORADA`, `ULTRA`, `FETTUCCINE`, `COMIDA`, `AVALANCHA`, `PAPAS`, `TOTOPOS`, `JUGO`, `RABANOS`, `PANQUEQUES`, `HUEVOS`, `MAZORCAS`, `DONAS` y `CALMA` (apaga todo).
+  - **🔴 Tormenta Roja:** el cielo se pone rojo, caen **rábanos gigantes** y **huevos duros** que rebotan, y aparece un **🍟🌪 tornado hecho de papas fritas que lanza hamburguesas** (a veces directo hacia vos).
+  - **🟠 Tormenta Naranja:** cielo anaranjado, **lluvia de jugo de naranja**, **panqueques gigantes** con miel, **huevos fritos** resbalosos, **mazorcas que ruedan** y **totopos gigantes que cruzan la carretera volando como frisbis**.
+  - **☢ ULTRA PRO MAX APOCALIPSIS:** si la **roja, la naranja y la morada** pasan al mismo tiempo (o con el código `ULTRA`), el cielo va cambiando de rojo a anaranjado a morado, cae todo el doble de seguido y vienen avalanchas de comida cada rato. Si la aguantás: +₡100 000.
+  - **🏔🍩 Avalanchas de comida:** en cualquier tormenta de comida, cada tanto viene una fila de donas, mazorcas y nidos de fettuccine **rodando por la carretera** hacia vos.
+  - **🍔 La comida se queda donde cae** (ya no se hunde sola): se quita cuando la dejás atrás o cuando ya hay muchas.
+  - **🏢💥 Comida encima de los edificios:** a veces la comida cae en el techo de un edificio, salen volando **pedazos del edificio** y el edificio se derrumba.
+  - **🌋 Volcán (zona 51):** volcanes humeando con lava, **ríos de lava** a los dos lados (¡no te metás!), ceniza cayendo y **piedras de fuego** que caen cerca de la carretera (con círculo rojo de aviso).
+  - **🏖 Playa del Caribe (zona 52):** el mar turquesa a la derecha con olas y botes, sombrillas, palmeras, casitas de colores sobre pilotes, salvavidas y muelle.
+  - **🍭 Mundo de dulces (zona 53):** suelo rosado, árboles de chupeta, bastones de dulce, cerros de helado con cereza, gomitas, río de chocolate, casas de galleta y nubes de algodón de azúcar.
+  - **🌆 Ciudad del futuro (zona 54):** de noche, torres de vidrio con luces de neón, arcos de luz sobre la carretera, carteles de holograma, **carros voladores** y un **tren flotante**.
   - **🪖 Campo de guerra (zona 49):** la carretera cruza una batalla entre dos ejércitos. **10 tanques** se mueven, giran la torreta y disparan cañonazos que cruzan por encima de la carretera (y a veces caen cerca de vos). Cada tanto pasa **un avión que suelta una fila de bombas** sobre la carretera. Las explosiones dejan cráteres, tiran escombros, **mandan a volar los carros** (y a vos, si estás muy cerca), y los tanques que reciben un cañonazo se quedan quemándose. Hay sacos de arena, alambre de púas, erizos antitanque, búnkeres, ruinas y camiones del ejército en el tráfico. Si lo cruzás: +₡30 000.
   - **📱 Pantallas chicas:** en celulares (de pie o acostados) y laptops chicas los paneles se achican, la parada y la avalancha no se enciman, los botones táctiles se acomodan en dos filas y el menú cabe sin cortarse.
   - **🪂 Ala dañada del trike:** si vas volando con el ultraligero y le pegás a un carro (en la carretera o uno que va por el aire), el ala se tuerce, el trike se ladea y ya no podés subir: va bajando despacio hasta el piso. Al aterrizar queda arreglada.
@@ -136,6 +147,10 @@ En todos los niveles, las piezas de los árboles, casas y postes se juntan al ca
 | [js/juego/](js/juego/) | El juego base, partido en 18 archivos por tema (escena, paisaje, bus, vehículos, tráfico, zonas, menú, policía…). La lista está en [CONTRIBUTING.md](CONTRIBUTING.md) |
 | [js/tormenta-comida.js](js/tormenta-comida.js) | La comida gigante que cae en la Tormenta Morada (`COMIDAS`: cómo es cada comida; los números en `js/ajustes.js`) |
 | [js/tormenta-fettuccine.js](js/tormenta-fettuccine.js) | La Tormenta de Fettuccine: la lluvia de fideos, los platos, nidos y tiras gigantes y los charcos de salsa Alfredo |
+| [js/comida-nueva.js](js/comida-nueva.js) | Las comidas nuevas (rábanos, panqueques, huevos duros y fritos, mazorcas) y la comida que cae encima de los edificios |
+| [js/tormentas-colores.js](js/tormentas-colores.js) | El Generador de Tormentas: los códigos de la computadora, la máquina, la Tormenta Roja (tornado de papas), la Naranja (jugo y totopos), las avalanchas de comida y la Ultra Pro Max |
+| [js/condominio.js](js/condominio.js) | La zona 50: el condominio, mi casa, la máquina en su plataforma y la pantalla de la computadora |
+| [js/mundo7.js](js/mundo7.js) | Las zonas 51 a 54: Volcán, Playa del Caribe, Mundo de dulces y Ciudad del futuro |
 | [js/tiendas.js](js/tiendas.js) | Las tiendas de celulares CeluTuanis: en qué zonas están (`TIENDAS`), cómo se ven y la plata que dan |
 | [js/trike-azul.js](js/trike-azul.js) | El Trike azul (vehículo 32): cómo se ve (los colores están arriba del archivo); maneja igual que el trike |
 | [js/carretera-partida.js](js/carretera-partida.js) | La carretera que se parte a la mitad en la Tormenta Morada: la raja, el hueco, los carros que se caen y la grúa |
