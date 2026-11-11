@@ -58,6 +58,7 @@ En celulares y tablets aparecen botones en la pantalla.
   - **👀 Mirar hacia atrás:** mantené **V** (o el botón 👀) y la cámara mira hacia atrás.
   - **🏔 Montañas nevadas (zona 43):** nieve que cae, pinos nevados, lago congelado con patinadores, telesilla, cabañas y muñecos de nieve. Fuera de la carretera la nieve frena a todos, menos a las motos de nieve.
   - **🏂 Motonieve Ultra 4x4:** cuatro orugas, jaula, barra de luces y escape doble; en la nieve no se atasca.
+  - **🪂 Trike azul:** un ultraligero azul con franjas amarillas, ala azul con el centro blanco y las puntas amarillas, parabrisas, piloto con casco, motor, hélice atrás y aros cromados. Vuela igual que el trike de siempre.
   - **▦ Mundo de Bloques (zona 44)**, **🧱 Ciudad de Juguete (zona 45)** y **🏁 Pista de Karts (zona 46)**, con flechas TURBO y cronómetro de SALIDA a META (entre más rápido, más plata). Son zonas originales, no copias de otros juegos.
   - **🏜 Desierto (zona 47):** dunas, mesetas rojas, cactus, oasis con camellos, plantas rodadoras, paneles solares y la última gasolinera.
   - **⛈ Supertormenta (zona 48), la más difícil:** lluvia fuerte y oscuridad, ráfagas de viento que te empujan, rayos (a veces te caen encima), un tornado que levanta carros y te tira por los aires, y casas en llamas. Si salís entero: +₡25 000.
@@ -136,6 +137,7 @@ En todos los niveles, las piezas de los árboles, casas y postes se juntan al ca
 | [js/tormenta-comida.js](js/tormenta-comida.js) | La comida gigante que cae en la Tormenta Morada (`COMIDAS`: cómo es cada comida; los números en `js/ajustes.js`) |
 | [js/tormenta-fettuccine.js](js/tormenta-fettuccine.js) | La Tormenta de Fettuccine: la lluvia de fideos, los platos, nidos y tiras gigantes y los charcos de salsa Alfredo |
 | [js/tiendas.js](js/tiendas.js) | Las tiendas de celulares CeluTuanis: en qué zonas están (`TIENDAS`), cómo se ven y la plata que dan |
+| [js/trike-azul.js](js/trike-azul.js) | El Trike azul (vehículo 32): cómo se ve (los colores están arriba del archivo); maneja igual que el trike |
 | [js/carretera-partida.js](js/carretera-partida.js) | La carretera que se parte a la mitad en la Tormenta Morada: la raja, el hueco, los carros que se caen y la grúa |
 | [js/apocalipsis2.js](js/apocalipsis2.js) | El desastre total de la Tormenta Morada: tornados del horizonte, multitud, derrumbes, inundación, edificios, avalanchas, buses de evacuación y carros volcados |
 | [js/apocalipsis.js](js/apocalipsis.js) | El apocalipsis: tornados, carros rapidísimos, gente corriendo, la Tormenta Morada y la de Fettuccine juntas (cuánto duran y los premios) |
